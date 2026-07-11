@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Awards &amp; Recommendations | Aditya Suyal</title>
+    <meta name="description" content="Awards, hackathon wins, and letters of recommendation earned by Aditya Suyal in AI, Machine Learning, and engineering." />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+
+      /* ── Page hero ── */
+      .page-hero {
+        text-align: center;
+        padding: 4rem clamp(1rem, 6vw, 4rem) 3rem;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      .page-hero h1 {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin: 0.5rem 0 1rem;
+      }
+      .page-hero p {
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      /* ── Section wrapper ── */
+      .awards-wrapper {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 5vw, 3rem) 5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 3.5rem;
+      }
+
+      /* ── Section label ── */
+      .section-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+      }
+      .section-label-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .section-label-text {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      /* ── Awards grid ── */
+      .awards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.2rem;
+      }
+
+      /* ── Award card ── */
+      .award-card {
+        position: relative;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 1.6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        overflow: hidden;
+        transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      }
+      .award-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .award-card:hover {
+        transform: translateY(-4px);
+      }
+
+      /* Gold — 1st place */
+      .award-card.gold {
+        border-color: rgba(234, 179, 8, 0.2);
+      }
+      .award-card.gold::before {
+        background: linear-gradient(135deg, rgba(234, 179, 8, 0.07) 0%, transparent 55%);
+      }
+      .award-card.gold:hover {
+        border-color: rgba(234, 179, 8, 0.45);
+        box-shadow: 0 16px 48px rgba(234, 179, 8, 0.12);
+      }
+
+      /* Silver — 2nd / finalist */
+      .award-card.silver {
+        border-color: rgba(148, 163, 184, 0.18);
+      }
+      .award-card.silver::before {
+        background: linear-gradient(135deg, rgba(148, 163, 184, 0.05) 0%, transparent 55%);
+      }
+      .award-card.silver:hover {
+        border-color: rgba(148, 163, 184, 0.4);
+        box-shadow: 0 16px 48px rgba(148, 163, 184, 0.1);
+      }
+
+      /* Bronze / 3rd place */
+      .award-card.bronze {
+        border-color: rgba(180, 120, 60, 0.2);
+      }
+      .award-card.bronze::before {
+        background: linear-gradient(135deg, rgba(180, 120, 60, 0.07) 0%, transparent 55%);
+      }
+      .award-card.bronze:hover {
+        border-color: rgba(180, 120, 60, 0.45);
+        box-shadow: 0 16px 48px rgba(180, 120, 60, 0.1);
+      }
+
+      /* Award card top row */
+      .award-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+
+      .award-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        border-radius: 999px;
+        padding: 0.22rem 0.7rem;
+        white-space: nowrap;
+      }
+      .award-badge.gold   { color: #fbbf24; background: rgba(234,179,8,0.12); border: 1px solid rgba(234,179,8,0.28); }
+      .award-badge.silver { color: #cbd5e1; background: rgba(148,163,184,0.1); border: 1px solid rgba(148,163,184,0.25); }
+      .award-badge.bronze { color: #d4a26a; background: rgba(180,120,60,0.12); border: 1px solid rgba(180,120,60,0.28); }
+
+      .award-event {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        padding: 0.2rem 0.65rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 160px;
+      }
+
+      .award-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.35;
+        margin: 0;
+      }
+
+      .award-desc {
+        font-size: 0.83rem;
+        color: var(--muted);
+        line-height: 1.6;
+        margin: 0;
+        flex: 1;
+      }
+
+      .award-footer {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-top: 0.6rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .award-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .award-dot.gold   { background: #fbbf24; }
+      .award-dot.silver { background: #94a3b8; }
+      .award-dot.bronze { background: #d4a26a; }
+
+      .award-footer-text {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .award-footer-text.gold   { color: #fbbf24; }
+      .award-footer-text.silver { color: #94a3b8; }
+      .award-footer-text.bronze { color: #d4a26a; }
+
+      /* ── Recommendation card ── */
+      .rec-card {
+        position: relative;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 20px;
+        padding: 2rem 2rem 1.75rem;
+        overflow: hidden;
+        transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      }
+      .rec-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, transparent 55%);
+        pointer-events: none;
+      }
+      .rec-card:hover {
+        border-color: rgba(99, 102, 241, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 16px 48px rgba(99, 102, 241, 0.13);
+      }
+
+      .rec-quote-mark {
+        font-size: 4rem;
+        line-height: 1;
+        color: rgba(99, 102, 241, 0.25);
+        font-family: Georgia, serif;
+        margin-bottom: -0.5rem;
+        display: block;
+      }
+
+      .rec-body {
+        font-size: 1rem;
+        color: var(--text);
+        line-height: 1.75;
+        font-style: italic;
+        margin: 0.75rem 0 1.5rem;
+        opacity: 0.9;
+      }
+
+      .rec-attribution {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      .rec-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+        letter-spacing: 0.02em;
+      }
+
+      .rec-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+      }
+
+      .rec-name {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .rec-role {
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .rec-type-badge {
+        margin-left: auto;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: #a5b4fc;
+        background: rgba(99, 102, 241, 0.12);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        border-radius: 999px;
+        padding: 0.22rem 0.7rem;
+        white-space: nowrap;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 768px) {
+        .awards-grid {
+          grid-template-columns: 1fr;
+        }
+        .rec-attribution {
+          flex-wrap: wrap;
+        }
+        .rec-type-badge {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <!-- ── Header ── -->
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Aditya Suyal portfolio home">
+        <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
+        <span class="brand-text">
+          <span class="brand-name">Aditya Suyal</span>
+          <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
+        </span>
+      </a>
+      <div class="header-right">
+        <a class="button primary" href="index.html" style="font-size:0.85rem;padding:0.45rem 1rem;text-decoration:none;">← Portfolio</a>
+        <button
+          class="hamburger"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          type="button"
+        >
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+      <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+        <a href="index.html#about">About</a>
+        <a href="index.html#experience">Experience</a>
+        <a href="index.html#projects">Projects</a>
+        <a href="certifications.html">Certifications</a>
+        <a href="index.html#skills">Skills</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+
+      <!-- ── Hero ── -->
+      <div class="page-hero">
+        <p class="eyebrow">Recognition &amp; Endorsements</p>
+        <h1><span style="color:var(--accent-strong)">Awards</span> &amp; Recommendations</h1>
+        <p>Competition wins, hackathon placements, and professional endorsements recognising applied AI research, engineering, and innovation.</p>
+      </div>
+
+      <div class="awards-wrapper">
+
+        <!-- ── Awards ── -->
+        <div>
+          <div class="section-label">
+            <span class="section-label-text">Awards &amp; Hackathon Results</span>
+            <span class="section-label-line"></span>
+          </div>
+
+          <div class="awards-grid">
+
+            <div class="award-card gold" data-reveal>
+              <div class="award-top">
+                <span class="award-badge gold">1st Place</span>
+                <span class="award-event">NASA Space Apps 2025</span>
+              </div>
+              <h2 class="award-title">1st Place — NASA Space Hackathon 2025, North India Zone</h2>
+              <p class="award-desc">Top placement in the North India zone of NASA's international Space Apps Challenge — building an AI-powered solution for space data analysis and exploration problems.</p>
+              <div class="award-footer">
+                <span class="award-dot gold"></span>
+                <span class="award-footer-text gold">Gold · NASA Challenge</span>
+              </div>
+            </div>
+
+            <div class="award-card gold" data-reveal>
+              <div class="award-top">
+                <span class="award-badge gold">1st Place</span>
+                <span class="award-event">TechFest</span>
+              </div>
+              <h2 class="award-title">1st Place — TechFest AI in Education</h2>
+              <p class="award-desc">Won first place by designing an AI-driven solution addressing real-world challenges in education — judged on innovation, technical depth, and real-world impact.</p>
+              <div class="award-footer">
+                <span class="award-dot gold"></span>
+                <span class="award-footer-text gold">Gold · Competition Win</span>
+              </div>
+            </div>
+
+            <div class="award-card bronze" data-reveal>
+              <div class="award-top">
+                <span class="award-badge bronze">3rd Place</span>
+                <span class="award-event">Grafest</span>
+              </div>
+              <h2 class="award-title">3rd Place — Grafest AI in Healthcare</h2>
+              <p class="award-desc">Placed third in a competitive healthcare AI challenge, applying machine learning to clinical and diagnostic problems with a focus on accuracy, safety, and interpretability.</p>
+              <div class="award-footer">
+                <span class="award-dot bronze"></span>
+                <span class="award-footer-text bronze">Bronze · Competition Win</span>
+              </div>
+            </div>
+
+            <div class="award-card silver" data-reveal>
+              <div class="award-top">
+                <span class="award-badge silver">2× Finalist</span>
+                <span class="award-event">State AI Hackathon</span>
+              </div>
+              <h2 class="award-title">2× State AI Hackathon Finalist</h2>
+              <p class="award-desc">Selected as a top finalist in two consecutive state-level AI hackathons — recognised for building technically rigorous, deployable AI solutions under competitive constraints.</p>
+              <div class="award-footer">
+                <span class="award-dot silver"></span>
+                <span class="award-footer-text silver">Silver · Finalist</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Recommendations ── -->
+        <div>
+          <div class="section-label">
+            <span class="section-label-text">Letters of Recommendation</span>
+            <span class="section-label-line"></span>
+          </div>
+
+          <div class="rec-card" data-reveal>
+            <span class="rec-quote-mark">"</span>
+            <p class="rec-body">
+              It is my honour to recommend Aditya Suyal, a standout student in the Department of Computer Science and Engineering at the Birla Institute of Applied Sciences. Aditya has consistently demonstrated exceptional technical depth in AI and machine learning, a rare ability to translate research into working systems, and the intellectual rigour we expect of our best graduates. His project work — spanning multi-agent LLM systems, retrieval-augmented generation, and computer vision — reflects both independent thinking and strong execution. I endorse him without reservation for any advanced AI or engineering role.
+            </p>
+            <div class="rec-attribution">
+              <div class="rec-avatar">HOD</div>
+              <div class="rec-info">
+                <span class="rec-name">Head of Department</span>
+                <span class="rec-role">Department of Computer Science &amp; Engineering<br />Birla Institute of Applied Sciences, Bhimtal</span>
+              </div>
+              <span class="rec-type-badge">Letter of Recommendation</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year"></span> Aditya. Built as a static portfolio for GitHub Pages.</p>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Scroll progress
+      const bar = document.querySelector(".scroll-progress");
+      if (bar) {
+        window.addEventListener("scroll", () => {
+          const scrolled = window.scrollY;
+          const total = document.documentElement.scrollHeight - window.innerHeight;
+          bar.style.width = total > 0 ? (scrolled / total) * 100 + "%" : "0%";
+        }, { passive: true });
+      }
+
+      // Hamburger
+      const hamburger = document.querySelector(".hamburger");
+      const primaryNav = document.querySelector("#primary-nav");
+      if (hamburger && primaryNav) {
+        hamburger.addEventListener("click", () => {
+          const isOpen = primaryNav.classList.toggle("nav-open");
+          hamburger.setAttribute("aria-expanded", isOpen);
+        });
+      }
+
+      // Reveal on scroll
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              e.target.style.opacity = "1";
+              e.target.style.transform = "translateY(0)";
+              observer.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll("[data-reveal]").forEach(el => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(22px)";
+          el.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+          observer.observe(el);
+        });
+      }
+    </script>
+  </body>
+</html>

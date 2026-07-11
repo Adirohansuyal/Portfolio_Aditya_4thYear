@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Certifications | Aditya Suyal</title>
+    <meta name="description" content="Professional certifications earned by Aditya Suyal in AI, Machine Learning, Generative AI, Deep Learning, and Data Science." />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* ── Page-specific styles ── */
+      .cert-hero {
+        text-align: center;
+        padding: 4rem clamp(1rem, 6vw, 4rem) 3rem;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .cert-hero .eyebrow {
+        margin-bottom: 0.75rem;
+      }
+
+      .cert-hero h1 {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 800;
+        line-height: 1.15;
+        margin: 0 0 1rem;
+        letter-spacing: -0.02em;
+      }
+
+      .cert-hero p {
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      /* ── Grid ── */
+      .cert-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 1.25rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 5vw, 3rem) 5rem;
+      }
+
+      /* ── Card ── */
+      .cert-card {
+        position: relative;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 1.6rem 1.6rem 1.4rem;
+        transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+
+      .cert-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, transparent 55%);
+        pointer-events: none;
+      }
+
+      .cert-card:hover {
+        border-color: rgba(99, 102, 241, 0.4);
+        transform: translateY(-4px);
+        box-shadow: 0 16px 48px rgba(99, 102, 241, 0.13);
+      }
+
+      /* Top row: rank badge + org badge */
+      .cert-card-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+
+      .cert-rank {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-strong);
+        background: rgba(99, 102, 241, 0.12);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        border-radius: 999px;
+        padding: 0.2rem 0.65rem;
+        white-space: nowrap;
+      }
+
+      .cert-org {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        padding: 0.2rem 0.65rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+      }
+
+      /* Title */
+      .cert-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.4;
+        margin: 0;
+      }
+
+      /* Description */
+      .cert-desc {
+        font-size: 0.83rem;
+        color: var(--muted);
+        line-height: 1.6;
+        margin: 0;
+        flex: 1;
+      }
+
+      /* Divider line */
+      .cert-card-footer {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-top: 0.6rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .cert-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent-strong);
+        flex-shrink: 0;
+      }
+
+      .cert-verified {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--accent-strong);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      /* Top cert gets a subtle gold accent */
+      .cert-card.top-cert {
+        border-color: rgba(234, 179, 8, 0.2);
+      }
+
+      .cert-card.top-cert::before {
+        background: linear-gradient(135deg, rgba(234, 179, 8, 0.06) 0%, transparent 55%);
+      }
+
+      .cert-card.top-cert:hover {
+        border-color: rgba(234, 179, 8, 0.45);
+        box-shadow: 0 16px 48px rgba(234, 179, 8, 0.1);
+      }
+
+      .cert-card.top-cert .cert-rank {
+        color: #fbbf24;
+        background: rgba(234, 179, 8, 0.1);
+        border-color: rgba(234, 179, 8, 0.3);
+      }
+
+      .cert-card.top-cert .cert-dot {
+        background: #fbbf24;
+      }
+
+      .cert-card.top-cert .cert-verified {
+        color: #fbbf24;
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        .cert-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <!-- ── Header ── -->
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Aditya Suyal portfolio home">
+        <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
+        <span class="brand-text">
+          <span class="brand-name">Aditya Suyal</span>
+          <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
+        </span>
+      </a>
+      <div class="header-right">
+        <a class="button primary" href="index.html" style="font-size:0.85rem;padding:0.45rem 1rem;text-decoration:none;">← Portfolio</a>
+        <button
+          class="hamburger"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          type="button"
+        >
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+      <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+        <a href="index.html#about">About</a>
+        <a href="index.html#experience">Experience</a>
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#skills">Skills</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ── Hero ── -->
+      <div class="cert-hero">
+        <p class="eyebrow">Verified Learning</p>
+        <h1><span style="color:var(--accent-strong)">Certifications</span> &amp; Credentials</h1>
+        <p>A curated set of professional certifications spanning Generative AI, LLM engineering, deep learning, cloud, and data science — ranked by relevance to modern AI roles.</p>
+      </div>
+
+      <!-- ── Cards ── -->
+      <div class="cert-grid">
+
+        <div class="cert-card top-cert">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 1 · Top Pick</span>
+            <span class="cert-org">DeepLearning.AI</span>
+          </div>
+          <h2 class="cert-title">Design, Develop and Deploy Multi-Agent Systems with CrewAI</h2>
+          <p class="cert-desc">Highly relevant to modern AI Agents and LLM applications. Covers multi-agent orchestration, task delegation, and real-world agentic workflows. Excellent brand value from Andrew Ng's DeepLearning.AI.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 2</span>
+            <span class="cert-org">GeeksforGeeks</span>
+          </div>
+          <h2 class="cert-title">Masters in Generative AI and LLMs</h2>
+          <p class="cert-desc">Demonstrates deep specialization in Generative AI and large language models — covering architectures, fine-tuning, deployment, and applied LLM engineering.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 3</span>
+            <span class="cert-org">WorldQuant University</span>
+          </div>
+          <h2 class="cert-title">Applied AI Lab for Deep Learning &amp; Computer Vision</h2>
+          <p class="cert-desc">A rigorous, project-based certification in deep learning and computer vision. Covers CNNs, object detection, image segmentation, and real-world applied AI systems.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 4</span>
+            <span class="cert-org">Databricks</span>
+          </div>
+          <h2 class="cert-title">Academy Accreditation – Generative AI Fundamentals</h2>
+          <p class="cert-desc">Industry-recognized accreditation from Databricks covering the foundations of Generative AI, LLM lifecycle management, and enterprise-grade AI deployment patterns.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 5</span>
+            <span class="cert-org">WorldQuant University</span>
+          </div>
+          <h2 class="cert-title">Applied Data Science Lab</h2>
+          <p class="cert-desc">One of the strongest project-based Data Science certifications available — 16 weeks of hands-on work covering data wrangling, ML modeling, and end-to-end pipelines.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 6</span>
+            <span class="cert-org">Microsoft</span>
+          </div>
+          <h2 class="cert-title">Microsoft Certified: Azure AI Fundamentals</h2>
+          <p class="cert-desc">A highly respected cloud AI certification from Microsoft, covering cognitive services, Azure ML, responsible AI, and foundational AI/ML concepts on the Azure platform.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 7</span>
+            <span class="cert-org">Cisco Networking Academy</span>
+          </div>
+          <h2 class="cert-title">Cisco Certified Foundational Core Course on Data Science</h2>
+          <p class="cert-desc">Solid data science fundamentals from Cisco — covering statistical analysis, Python for data, and core ML concepts backed by Cisco's globally recognized training framework.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 8</span>
+            <span class="cert-org">HackerRank</span>
+          </div>
+          <h2 class="cert-title">HackerRank Certified SQL (Advanced)</h2>
+          <p class="cert-desc">Demonstrates verified, tested SQL proficiency at an advanced level — covering complex queries, window functions, and optimization. Widely valued by recruiters as a reliable skills signal.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 9</span>
+            <span class="cert-org">freeCodeCamp</span>
+          </div>
+          <h2 class="cert-title">Machine Learning with Python</h2>
+          <p class="cert-desc">A well-recognized, project-driven certification covering practical machine learning with Python — from regression and classification to neural networks and model evaluation.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-card-meta">
+            <span class="cert-rank"># 10</span>
+            <span class="cert-org">Microsoft</span>
+          </div>
+          <h2 class="cert-title">Microsoft Power BI Data Analyst</h2>
+          <p class="cert-desc">Adds valuable Business Intelligence and Data Analytics skills — covering data modeling, DAX, interactive dashboards, and storytelling with data using Microsoft Power BI.</p>
+          <div class="cert-card-footer">
+            <span class="cert-dot"></span>
+            <span class="cert-verified">Verified Credential</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year"></span> Aditya. Built as a static portfolio for GitHub Pages.</p>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Scroll progress bar
+      const bar = document.querySelector(".scroll-progress");
+      if (bar) {
+        window.addEventListener("scroll", () => {
+          const scrolled = window.scrollY;
+          const total = document.documentElement.scrollHeight - window.innerHeight;
+          bar.style.width = total > 0 ? (scrolled / total) * 100 + "%" : "0%";
+        }, { passive: true });
+      }
+
+      // Hamburger nav toggle
+      const hamburger = document.querySelector(".hamburger");
+      const primaryNav = document.querySelector("#primary-nav");
+      if (hamburger && primaryNav) {
+        hamburger.addEventListener("click", () => {
+          const isOpen = primaryNav.classList.toggle("nav-open");
+          hamburger.setAttribute("aria-expanded", isOpen);
+        });
+      }
+
+      // Reveal on scroll
+      const reveals = document.querySelectorAll(".cert-card");
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              e.target.style.opacity = "1";
+              e.target.style.transform = "translateY(0)";
+              observer.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        reveals.forEach(el => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(20px)";
+          el.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+          observer.observe(el);
+        });
+      }
+    </script>
+  </body>
+</html>

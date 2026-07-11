@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Primary SEO -->
+    <title>Aditya Suyal | AI/ML Engineer, Generative AI Developer, LLM Agent Builder</title>
+    <meta
+      name="description"
+      content="Aditya Suyal is an AI/ML engineer and generative AI developer specialising in LLM agents, RAG pipelines, multi-agent systems, NLP, deep learning, computer vision, and MLOps-ready Python applications."
+    />
+    <meta
+      name="keywords"
+      content="AI engineer, ML engineer, machine learning engineer, generative AI developer, LLM agent builder, RAG pipeline, NLP engineer, deep learning, Python developer, transformer, fine-tuning, LoRA, MLOps, LangChain, LlamaIndex, CrewAI, vector database, FAISS, computer vision, PyTorch, TensorFlow, cloud deployment, AWS, agentic AI, aditya suyal"
+    />
+    <meta name="author" content="Aditya Suyal" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://adirohansuyal.github.io/" />
+
+    <!-- Open Graph (LinkedIn, WhatsApp, Slack, etc.) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://adirohansuyal.github.io/" />
+    <meta property="og:title" content="Aditya Suyal | AI/ML Engineer & Generative AI Developer" />
+    <meta
+      property="og:description"
+      content="Portfolio of Aditya Suyal — AI/ML engineer building LLM agents, RAG pipelines, multi-agent architectures, and applied machine learning products with Python, LangChain, and PyTorch."
+    />
+    <meta property="og:image" content="https://adirohansuyal.github.io/assets/aditya-corporate.png" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Aditya Suyal Portfolio" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Aditya Suyal | AI/ML Engineer & Generative AI Developer" />
+    <meta
+      name="twitter:description"
+      content="Portfolio of Aditya Suyal — LLM agents, RAG pipelines, multi-agent AI, computer vision, and MLOps projects built with Python and LangChain."
+    />
+    <meta name="twitter:image" content="https://adirohansuyal.github.io/assets/aditya-corporate.png" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Aditya Suyal",
+      "url": "https://adirohansuyal.github.io/",
+      "image": "https://adirohansuyal.github.io/assets/aditya-corporate.png",
+      "jobTitle": "AI/ML Engineer & Generative AI Developer",
+      "description": "AI/ML engineer specialising in LLM agents, RAG pipelines, multi-agent systems, NLP, deep learning, computer vision, and MLOps-ready Python applications.",
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "Birla Institute of Applied Sciences, Bhimtal"
+      },
+      "knowsAbout": [
+        "Machine Learning", "Generative AI", "LLM Agents", "RAG", "NLP",
+        "Deep Learning", "Computer Vision", "Python", "LangChain", "PyTorch",
+        "MLOps", "Agentic AI", "Transformer Models", "Fine-tuning", "AWS"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/aditya-suyal",
+        "https://github.com/Adirohansuyal"
+      ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module" id="pdfjs-script"></script>
+  </head>
+  <body>
+    <!-- ── Page Loader ──────────────────────────────────────────────── -->
+    <div class="page-loader" id="page-loader" aria-hidden="true">
+      <div class="loader-inner">
+        <div class="loader-circuit" aria-hidden="true">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <p class="loader-label">Loading the Engineer's Resume</p>
+        <div class="loader-bar-track">
+          <div class="loader-bar-fill" id="loader-bar-fill"></div>
+        </div>
+        <p class="loader-sub" id="loader-sub">Initialising AI systems…</p>
+      </div>
+    </div>
+    <!-- ── /Page Loader ─────────────────────────────────────────────── -->
+
+    <div class="scroll-progress" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Aditya Suyal portfolio home">
+        <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
+        <span class="brand-text">
+          <span class="brand-name">Aditya Suyal</span>
+          <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
+        </span>
+      </a>
+      <div class="header-right">
+        <button class="header-cta" id="resume-btn" type="button" aria-haspopup="dialog">Resume</button>
+        <button
+          class="hamburger"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          type="button"
+        >
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+      <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+        <a href="#top">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="research.html">Research</a>
+        <a href="youtube.html">YouTube</a>
+        <a href="#documents">Docs</a>
+        <a href="#skills">Skills</a>
+        <a href="certifications.html">Certifications</a>
+        <a href="awards.html">Awards</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <div class="revolve-wrap">
+        <div class="revolve-border" aria-hidden="true"></div>
+        <section class="hero section-shell reveal-section" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">AI/ML Engineer + Generative AI Developer</p>
+          <h1 id="hero-title"><span style="color: var(--accent-strong)">AI/ML</span> Engineer Building LLM Agents and Applied AI Systems</h1>
+          <p class="hero-text">
+            I am a 3rd-year B.Tech CSE student at Birla Institute of Applied Sciences, Bhimtal,
+            focused on generative AI engineering, agentic AI, retrieval-augmented generation (RAG),
+            natural language processing (NLP), computer vision, satellite imagery analysis,
+            and scalable machine learning applications. I apply Python, PyTorch, LangChain,
+            transformer fine-tuning, and MLOps best practices to turn research papers
+            and real-world problem statements into recruiter-ready AI products with clean interfaces,
+            measurable business impact, and cloud deployment-ready engineering.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#projects">View projects</a>
+            <a class="button secondary" href="#contact">Get in touch</a>
+          </div>
+          <dl class="quick-stats" aria-label="Portfolio highlights">
+            <div>
+              <dt>Focus</dt>
+              <dd>GenAI, RAG, LLM Agents</dd>
+            </div>
+            <div>
+              <dt>Research</dt>
+              <dd>10-Agent LLM Systems</dd>
+            </div>
+            <div>
+              <dt>Stack</dt>
+              <dd>Python, LangChain, FAISS</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="hero-visual portrait-frame" aria-label="Portrait of Aditya Suyal">
+          <div class="portrait-card">
+            <img
+              src="assets/aditya-corporate.png"
+              alt="Aditya Suyal in formal business attire"
+            />
+          </div>
+        </div>
+      </section>
+      </div><!-- /revolve-wrap -->
+
+      <section id="about" class="section-shell split-section reveal-section" style="align-items:center;" aria-labelledby="about-title">
+        <div>
+          <p class="eyebrow">About</p>
+          <h2 id="about-title"><span style="color:var(--accent-strong)">AI engineer</span> with strong research execution and product delivery skills.</h2>
+        </div>
+        <div class="section-copy">
+          <p>
+            I work at the intersection of applied machine learning, generative AI engineering, and
+            research-driven product development — turning complex model capabilities into software
+            that actually ships and scales.
+          </p>
+          <p>
+            My focus areas include large language model (LLM) systems, retrieval-augmented generation
+            (RAG), multi-agent architectures, and end-to-end deep learning pipelines. I'm proficient
+            in Python, PyTorch, TensorFlow, and the modern NLP stack, with hands-on experience across
+            the full model lifecycle — from experimentation and fine-tuning to evaluation, deployment,
+            and monitoring.
+          </p>
+          <p>
+            Recent projects span private document QA systems, memory-augmented conversational AI,
+            agentic workflow automation, physics-guided remote sensing models for satellite imagery,
+            and CLIP-based recommendation engines for product intelligence. I regularly apply
+            transformer fine-tuning, LoRA/QLoRA, prompt engineering, vector search, and tool-use
+            patterns to build production-ready AI systems on AWS and Docker.
+          </p>
+          <p>
+            I care as much about clean software design and user experience as I do about model
+            performance — because a great model that nobody can use isn't a solution.
+          </p>
+        </div>
+      </section>
+
+      <section id="experience" class="section-shell reveal-section" aria-labelledby="experience-title">
+        <div class="section-heading">
+          <p class="eyebrow">Experience</p>
+          <h2 id="experience-title" style="white-space:nowrap;"><span style="color:var(--accent-strong)">Applied AI</span> Engineering Experience</h2>
+        </div>
+        <div class="experience-stack">
+          <article class="experience-panel">
+            <div class="experience-org">
+              <img src="assets/drdo_1.png" alt="DRDO logo" />
+              <div>
+                <h3>AI Research and Development Trainee</h3>
+                <p>CAIR,DIBER (DRDO), Bengaluru</p>
+              </div>
+            </div>
+            <div class="experience-body">
+              <p>
+                Working on AI/ML engineering, agentic systems, and applied generative AI with a focus
+                on high-quality prototypes, technical validation, and research-backed implementation.
+              </p>
+              <ul class="check-list">
+                <li>Building LLM workflows that combine model reasoning, retrieval, tool use, and structured outputs.</li>
+                <li>Exploring applied generative AI, autonomous agents, and AI automation for defense research contexts.</li>
+                <li>Translating research direction into testable, demo-ready engineering artifacts.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="experience-panel compact-panel">
+            <div class="experience-org">
+              <img src="assets/shell.jpeg" alt="Shell logo" />
+              <div>
+                <h3>AI Agent Development Intern</h3>
+                <p>Shell Global Pvt. Ltd. | Remote | Dec 2025 - Feb 2026</p>
+              </div>
+            </div>
+            <div class="experience-body">
+              <p>
+                Built production-grade multi-agent AI systems with LangChain and CrewAI, improving
+                workflow automation and reducing manual processing by 65%.
+              </p>
+              <ul class="check-list">
+                <li>Engineered autonomous tool-calling agents using GPT-4, Llama, prompt engineering, and task orchestration.</li>
+                <li>Reached 88% task accuracy across agentic workflow evaluations and reliability tests.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="experience-panel compact-panel">
+            <div class="experience-org">
+              <img src="assets/analytics vidhya.jpg" alt="Analytics Vidhya logo" />
+              <div>
+                <h3>Generative AI Intern</h3>
+                <p>Analytics Vidhya | Remote | Nov 2025 - Dec 2025</p>
+              </div>
+            </div>
+            <div class="experience-body">
+              <p>
+                Developed retrieval-augmented generation pipelines and scalable AI APIs using FAISS
+                embeddings, document retrieval, and LLM integration patterns.
+              </p>
+              <ul class="check-list">
+                <li>Processed 10K+ documents with 92% retrieval accuracy across semantic search workflows.</li>
+                <li>Built scalable APIs serving 500+ concurrent users for AI-powered document intelligence.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="projects" class="section-shell reveal-section" aria-labelledby="projects-title">
+        <div class="section-heading project-heading">
+          <div>
+            <p class="eyebrow">Projects</p>
+            <h2 id="projects-title" style="white-space:nowrap; color: var(--text);"><span style="color:var(--accent-strong)">AI, ML,</span> and LLM Engineering Projects</h2>
+          </div>
+          <div class="filter-group" aria-label="Filter projects">
+            <button class="filter-button active" type="button" data-filter="all">All</button>
+            <button class="filter-button" type="button" data-filter="genai">GenAI</button>
+            <button class="filter-button" type="button" data-filter="vision">Vision</button>
+            <button class="filter-button" type="button" data-filter="app">Apps</button>
+          </div>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card" data-category="vision genai">
+            <div class="card-topline">Satellite AI</div>
+            <h3>Generative AI-Based Cloud Removal for LISS-IV Satellite Imagery</h3>
+            <p>
+              Physics-guided computer vision and deep learning system using SAR-optical fusion and
+              NDVI preservation, evaluated through PSNR and SSIM.
+            </p>
+            <p class="learned">Impact focus: preserves vegetation signals while reconstructing cloud-obscured satellite regions.</p>
+            <div class="tag-row">
+              <span>Python</span><span>PyTorch</span><span>Remote Sensing</span><span>SAR Fusion</span>
+            </div>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View on GitHub</a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="genai">
+            <div class="card-topline">LLM Systems Research</div>
+            <h3>Hybrid Multi-Agent Conversational AI Architecture</h3>
+            <p>
+              First-author LLM research project introducing a 10-agent modular AI framework with
+              supervisor routing, competitive debate, and expertise-aware personalization.
+            </p>
+            <p class="learned">Impact: +11.9% accuracy over a single-model baseline and 31.4% fewer unnecessary tool calls.</p>
+            <div class="tag-row">
+              <span>Python</span><span>CrewAI</span><span>Llama 3.3</span><span>LLM-as-a-Judge</span>
+            </div>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View on GitHub</a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="genai">
+            <div class="card-topline">Memory Systems</div>
+            <h3>Memory-Augmented LLM using LSTM</h3>
+            <p>
+              Hybrid AI architecture combining Transformer reasoning with LSTM-based temporal memory
+              for long-term conversational context and memory-aware assistant behavior.
+            </p>
+            <p class="learned">Key idea: separate reasoning from sequential memory instead of expanding context windows.</p>
+            <div class="tag-row">
+              <span>PyTorch</span><span>LSTM</span><span>Transformers</span><span>Embeddings</span>
+            </div>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View on GitHub</a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="genai app">
+            <div class="card-topline">Agentic Systems</div>
+            <h3>CivicAI</h3>
+            <p>
+              Streamlit civic complaint management platform with Leaflet/Folium maps, OSRM GPS
+              routing, and a multi-agent AI backend deployed on Render.
+            </p>
+            <p class="learned">Impact focus: coordinates geospatial routing with AI triage, automation, and workflow prioritization.</p>
+            <div class="tag-row">
+              <span>Streamlit</span><span>Folium</span><span>OSRM</span><span>Agents</span>
+            </div>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View on GitHub</a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="app">
+            <div class="card-topline">Security</div>
+            <h3>Adaptive AI Steganography</h3>
+            <p>
+              Streamlit cybersecurity app for texture-guided LSB embedding with Fernet and PBKDF2
+              encryption for controlled hidden-message workflows.
+            </p>
+            <p class="learned">Key challenge: balancing payload capacity, visual quality, and encryption hygiene.</p>
+            <div class="tag-row">
+              <span>Python</span><span>Streamlit</span><span>Fernet</span><span>PBKDF2</span>
+            </div>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View on GitHub</a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="vision">
+            <div class="card-topline">Product Intelligence</div>
+            <h3>Fashion Product Intelligence System</h3>
+            <p>
+              CLIP-based AI recommendation engine with FAISS-powered vector similarity search and
+              deduplication for fashion product discovery.
+            </p>
+            <p class="learned">Impact focus: turns visual embeddings into practical catalog search and product intelligence.</p>
+            <div class="tag-row">
+              <span>CLIP</span><span>FAISS</span><span>Python</span><span>Embeddings</span>
+            </div>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View on GitHub</a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="genai app">
+            <div class="card-topline">Private RAG</div>
+            <h3>Private RAG Document QA System</h3>
+            <p>
+              Secure enterprise-style document QA system with hybrid dense and sparse retrieval,
+              Multi-Query RAG, sentence-transformers, Gemma-2B, and a Streamlit interface.
+            </p>
+            <p class="learned">Impact: processed 5K+ queries, reached 90% relevance, and reduced latency from 3s to 0.4s.</p>
+            <div class="tag-row">
+              <span>LangChain</span><span>FAISS</span><span>Gemma-2B</span><span>Streamlit</span>
+            </div>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View on GitHub</a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="genai app">
+            <div class="card-topline">Agentic Research</div>
+            <h3>Agentic AI Multi-Agent System for EV Research</h3>
+            <p>
+              Supervisor and co-worker agent system with 5+ specialized LLM agents for EV market
+              intelligence, policy analysis, business research, and automated reporting on AWS.
+            </p>
+            <p class="learned">Impact: reduced manual research effort by 70% through delegated agent workflows.</p>
+            <div class="tag-row">
+              <span>Python</span><span>Agno</span><span>Groq</span><span>AWS</span>
+            </div>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View on GitHub</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="youtube" class="section-shell split-section reveal-section" aria-labelledby="youtube-title">
+        <div>
+          <p class="eyebrow">YouTube</p>
+          <h2 id="youtube-title">AI learning, project demos, and technical walkthroughs.</h2>
+        </div>
+        <div class="resource-grid">
+          <article>
+            <div class="card-topline">Video Content</div>
+            <h3>AI/ML Project Demonstrations</h3>
+            <p>
+              Technical videos focused on generative AI, LLM agents, RAG workflows, machine learning
+              projects, and practical implementation notes for students, recruiters, and collaborators.
+            </p>
+            <div class="card-links">
+              <a href="https://www.youtube.com/" target="_blank" rel="noreferrer">Open YouTube</a>
+            </div>
+          </article>
+          <article>
+            <div class="card-topline">Portfolio Signal</div>
+            <h3>Applied AI Communication</h3>
+            <p>
+              Clear explanations of architecture, model choices, evaluation metrics, deployment
+              decisions, and business impact across AI engineering projects.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="documents" class="section-shell reveal-section" aria-labelledby="documents-title">
+        <div class="section-heading">
+          <p class="eyebrow">Synopsis, Papers, Documentation</p>
+          <h2 id="documents-title">Research documents and engineering write-ups.</h2>
+        </div>
+        <div class="resource-grid three-column">
+          <article>
+            <div class="card-topline">Synopsis</div>
+            <h3>Cloud Removal Research Synopsis</h3>
+            <p>
+              Formal synopsis covering problem statement, literature direction, methodology,
+              architecture, evaluation plan, and remote-sensing context.
+            </p>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View synopsis</a>
+            </div>
+          </article>
+          <article>
+            <div class="card-topline">Paper</div>
+            <h3>Hybrid Multi-Agent Conversational AI</h3>
+            <p>
+              First-author AI paper documenting supervisor routing, multi-agent debate, structured
+              verification, personalization, and LLM evaluation.
+            </p>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View paper</a>
+            </div>
+          </article>
+          <article>
+            <div class="card-topline">Documentation</div>
+            <h3>Project Documentation</h3>
+            <p>
+              Technical documentation for RAG systems, agentic AI workflows, deployment notes,
+              evaluation results, APIs, and implementation decisions.
+            </p>
+            <div class="card-links">
+              <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View docs</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="skills" class="section-shell reveal-section" aria-labelledby="skills-title">
+        <div class="section-heading">
+          <p class="eyebrow">Skills</p>
+          <h2 id="skills-title"><span style="color:var(--accent-strong)">Tools,</span> Frameworks &amp; Technologies</h2>
+        </div>
+        <div class="skills-tree">
+
+          <div class="skill-card">
+            <div class="skill-card-header">
+              <h3>Machine Learning &amp; Deep Learning</h3>
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">PyTorch</span>
+              <span class="skill-tag">TensorFlow</span>
+              <span class="skill-tag">scikit-learn</span>
+              <span class="skill-tag">OpenCV</span>
+              <span class="skill-tag">CLIP</span>
+              <span class="skill-tag">CNNs</span>
+              <span class="skill-tag">RNNs</span>
+              <span class="skill-tag">LSTMs</span>
+              <span class="skill-tag">Transformers</span>
+              <span class="skill-tag">Fine-tuning</span>
+              <span class="skill-tag">LoRA</span>
+              <span class="skill-tag">QLoRA</span>
+              <span class="skill-tag">Model Evaluation</span>
+              <span class="skill-tag">NLP</span>
+              <span class="skill-tag">Computer Vision</span>
+            </div>
+          </div>
+
+          <div class="skill-card">
+            <div class="skill-card-header">
+              <h3>Generative AI &amp; LLM Engineering</h3>
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">LangChain</span>
+              <span class="skill-tag">LlamaIndex</span>
+              <span class="skill-tag">CrewAI</span>
+              <span class="skill-tag">Autogen</span>
+              <span class="skill-tag">LangGraph</span>
+              <span class="skill-tag">RAG Pipelines</span>
+              <span class="skill-tag">Embeddings</span>
+              <span class="skill-tag">Vector Databases</span>
+              <span class="skill-tag">Prompt Engineering</span>
+              <span class="skill-tag">Agentic AI</span>
+              <span class="skill-tag">Multi-Agent Systems</span>
+              <span class="skill-tag">LLM Orchestration</span>
+            </div>
+          </div>
+
+          <div class="skill-card">
+            <div class="skill-card-header">
+              <h3>LLM Stack &amp; Models</h3>
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">GPT-4</span>
+              <span class="skill-tag">Gemini Pro</span>
+              <span class="skill-tag">Llama 2/3</span>
+              <span class="skill-tag">Mistral</span>
+              <span class="skill-tag">Stable Diffusion</span>
+              <span class="skill-tag">Instruction Tuning</span>
+              <span class="skill-tag">RLHF</span>
+              <span class="skill-tag">Tool Calling</span>
+              <span class="skill-tag">Agent Orchestration</span>
+              <span class="skill-tag">LLM Evaluation</span>
+            </div>
+          </div>
+
+          <div class="skill-card">
+            <div class="skill-card-header">
+              <h3>Data, Deployment &amp; MLOps</h3>
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">FAISS</span>
+              <span class="skill-tag">Pinecone</span>
+              <span class="skill-tag">ChromaDB</span>
+              <span class="skill-tag">MongoDB</span>
+              <span class="skill-tag">SQL</span>
+              <span class="skill-tag">AWS EC2</span>
+              <span class="skill-tag">AWS Lambda</span>
+              <span class="skill-tag">AWS S3</span>
+              <span class="skill-tag">Docker</span>
+              <span class="skill-tag">Kubernetes</span>
+              <span class="skill-tag">REST APIs</span>
+              <span class="skill-tag">MLOps</span>
+              <span class="skill-tag">CI/CD</span>
+              <span class="skill-tag">Model Serving</span>
+              <span class="skill-tag">Cloud Deployment</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="achievements" class="section-shell reveal-section" aria-labelledby="achievements-title">
+        <div class="section-heading">
+          <p class="eyebrow">Achievements</p>
+          <h2 id="achievements-title">Awards and Certifications</h2>
+        </div>
+        <div class="skills-grid achievement-grid">
+          <div>
+            <h3>Competition Results</h3>
+            <p>1st Place TechFest AI in Education, 3rd Place Grafest AI in Healthcare, and 2x State AI Hackathon Finalist.</p>
+          </div>
+          <div>
+            <h3>AI Certifications</h3>
+            <p>Multi-Agent Systems by DeepLearning.AI and Azure AI Fundamentals.</p>
+          </div>
+          <div>
+            <h3>Data Training</h3>
+            <p>Applied AI Lab and 16-week Data Science Lab from WorldQuant University, USA.</p>
+          </div>
+          <div>
+            <h3>Core Credential</h3>
+            <p>HackerRank SQL Advanced, supporting database work across RAG and analytics projects.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section-shell contact-section reveal-section" aria-labelledby="contact-title">
+        <div>
+          <p class="eyebrow">Contact</p>
+          <h2 id="contact-title"><span style="color:var(--accent-strong)">Open to AI/ML</span> engineering internships, generative AI roles, NLP and deep learning positions, research collaborations, and applied AI projects.</h2>
+        </div>
+        <div class="contact-actions">
+          <a class="button primary" href="mailto:adityasuyal0001@gmail.com">Email</a>
+          <a class="button secondary" href="https://www.linkedin.com/in/aditya-suyal" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a class="button secondary" href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year"></span> Aditya. Built as a static portfolio for GitHub Pages.</p>
+    </footer>
+
+    <!-- ── Resume Preview Modal ──────────────────────────────────────── -->
+    <div
+      class="resume-modal"
+      id="resume-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="resume-modal-title"
+      hidden
+    >
+      <div class="resume-modal-backdrop" id="resume-modal-backdrop"></div>
+      <div class="resume-modal-box">
+        <div class="resume-modal-header">
+          <span id="resume-modal-title" class="resume-modal-title">Resume Preview</span>
+          <div class="resume-modal-actions">
+            <a
+              class="button primary resume-download-btn"
+              href="assets/resume.pdf"
+              download="Aditya_Suyal_Resume.pdf"
+            >⬇ Download</a>
+            <button
+              class="resume-modal-close"
+              id="resume-modal-close"
+              type="button"
+              aria-label="Close resume preview"
+            >✕</button>
+          </div>
+        </div>
+        <div class="resume-modal-body">
+          <div id="resume-pdfjs-container" class="resume-pdfjs-container">
+            <canvas id="resume-canvas" class="resume-canvas"></canvas>
+            <div id="resume-loading" class="resume-loading">Loading resume…</div>
+          </div>
+          <!-- Fallback for browsers that block inline PDFs (mobile Safari) -->
+          <div class="resume-fallback" id="resume-fallback" hidden>
+            <p>Your browser can't preview PDFs inline.</p>
+            <a
+              class="button primary"
+              href="assets/resume.pdf"
+              download="Aditya_Suyal_Resume.pdf"
+            >⬇ Download Resume</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Portfolio Chatbot ─────────────────────────────────────────── -->    <!-- Floating trigger button -->
+    <button class="chat-fab" id="chat-fab" aria-label="Open portfolio chatbot" type="button">
+      <svg class="chat-fab-icon chat-fab-icon--open" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <svg class="chat-fab-icon chat-fab-icon--close" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Chat window -->
+    <div class="chat-window" id="chat-window" role="dialog" aria-modal="true" aria-label="Portfolio assistant">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar" aria-hidden="true">A</div>
+          <div>
+            <p class="chat-header-name">Aerri - AI</p>
+            <p class="chat-header-sub">Ask me anything about this portfolio</p>
+          </div>
+        </div>
+        <button class="chat-close-btn" id="chat-close-btn" type="button" aria-label="Close chat">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="chat-messages" id="chat-messages" aria-live="polite" aria-relevant="additions">
+        <!-- Welcome message injected by JS -->
+      </div>
+      <div class="chat-suggestions" id="chat-suggestions">
+        <button type="button">What projects has Aditya built?</button>
+        <button type="button">What is his tech stack?</button>
+        <button type="button">Tell me about his experience</button>
+        <button type="button">What research has he done?</button>
+      </div>
+      <form class="chat-input-row" id="chat-form" autocomplete="off">
+        <input
+          class="chat-input"
+          id="chat-input"
+          type="text"
+          placeholder="Ask about skills, projects, experience…"
+          maxlength="400"
+          aria-label="Your message"
+        />
+        <button class="chat-send-btn" type="submit" aria-label="Send message">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </form>
+    </div>
+    <!-- ── /Portfolio Chatbot ──────────────────────────────────────────── -->
+
+    <script src="script.js"></script>
+  </body>
+</html>

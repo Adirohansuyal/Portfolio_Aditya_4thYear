@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Research | Aditya Suyal</title>
+    <meta name="description" content="AI research, technical writing, and evaluation work by Aditya Suyal — including LLM systems research and computer vision papers." />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* ── Page-specific styles ── */
+      .research-hero {
+        text-align: center;
+        padding: 4rem clamp(1rem, 6vw, 4rem) 3rem;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .research-hero .eyebrow {
+        margin-bottom: 0.75rem;
+      }
+
+      .research-hero h1 {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 800;
+        line-height: 1.15;
+        margin: 0 0 1rem;
+        letter-spacing: -0.02em;
+      }
+
+      .research-hero p {
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      /* ── Grid ── */
+      .research-page-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 1.25rem;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 5vw, 3rem) 5rem;
+      }
+
+      /* ── Card ── */
+      .research-page-card {
+        position: relative;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 1.8rem 1.8rem 1.5rem;
+        transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .research-page-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.06) 0%, transparent 60%);
+        pointer-events: none;
+      }
+
+      .research-page-card:hover {
+        border-color: rgba(59, 130, 246, 0.4);
+        transform: translateY(-4px);
+        box-shadow: 0 16px 48px rgba(37, 99, 235, 0.13);
+      }
+
+      /* Top badge row */
+      .research-card-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .research-type-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-strong);
+        background: rgba(37, 99, 235, 0.12);
+        border: 1px solid rgba(37, 99, 235, 0.25);
+        border-radius: 999px;
+        padding: 0.2rem 0.65rem;
+        white-space: nowrap;
+      }
+
+      .research-year-badge {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        padding: 0.2rem 0.65rem;
+        white-space: nowrap;
+      }
+
+      /* Title */
+      .research-card-title {
+        font-size: 1.08rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.4;
+        margin: 0;
+      }
+
+      /* Description */
+      .research-card-desc {
+        font-size: 0.88rem;
+        color: var(--muted);
+        line-height: 1.65;
+        margin: 0;
+        flex: 1;
+      }
+
+      /* Tag row */
+      .research-card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+
+      .research-card-tags span {
+        background: rgba(37, 99, 235, 0.08);
+        border: 1px solid rgba(37, 99, 235, 0.2);
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 0.74rem;
+        font-weight: 600;
+        padding: 0.22rem 0.55rem;
+      }
+
+      /* Footer link */
+      .research-card-footer {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .research-card-footer a {
+        color: var(--accent-strong);
+        font-size: 0.84rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      .research-card-footer a:hover {
+        color: var(--text);
+      }
+
+      .research-card-footer a + a::before {
+        content: "·";
+        color: var(--quiet);
+        margin-right: 0.6rem;
+      }
+
+      /* First-author highlight */
+      .research-page-card.first-author {
+        border-color: rgba(124, 58, 237, 0.2);
+      }
+
+      .research-page-card.first-author::before {
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.07) 0%, transparent 60%);
+      }
+
+      .research-page-card.first-author:hover {
+        border-color: rgba(124, 58, 237, 0.45);
+        box-shadow: 0 16px 48px rgba(124, 58, 237, 0.13);
+      }
+
+      .research-page-card.first-author .research-type-badge {
+        color: #a78bfa;
+        background: rgba(124, 58, 237, 0.12);
+        border-color: rgba(124, 58, 237, 0.3);
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        .research-page-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <!-- ── Header ── -->
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Aditya Suyal portfolio home">
+        <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
+        <span class="brand-text">
+          <span class="brand-name">Aditya Suyal</span>
+          <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
+        </span>
+      </a>
+      <div class="header-right">
+        <a class="button primary" href="index.html" style="font-size:0.85rem;padding:0.45rem 1rem;text-decoration:none;">← Portfolio</a>
+        <button
+          class="hamburger"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          type="button"
+        >
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+      <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+        <a href="index.html#about">About</a>
+        <a href="index.html#experience">Experience</a>
+        <a href="index.html#projects">Projects</a>
+        <a href="research.html" class="active">Research</a>
+        <a href="index.html#skills">Skills</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ── Hero ── -->
+      <div class="research-hero">
+        <p class="eyebrow">Research</p>
+        <h1><span style="color:var(--accent-strong)">AI Research,</span> Technical Writing &amp; Evaluation</h1>
+        <p>First-author papers, research synopses, and technical write-ups spanning LLM systems, multi-agent architectures, computer vision, and applied AI evaluation.</p>
+      </div>
+
+      <!-- ── Cards ── -->
+      <div class="research-page-grid">
+
+        <div class="research-page-card first-author">
+          <div class="research-card-meta">
+            <span class="research-type-badge">First-Author Paper</span>
+            <span class="research-year-badge">March 2026</span>
+          </div>
+          <h2 class="research-card-title">Hybrid Multi-Agent Conversational AI Architecture</h2>
+          <p class="research-card-desc">
+            Introduces a 10-agent modular AI framework with supervisor routing, competitive debate between agents, structured verification, expertise-aware personalization, and LLM-as-a-Judge evaluation for conversational AI systems. Achieves +11.9% accuracy over single-model baseline and 31.4% fewer unnecessary tool calls.
+          </p>
+          <div class="research-card-tags">
+            <span>Multi-Agent Systems</span>
+            <span>LLM Evaluation</span>
+            <span>CrewAI</span>
+            <span>Llama 3.3</span>
+            <span>Supervisor Routing</span>
+            <span>Agentic AI</span>
+          </div>
+          <div class="research-card-footer">
+            <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">View Repository</a>
+          </div>
+        </div>
+
+        <div class="research-page-card">
+          <div class="research-card-meta">
+            <span class="research-type-badge">Synopsis</span>
+            <span class="research-year-badge">2025</span>
+          </div>
+          <h2 class="research-card-title">Cloud Removal for LISS-IV Satellite Imagery</h2>
+          <p class="research-card-desc">
+            Formal research synopsis covering the architecture, methodology, evaluation approach, and remote-sensing context for a physics-guided computer vision system for cloud removal in LISS-IV satellite imagery. Uses SAR-optical fusion and NDVI preservation, evaluated through PSNR and SSIM metrics.
+          </p>
+          <div class="research-card-tags">
+            <span>Computer Vision</span>
+            <span>Remote Sensing</span>
+            <span>SAR Fusion</span>
+            <span>PyTorch</span>
+            <span>PSNR / SSIM</span>
+            <span>NDVI</span>
+          </div>
+          <div class="research-card-footer">
+            <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">Open Write-up</a>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year"></span> Aditya. Built as a static portfolio for GitHub Pages.</p>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Scroll progress bar
+      const bar = document.querySelector(".scroll-progress");
+      if (bar) {
+        window.addEventListener("scroll", () => {
+          const scrolled = window.scrollY;
+          const total = document.documentElement.scrollHeight - window.innerHeight;
+          bar.style.transform = `scaleX(${total > 0 ? scrolled / total : 0})`;
+        }, { passive: true });
+      }
+
+      // Hamburger nav toggle
+      const hamburger = document.querySelector(".hamburger");
+      const primaryNav = document.querySelector("#primary-nav");
+      if (hamburger && primaryNav) {
+        hamburger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const isOpen = primaryNav.classList.toggle("nav-open");
+          hamburger.setAttribute("aria-expanded", String(isOpen));
+        });
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest(".site-header")) {
+            primaryNav.classList.remove("nav-open");
+            hamburger.setAttribute("aria-expanded", "false");
+          }
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            primaryNav.classList.remove("nav-open");
+            hamburger.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+
+      // Reveal on scroll
+      const cards = document.querySelectorAll(".research-page-card");
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              e.target.style.opacity = "1";
+              e.target.style.transform = "translateY(0)";
+              observer.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        cards.forEach((el, i) => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(20px)";
+          el.style.transition = `opacity 0.5s ease ${i * 0.1}s, transform 0.5s ease ${i * 0.1}s`;
+          observer.observe(el);
+        });
+      }
+    </script>
+  </body>
+</html>

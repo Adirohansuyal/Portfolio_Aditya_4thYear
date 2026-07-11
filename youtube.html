@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="BuilderBroo — AI/ML tutorials, prompt engineering series, LLM walkthroughs, and generative AI project demos by Aditya Suyal."
+    />
+    <title>BuilderBroo | YouTube Channel – Aditya Suyal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0f14;
+        --secondary-bg: #111827;
+        --panel: #1b2430;
+        --line: #2a3441;
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --quiet: #64748b;
+        --accent: #2563eb;
+        --accent-strong: #3b82f6;
+        --red: #ef4444;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        background: linear-gradient(180deg, #0b0f14 0%, #111827 100%);
+        color: var(--text);
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+
+      a { color: inherit; text-decoration: none; }
+      a:focus-visible, button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 4px;
+      }
+      img { display: block; max-width: 100%; }
+
+      /* ── Header ── */
+      .site-header {
+        align-items: center;
+        backdrop-filter: blur(18px);
+        background: rgba(11, 15, 20, 0.88);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+        left: 0;
+        padding: 0.9rem clamp(1rem, 4vw, 3rem);
+        position: sticky;
+        right: 0;
+        top: 0;
+        z-index: 10;
+      }
+
+      .brand {
+        align-items: center;
+        color: var(--text);
+        display: flex;
+        font-size: 1.03rem;
+        font-weight: 800;
+        gap: 0.5rem;
+        letter-spacing: 0.01em;
+      }
+      .brand-text { display: flex; flex-direction: column; line-height: 1.2; gap: 0; }
+      .brand-name { font-size: 0.97rem; font-weight: 800; color: var(--text); }
+      .brand-role { font-size: 0.68rem; font-weight: 500; color: var(--accent-strong); letter-spacing: 0.03em; }
+
+      .brand-avatar {
+        border-radius: 50%;
+        border: 2px solid var(--accent-strong);
+        flex-shrink: 0;
+        height: 34px;
+        object-fit: cover;
+        object-position: top center;
+        width: 34px;
+      }
+
+      .back-link {
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--muted);
+        display: inline-flex;
+        font-size: 0.875rem;
+        font-weight: 600;
+        gap: 0.4rem;
+        padding: 0.45rem 0.9rem;
+        transition: color 200ms, border-color 200ms, background 200ms;
+      }
+
+      .back-link:hover {
+        background: var(--panel);
+        color: var(--text);
+        border-color: var(--accent);
+      }
+
+      /* ── Channel Hero ── */
+      .channel-hero {
+        border-bottom: 1px solid var(--line);
+        padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 4rem) clamp(2rem, 4vw, 3rem);
+        text-align: center;
+      }
+
+      .channel-logo {
+        align-items: center;
+        background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #7c3aed 100%);
+        border-radius: 50%;
+        border: 3px solid var(--accent-strong);
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.35);
+        display: flex;
+        font-size: 2.2rem;
+        font-weight: 900;
+        height: 96px;
+        justify-content: center;
+        letter-spacing: -0.02em;
+        margin: 0 auto 1.25rem;
+        width: 96px;
+        color: #fff;
+      }
+
+      .channel-name {
+        color: var(--text);
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        margin-bottom: 0.6rem;
+      }
+
+      .channel-name span {
+        color: var(--accent-strong);
+      }
+
+      .channel-handle {
+        color: var(--quiet);
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-bottom: 0.9rem;
+      }
+
+      .channel-desc {
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.7;
+        margin: 0 auto 1.75rem;
+        max-width: 52rem;
+      }
+
+      .channel-actions {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+      }
+
+      .btn-subscribe {
+        align-items: center;
+        background: var(--red);
+        border-radius: 10px;
+        color: #fff;
+        display: inline-flex;
+        font-size: 0.9rem;
+        font-weight: 700;
+        gap: 0.5rem;
+        min-height: 2.6rem;
+        padding: 0.6rem 1.3rem;
+        transition: background 200ms, transform 200ms;
+      }
+
+      .btn-subscribe:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+      }
+
+      .btn-channel {
+        align-items: center;
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--text);
+        display: inline-flex;
+        font-size: 0.9rem;
+        font-weight: 600;
+        gap: 0.5rem;
+        min-height: 2.6rem;
+        padding: 0.6rem 1.3rem;
+        transition: background 200ms, border-color 200ms, transform 200ms;
+      }
+
+      .btn-channel:hover {
+        background: var(--panel);
+        border-color: var(--accent);
+        transform: translateY(-2px);
+      }
+
+      .channel-stats {
+        color: var(--quiet);
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 0.85rem;
+        gap: 0.4rem 1.2rem;
+        justify-content: center;
+        margin-top: 1.4rem;
+      }
+
+      .channel-stats span::before {
+        content: "• ";
+        color: var(--line);
+      }
+      .channel-stats span:first-child::before { content: ""; }
+
+      /* ── Videos Section ── */
+      .videos-section {
+        margin: 0 auto;
+        max-width: 1280px;
+        padding: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 4vw, 3rem);
+      }
+
+      .section-header {
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+      }
+
+      .section-header h2 {
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .series-badge {
+        background: rgba(37, 99, 235, 0.15);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 999px;
+        color: var(--accent-strong);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.25rem 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      /* ── Video Grid ── */
+      .video-grid {
+        display: grid;
+        gap: 1.75rem;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      }
+
+      /* ── Video Card ── */
+      .video-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
+      }
+
+      .video-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px var(--accent), var(--shadow);
+        transform: translateY(-4px);
+      }
+
+      /* Thumbnail wrapper */
+      .thumb-wrap {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        background: #0b0f14;
+        flex-shrink: 0;
+      }
+
+      .thumb-wrap img {
+        height: 100%;
+        object-fit: cover;
+        transition: transform 350ms ease;
+        width: 100%;
+      }
+
+      .video-card:hover .thumb-wrap img {
+        transform: scale(1.04);
+      }
+
+      .thumb-duration {
+        background: rgba(0, 0, 0, 0.82);
+        border-radius: 5px;
+        bottom: 8px;
+        color: #fff;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 0.18rem 0.45rem;
+        position: absolute;
+        right: 8px;
+      }
+
+      .thumb-episode {
+        background: var(--accent);
+        border-radius: 5px;
+        color: #fff;
+        font-size: 0.72rem;
+        font-weight: 800;
+        left: 8px;
+        letter-spacing: 0.05em;
+        padding: 0.18rem 0.55rem;
+        position: absolute;
+        text-transform: uppercase;
+        top: 8px;
+      }
+
+      /* Play overlay */
+      .thumb-play {
+        align-items: center;
+        background: rgba(0, 0, 0, 0.45);
+        display: flex;
+        inset: 0;
+        justify-content: center;
+        opacity: 0;
+        position: absolute;
+        transition: opacity 250ms;
+      }
+
+      .video-card:hover .thumb-play { opacity: 1; }
+
+      .thumb-play svg {
+        drop-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+      }
+
+      /* Card body */
+      .video-body {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 0.6rem;
+        padding: 1.1rem 1.2rem 1.25rem;
+      }
+
+      .video-series {
+        color: var(--accent-strong);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .video-title {
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+
+      .video-desc {
+        color: var(--muted);
+        flex: 1;
+        font-size: 0.875rem;
+        line-height: 1.65;
+      }
+
+      .video-meta {
+        align-items: center;
+        color: var(--quiet);
+        display: flex;
+        font-size: 0.78rem;
+        gap: 0.85rem;
+        margin-top: 0.25rem;
+      }
+
+      .video-meta span {
+        align-items: center;
+        display: flex;
+        gap: 0.3rem;
+      }
+
+      .video-footer {
+        border-top: 1px solid var(--line);
+        margin-top: 0.5rem;
+        padding-top: 0.9rem;
+      }
+
+      .btn-watch {
+        align-items: center;
+        background: var(--accent);
+        border-radius: 9px;
+        color: #fff;
+        display: inline-flex;
+        font-size: 0.875rem;
+        font-weight: 700;
+        gap: 0.45rem;
+        min-height: 2.4rem;
+        padding: 0.55rem 1.1rem;
+        transition: background 200ms, transform 200ms;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .btn-watch:hover {
+        background: var(--accent-strong);
+        transform: translateY(-1px);
+      }
+
+      /* ── More coming soon card ── */
+      .coming-soon-card {
+        align-items: center;
+        background: rgba(37, 99, 235, 0.06);
+        border: 2px dashed rgba(59, 130, 246, 0.25);
+        border-radius: 18px;
+        color: var(--quiet);
+        display: flex;
+        flex-direction: column;
+        font-size: 0.9rem;
+        gap: 0.6rem;
+        justify-content: center;
+        min-height: 260px;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .coming-soon-card svg {
+        color: var(--accent-strong);
+        opacity: 0.5;
+      }
+
+      .coming-soon-card strong {
+        color: var(--muted);
+        font-size: 1rem;
+      }
+
+      /* ── Footer ── */
+      .site-footer {
+        border-top: 1px solid var(--line);
+        color: var(--quiet);
+        font-size: 0.85rem;
+        margin-top: 4rem;
+        padding: 2rem clamp(1rem, 4vw, 3rem);
+        text-align: center;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 640px) {
+        .video-grid { grid-template-columns: 1fr; }
+        .channel-name { font-size: 2rem; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Header -->
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Back to Aditya Suyal portfolio">
+        <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
+        <span class="brand-text">
+          <span class="brand-name">Aditya Suyal</span>
+          <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
+        </span>
+      </a>
+      <a class="back-link" href="index.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to Portfolio
+      </a>
+    </header>
+
+    <main>
+
+      <!-- Channel Hero -->
+      <section class="channel-hero" aria-label="BuilderBroo channel info">
+        <div class="channel-logo" aria-hidden="true">
+          <img src="assets/builderbro.jpg" alt="BuilderBroo channel logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+        </div>
+        <h1 class="channel-name">Builder<span>Broo</span></h1>
+        <p class="channel-handle">@BuilderBroo · youtube.com/@BuilderBroo</p>
+        <p class="channel-desc">
+          Practical AI/ML tutorials, prompt engineering deep-dives, LLM agent walkthroughs,
+          and generative AI project demos — built for students, developers, and AI engineers
+          who want to go from concept to working code fast.
+        </p>
+        <div class="channel-actions">
+          <a class="btn-subscribe" href="https://www.youtube.com/@BuilderBroo" target="_blank" rel="noreferrer">
+            <!-- YouTube icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 0-3.4-3.4C14.76 3 12 3 12 3s-2.76 0-4.19.29a4.83 4.83 0 0 0-3.4 3.4C4 8.12 4 12 4 12s0 3.88.41 5.31a4.83 4.83 0 0 0 3.4 3.4C9.24 21 12 21 12 21s2.76 0 4.19-.29a4.83 4.83 0 0 0 3.4-3.4C20 15.88 20 12 20 12s0-3.88-.41-5.31ZM10 15V9l5.2 3L10 15Z"/></svg>
+            Subscribe on YouTube
+          </a>
+          <a class="btn-channel" href="https://www.youtube.com/@BuilderBroo" target="_blank" rel="noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Visit Channel
+          </a>
+        </div>
+        <div class="channel-stats" role="list" aria-label="Channel stats">
+          <span>Prompt Engineering Series</span>
+          <span>AI/ML Tutorials</span>
+          <span>LLM Agents</span>
+          <span>Generative AI</span>
+        </div>
+      </section>
+
+      <!-- Videos -->
+      <div class="videos-section">
+
+        <div class="section-header">
+          <h2>Videos</h2>
+          <span class="series-badge">Prompt Engineering Series</span>
+        </div>
+
+        <div class="video-grid" role="list">
+
+          <!-- Video 1: Introduction to Prompt Engineering -->
+          <article class="video-card" role="listitem">
+            <div class="thumb-wrap">
+              <img
+                src="youtube/thumbnail_1.png"
+                alt="Introduction to Prompt Engineering in Generative AI thumbnail"
+                loading="lazy"
+              />
+              <span class="thumb-episode">EP. 1</span>
+              <span class="thumb-duration">10:29</span>
+              <div class="thumb-play" aria-hidden="true">
+                <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+                  <circle cx="28" cy="28" r="28" fill="rgba(0,0,0,0.55)"/>
+                  <polygon points="22,18 42,28 22,38" fill="#ffffff"/>
+                </svg>
+              </div>
+            </div>
+            <div class="video-body">
+              <p class="video-series">Prompt Engineering Series · Video 1</p>
+              <h2 class="video-title">Learn Prompt Engineering from Scratch | Prompt Engineering Series #1</h2>
+              <p class="video-desc">
+                Start your journey into Generative AI with a solid foundation in prompt engineering.
+                This video covers the basics of how to write good prompts, why prompt structure matters,
+                and how to get better outputs from LLMs like ChatGPT. Learn the core principles —
+                good prompts, better outputs, smarter results — with real examples you can apply immediately.
+              </p>
+              <div class="video-meta">
+                <span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  11 views
+                </span>
+                <span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  3 weeks ago
+                </span>
+              </div>
+              <div class="video-footer">
+                <a class="btn-watch" href="https://youtu.be/qKFBiaWns68?si=3Xc-rMU-IDmFbBeq" target="_blank" rel="noreferrer">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  Watch Video
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Video 2: Zero Shot Prompting -->
+          <article class="video-card" role="listitem">
+            <div class="thumb-wrap">
+              <img
+                src="youtube/thumbnail_2.png"
+                alt="Zero Shot Prompting in Prompt Engineering thumbnail"
+                loading="lazy"
+              />
+              <span class="thumb-episode">EP. 2</span>
+              <span class="thumb-duration">18:21</span>
+              <div class="thumb-play" aria-hidden="true">
+                <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+                  <circle cx="28" cy="28" r="28" fill="rgba(0,0,0,0.55)"/>
+                  <polygon points="22,18 42,28 22,38" fill="#ffffff"/>
+                </svg>
+              </div>
+            </div>
+            <div class="video-body">
+              <p class="video-series">Prompt Engineering Series · Video 2</p>
+              <h2 class="video-title">Zero‑Shot Prompting Technique | Prompt Engineering Series #2</h2>
+              <p class="video-desc">
+                Master zero-shot prompting — the technique that lets you get powerful answers from an
+                LLM with no examples at all, just a clean, well-structured prompt. Learn how zero-shot
+                prompting leverages the LLM's built-in knowledge, why simple input can produce powerful
+                output, and how to ask anything and get fast, efficient results without hand-crafting
+                examples. No examples. Just a prompt.
+              </p>
+              <div class="video-meta">
+                <span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  11 views
+                </span>
+                <span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  3 weeks ago
+                </span>
+              </div>
+              <div class="video-footer">
+                <a class="btn-watch" href="https://youtu.be/hMPqgu0NO1o?si=RJNcj7y-bFm56vMw" target="_blank" rel="noreferrer">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  Watch Video
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Coming Soon -->
+          <div class="coming-soon-card" aria-label="More videos coming soon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <strong>More videos dropping soon</strong>
+            <p>Next up: Few-Shot Prompting, Chain-of-Thought, and LLM Agent walkthroughs.</p>
+            <a class="btn-channel" href="https://www.youtube.com/@BuilderBroo" target="_blank" rel="noreferrer" style="margin-top:0.5rem; font-size:0.82rem;">
+              Subscribe to get notified
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year"></span> BuilderBroo · Aditya Suyal. All rights reserved.</p>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+
+  </body>
+</html>
