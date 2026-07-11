@@ -422,6 +422,12 @@ h3 {
   color: var(--muted);
 }
 
+/* Override experience text to be more visible */
+.experience-body p,
+.experience-panel > div > p {
+  color: #cbd5e1;
+}
+
 .section-copy {
   max-width: 44rem;
 }
@@ -647,7 +653,15 @@ h3 {
 }
 
 .experience-org p {
-  color: var(--muted);
+  color: #cbd5e1;
+}
+
+.experience-panel h3 {
+  color: #cbd5e1;
+}
+
+.experience-body p {
+  color: #cbd5e1;
 }
 
 .experience-panel::before {
@@ -659,7 +673,7 @@ h3 {
 }
 
 .check-list {
-  color: var(--muted);
+  color: #cbd5e1;
   margin: 1rem 0 0;
   padding-left: 1.15rem;
 }
@@ -942,15 +956,173 @@ h3 {
 }
 
 .contact-section {
-  align-items: center;
   border-top: 1px solid var(--line);
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  justify-content: center;
+  padding-block: 5rem;
+}
+
+.contact-card {
+  text-align: left;
+  max-width: 100%;
+  width: 100%;
+  background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(139,92,246,0.04) 100%);
+  border: 1px solid transparent;
+  border-radius: 1.25rem;
+  padding: 3rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.contact-card-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.contact-card-glow::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent   0%,
+    transparent  40%,
+    #5b21b6      55%,
+    #7c3aed      60%,
+    #c4b5fd      62%,
+    #7c3aed      64%,
+    #5b21b6      69%,
+    transparent  80%,
+    transparent 100%
+  );
+  animation: skillCardSpin 4s linear infinite;
+  opacity: 1;
+}
+
+.contact-card-glow::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: var(--panel, #111827);
+  border-radius: 18px;
+}
+
+/* Keep card content above the glow layers */
+.contact-card > *:not(.contact-card-glow) {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-card:hover {
+  box-shadow: 0 8px 32px rgba(139,92,246,0.2), 0 2px 8px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-card-glow::before { animation: none; }
+}
+
+.contact-available-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.3);
+  color: #22c55e;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.contact-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.75); }
 }
 
 .contact-section h2 {
-  max-width: 48rem;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+}
+
+.contact-subtext {
+  color: var(--text-muted, #94a3b8);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 1rem 0 1.5rem;
+  text-align: justify;
+}
+
+.contact-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  margin-bottom: 2rem;
+}
+
+.contact-roles span {
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 999px;
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.3rem 0.85rem;
+}
+
+.contact-section .contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-start;
+}
+
+.contact-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.contact-email-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent-strong);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.contact-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.contact-email-display:hover {
+  opacity: 0.75;
 }
 
 .site-footer {
@@ -1067,8 +1239,8 @@ h3 {
   .hero,
   .split-section,
   .experience-panel,
-  .contact-section {
-    grid-template-columns: 1fr;
+  .contact-card {
+    padding: 2rem 1.25rem;
   }
 
   .experience-org img {
@@ -1794,6 +1966,14 @@ h3 {
   justify-content: center;
   width: 2.1rem;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* When avatar is an image */
+.chat-avatar--img {
+  background: none;
+  object-fit: cover;
+  object-position: top center;
 }
 
 .chat-header-name {

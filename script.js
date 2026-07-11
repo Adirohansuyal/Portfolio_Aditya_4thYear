@@ -499,7 +499,7 @@ GitHub: https://github.com/Adirohansuyal
 
 Keep answers concise, friendly, and professional. Use bullet points for lists. Do not make up any information not listed above.`;
 
-  const GROQ_API_KEY = "YOUR_API_KEY";
+  const GROQ_API_KEY = "Your_API_Key";
   const GROQ_MODEL   = "llama-3.3-70b-versatile";
   const GROQ_URL     = "https://api.groq.com/openai/v1/chat/completions";
 

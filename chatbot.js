@@ -35,13 +35,29 @@
   // ── Knowledge base (system prompt) ────────────────────────────────
   const SYSTEM_PROMPT = `You are a helpful portfolio assistant for Aditya Suyal. Answer questions accurately and concisely using only the information provided below. If a question is not covered by this information, say you don't have that detail but suggest the user contact Aditya directly.
 
-When the user asks to see or open a specific page (awards, certifications, leadership, research, YouTube, etc.), respond with a confirmation message AND include the exact text "NAVIGATE:" followed by the URL. For example:
-- "Sure! Opening the awards page now. NAVIGATE:awards.html"
-- "Let me show you the certifications. NAVIGATE:certifications.html"
-- "Opening the leadership page. NAVIGATE:leadership.html"
-- "Here's the research page. NAVIGATE:research.html"
-- "Opening YouTube page. NAVIGATE:youtube.html"
-- "Going back to the main portfolio. NAVIGATE:index.html"
+IMPORTANT — Navigation rule:
+NEVER include "NAVIGATE:" unless the user's message BOTH:
+1. Contains an explicit action verb: "open", "go to", "take me to", "navigate to", "switch to", "load", OR "show" / "visit" combined with a page name
+2. AND explicitly names a page: "awards", "certifications", "leadership", "research", "youtube", "home", "main page"
+
+If the user just asks a QUESTION about a topic (even if it matches a page name), NEVER navigate — just answer.
+
+RIGHT examples (navigate):
+- "open the awards page" → NAVIGATE:awards.html
+- "take me to certifications" → NAVIGATE:certifications.html
+- "go to leadership" → NAVIGATE:leadership.html
+- "show me the research page" → NAVIGATE:research.html
+- "open youtube" → NAVIGATE:youtube.html
+- "go home" → NAVIGATE:index.html
+
+WRONG examples (DO NOT navigate, just answer):
+- "what awards does Aditya have?" → answer only, NO NAVIGATE
+- "show me his certifications" → answer only, NO NAVIGATE
+- "tell me about his research" → answer only, NO NAVIGATE
+- "what leadership roles does he have?" → answer only, NO NAVIGATE
+- "show his projects" → answer only, NO NAVIGATE
+
+When navigation IS triggered, respond with a short confirmation AND the exact text "NAVIGATE:" followed by the URL.
 
 Available pages:
 - awards.html — Awards and achievements
@@ -138,9 +154,267 @@ GitHub: https://github.com/Adirohansuyal
 
 Keep answers concise, friendly, and professional. Use bullet points for lists. Do not make up any information not listed above.`;
 
-  const GROQ_API_KEY = "YOUR_API_KEY)";
+  const GROQ_API_KEY = "Your_API_Key";
   const GROQ_MODEL   = "llama-3.3-70b-versatile";
   const GROQ_URL     = "https://api.groq.com/openai/v1/chat/completions";
+
+  // ── Extract readable content from the current page ─────────────────
+  function getPageContext() {
+    const parts = [];
+
+    // Current page name
+    parts.push(`Current page: ${PAGE}`);
+
+    // All headings (h1–h3) inside main content
+    const headings = [
+      ...document.querySelectorAll(
+        "main h1, main h2, main h3, .page-hero h1, .research-hero h1, .channel-name"
+      )
+    ]
+      .map(el => el.innerText.trim())
+      .filter(Boolean);
+    if (headings.length)
+      parts.push("Headings on page:\n" + headings.map(h => `  - ${h}`).join("\n"));
+
+    // Card/item content (awards, certs, research, videos, timeline, projects)
+    const cards = [
+      ...document.querySelectorAll(
+        ".award-card, .cert-card, .research-page-card, .video-card article, " +
+        ".tl-content, .project-card, .exp-card, [data-reveal]"
+      )
+    ];
+    if (cards.length) {
+      const cardTexts = cards
+        .slice(0, 12)
+        .map(el => el.innerText.replace(/\s+/g, " ").trim().slice(0, 220))
+        .filter(Boolean);
+      if (cardTexts.length)
+        parts.push("Visible items on page:\n" + cardTexts.map(t => `  • ${t}`).join("\n"));
+    }
+
+    // Hero / about paragraphs
+    const paras = [
+      ...document.querySelectorAll(
+        ".page-hero p, .research-hero p, .channel-desc, #about p, .about-text p"
+      )
+    ]
+      .map(el => el.innerText.trim())
+      .filter(Boolean)
+      .slice(0, 3);
+    if (paras.length)
+      parts.push("Page intro:\n" + paras.map(p => `  ${p}`).join("\n"));
+
+    return "\n\n=== WHAT IS CURRENTLY ON SCREEN ===\n" + parts.join("\n\n");
+  }
+
+  // ── Inject chatbot CSS (self-contained, works on any page) ────────
+  function injectStyles() {
+    if (document.getElementById("chatbot-styles")) return; // already injected
+    const style = document.createElement("style");
+    style.id = "chatbot-styles";
+    style.textContent = `
+.chat-fab {
+  align-items: center;
+  background: #2563eb;
+  border: none;
+  border-radius: 50%;
+  bottom: 1.75rem;
+  box-shadow: 0 8px 28px rgba(37,99,235,0.45);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  height: 3.25rem;
+  justify-content: center;
+  position: fixed;
+  right: 1.75rem;
+  transition: background 250ms, box-shadow 250ms, transform 250ms;
+  width: 3.25rem;
+  z-index: 9999;
+}
+.chat-fab:hover {
+  background: #1d4ed8;
+  box-shadow: 0 12px 36px rgba(59,130,246,0.55);
+  transform: translateY(-3px) scale(1.05);
+}
+.chat-fab-icon { transition: opacity 180ms, transform 180ms; }
+.chat-fab-icon--close { display: none; }
+.chat-fab.is-open .chat-fab-icon--open  { display: none; }
+.chat-fab.is-open .chat-fab-icon--close { display: block; }
+
+.chat-window {
+  background: #0d1117;
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 20px;
+  bottom: 6rem;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.1);
+  display: none;
+  flex-direction: column;
+  font-family: Inter, system-ui, sans-serif;
+  height: min(560px, calc(100dvh - 8rem));
+  position: fixed;
+  right: 1.75rem;
+  width: min(380px, calc(100vw - 2rem));
+  z-index: 9998;
+}
+.chat-window.is-open {
+  display: flex;
+  animation: chatbot-in 200ms ease both;
+}
+@keyframes chatbot-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.chat-header {
+  align-items: center;
+  background: linear-gradient(135deg, #0f1923 0%, #111827 100%);
+  border-bottom: 1px solid rgba(59,130,246,0.18);
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+  flex-shrink: 0;
+}
+.chat-header-info { align-items: center; display: flex; gap: 0.65rem; }
+.chat-avatar {
+  align-items: center;
+  background: linear-gradient(135deg,#1d4ed8,#7c3aed);
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-size: 0.9rem;
+  font-weight: 800;
+  height: 2.1rem;
+  justify-content: center;
+  overflow: hidden;
+  width: 2.1rem;
+  flex-shrink: 0;
+}
+.chat-avatar--img { background: none; object-fit: cover; object-position: top center; }
+.chat-header-name { color: #f8fafc; font-size: 0.88rem; font-weight: 700; margin: 0; line-height: 1.2; }
+.chat-header-sub  { color: #64748b; font-size: 0.72rem; margin: 0; line-height: 1.3; }
+.chat-close-btn {
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  height: 1.9rem;
+  justify-content: center;
+  transition: background 200ms, color 200ms;
+  width: 1.9rem;
+}
+.chat-close-btn:hover { background: rgba(255,255,255,0.1); color: #f8fafc; }
+
+.chat-messages {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem;
+  scroll-behavior: smooth;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+.chat-msg { display: flex; flex-direction: column; gap: 0.2rem; max-width: 88%; }
+.chat-msg--user { align-self: flex-end; align-items: flex-end; }
+.chat-msg--bot  { align-self: flex-start; align-items: flex-start; }
+.chat-bubble { border-radius: 14px; font-size: 0.84rem; line-height: 1.6; padding: 0.65rem 0.9rem; word-break: break-word; }
+.chat-msg--user .chat-bubble { background: linear-gradient(135deg,#1d4ed8,#2563eb); border-bottom-right-radius: 4px; color: #fff; }
+.chat-msg--bot  .chat-bubble { background: #1b2430; border: 1px solid rgba(255,255,255,0.07); border-bottom-left-radius: 4px; color: #e2e8f0; }
+
+.chat-typing .chat-bubble { align-items: center; display: flex; gap: 4px; padding: 0.75rem 1rem; }
+.chat-typing-dot { animation: chatbot-bounce 1.2s ease-in-out infinite; background: #64748b; border-radius: 50%; height: 6px; width: 6px; }
+.chat-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.chat-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes chatbot-bounce {
+  0%,60%,100% { transform: translateY(0); opacity: 0.4; }
+  30%          { transform: translateY(-5px); opacity: 1; }
+}
+
+.chat-suggestions {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.65rem 1rem;
+  flex-shrink: 0;
+}
+.chat-suggestions button {
+  background: rgba(37,99,235,0.1);
+  border: 1px solid rgba(37,99,235,0.25);
+  border-radius: 999px;
+  color: #93c5fd;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  transition: background 200ms, border-color 200ms, color 200ms;
+  white-space: nowrap;
+}
+.chat-suggestions button:hover { background: rgba(37,99,235,0.22); border-color: rgba(59,130,246,0.5); color: #fff; }
+.chat-suggestions.is-hidden { display: none; }
+
+.chat-input-row {
+  align-items: center;
+  background: #0d1117;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-radius: 0 0 20px 20px;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  flex-shrink: 0;
+}
+.chat-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #f8fafc;
+  flex: 1;
+  font-family: inherit;
+  font-size: 0.84rem;
+  min-width: 0;
+  outline: none;
+  padding: 0.55rem 0.75rem;
+  transition: border-color 200ms;
+}
+.chat-input::placeholder { color: #475569; }
+.chat-input:focus { border-color: rgba(59,130,246,0.5); }
+.chat-send-btn {
+  align-items: center;
+  background: #2563eb;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  height: 2.1rem;
+  justify-content: center;
+  transition: background 200ms, transform 150ms;
+  width: 2.1rem;
+}
+.chat-send-btn:hover    { background: #1d4ed8; transform: scale(1.08); }
+.chat-send-btn:disabled { background: #1e293b; cursor: not-allowed; transform: none; }
+
+@media (max-width: 480px) {
+  .chat-window { bottom: 0; border-radius: 20px 20px 0 0; height: min(520px,90dvh); right: 0; width: 100vw; }
+  .chat-fab { bottom: 1.25rem; right: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-window { animation: none; }
+  .chat-typing-dot { animation: none; opacity: 0.6; }
+}
+    `;
+    document.head.appendChild(style);
+  }
 
   // ── Inject chatbot HTML into the page ─────────────────────────────
   function injectHTML() {
@@ -152,7 +426,7 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
     <div class="chat-window" id="chat-window" role="dialog" aria-modal="true" aria-label="Portfolio assistant">
       <div class="chat-header">
         <div class="chat-header-info">
-          <div class="chat-avatar" aria-hidden="true">A</div>
+          <img class="chat-avatar chat-avatar--img" src="assets/aditya-corporate.png" alt="Aditya" aria-hidden="true" />
           <div>
             <p class="chat-header-name">Aditya's Assistant</p>
             <p class="chat-header-sub">Ask me anything about this portfolio</p>
@@ -188,7 +462,8 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 
   // ── Init ───────────────────────────────────────────────────────────
   function init() {
-    // Inject HTML if not already in the DOM (for pages that don't have it hardcoded)
+    // Inject CSS and HTML if not already in the DOM (for pages that don't have it hardcoded)
+    injectStyles();
     if (!document.getElementById("chat-fab")) injectHTML();
 
     const fab         = document.getElementById("chat-fab");
@@ -267,7 +542,7 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
           body: JSON.stringify({
             model: GROQ_MODEL,
             messages: [
-              { role: "system", content: SYSTEM_PROMPT },
+              { role: "system", content: SYSTEM_PROMPT + getPageContext() },
               ...history.slice(-10)
             ],
             max_tokens: 700,
@@ -289,14 +564,28 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 
         const navMatch = reply.match(/NAVIGATE:\s*(\S+)/);
         if (navMatch) {
-          const url        = navMatch[1];
-          const cleanReply = reply.replace(/NAVIGATE:\s*\S+/g, "").trim();
-          addBotMessage(cleanReply);
-          playReplySound();
-          history.push({ role: "assistant", content: cleanReply });
-          // Mark that we navigated via bot so the destination page auto-opens the chat
-          sessionStorage.setItem("chatbot_nav", "1");
-          setTimeout(() => { window.location.href = url; }, 900);
+          // Client-side guard: BOTH a nav verb AND a page name must be present.
+          // This prevents the LLM from navigating on purely informational questions.
+          const navVerb = /\b(open|go to|take me|navigate|visit|switch to|load|bring up)\b/i;
+          const showWithPage = /\bshow\b.*(page|awards|certifications|leadership|research|youtube|home)/i;
+          const pageName = /\b(awards|certifications|leadership|research|youtube|home|main page|portfolio)\b/i;
+          const userIntended = (navVerb.test(text) && pageName.test(text)) || showWithPage.test(text);
+
+          if (userIntended) {
+            const url        = navMatch[1];
+            const cleanReply = reply.replace(/NAVIGATE:\s*\S+/g, "").trim();
+            addBotMessage(cleanReply);
+            playReplySound();
+            history.push({ role: "assistant", content: cleanReply });
+            sessionStorage.setItem("chatbot_nav", "1");
+            setTimeout(() => { window.location.href = url; }, 900);
+          } else {
+            // Strip NAVIGATE: and just answer the question
+            const cleanReply = reply.replace(/NAVIGATE:\s*\S+/g, "").trim();
+            addBotMessage(cleanReply);
+            playReplySound();
+            history.push({ role: "assistant", content: cleanReply });
+          }
         } else {
           addBotMessage(reply);
           playReplySound();
@@ -381,10 +670,76 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
     }
 
     // ── Auto-open with page summary if navigated here via bot ────────
-    // We use sessionStorage to detect a bot-triggered navigation
-    if (sessionStorage.getItem("chatbot_nav") === "1" && PAGE !== "home") {
+    // When the bot triggers navigation, sessionStorage flag is set.
+    // On the destination page: auto-open chat and show the page summary.
+    if (sessionStorage.getItem("chatbot_nav") === "1") {
       sessionStorage.removeItem("chatbot_nav");
-      setTimeout(() => openChat(), 600);
+      setTimeout(() => {
+        // Force open (bypass the "already has messages" guard)
+        chatOpen = true;
+        win.classList.add("is-open");
+        fab.classList.add("is-open");
+        fab.setAttribute("aria-label", "Close portfolio chatbot");
+
+        // Show a "page opened" confirmation + summary as a bot message
+        const pageSummaries = {
+          awards:
+            "✅ Done! I've opened the **Awards & Recommendations** page for you.\n\n" +
+            "Here's a quick summary:\n" +
+            "- 🥇 **1st Place** — NASA Space Hackathon 2025, North India Zone\n" +
+            "- 🥇 **1st Place** — TechFest AI in Education\n" +
+            "- 🥉 **3rd Place** — Grafest AI in Healthcare\n" +
+            "- 🏅 **2× State AI Hackathon Finalist**\n" +
+            "- 📄 Letter of Recommendation from the HOD, Dept. of CSE, BIAS\n\n" +
+            "Ask me anything about these achievements!",
+          certifications:
+            "✅ Done! I've opened the **Certifications** page for you.\n\n" +
+            "Here's a quick summary of Aditya's top 10 certifications:\n" +
+            "- Multi-Agent Systems with CrewAI — DeepLearning.AI\n" +
+            "- Masters in Generative AI & LLMs — GeeksforGeeks\n" +
+            "- Applied AI Lab for Deep Learning & CV — WorldQuant University\n" +
+            "- Azure AI Fundamentals — Microsoft\n" +
+            "- SQL Advanced — HackerRank\n" +
+            "- ...and 5 more!\n\n" +
+            "Ask me about any specific certification!",
+          research:
+            "✅ Done! I've opened the **Research** page for you.\n\n" +
+            "Here's a quick summary:\n" +
+            "- 📄 **First-Author Paper** (March 2026): Hybrid Multi-Agent Conversational AI Architecture — +11.9% accuracy over single-model baseline, 31.4% fewer unnecessary tool calls\n" +
+            "- 🛰️ **Synopsis**: Generative AI-Based Cloud Removal for LISS-IV Satellite Imagery — SAR-optical fusion, NDVI preservation\n\n" +
+            "Ask me for details on either research work!",
+          youtube:
+            "✅ Done! I've opened the **YouTube (BuilderBroo)** page for you.\n\n" +
+            "Here's a quick summary:\n" +
+            "- 📺 Channel: **BuilderBroo** (@BuilderBroo)\n" +
+            "- EP.1: Learn Prompt Engineering from Scratch (10:29)\n" +
+            "- EP.2: Zero-Shot Prompting Technique (18:21)\n" +
+            "- More videos coming soon: Few-Shot, Chain-of-Thought, LLM Agents\n\n" +
+            "Ask me about the channel or any video!",
+          leadership:
+            "✅ Done! I've opened the **Leadership** page for you.\n\n" +
+            "Here's a quick summary of Aditya's 8 leadership roles:\n" +
+            "- 💻 Coding Club Head — BIAS\n" +
+            "- 🎓 Placement Cell Head — BIAS\n" +
+            "- 🌐 Google Campus Ambassador\n" +
+            "- 🏛️ IIT Madras & IIT Delhi Student Ambassador\n" +
+            "- 🤝 ILO Officer — GPF\n" +
+            "- 📋 Event Coordinator & Placement Cell Coordinator — BIAS\n\n" +
+            "Ask me about any of these roles!",
+          home:
+            "✅ Done! I've taken you back to the **main portfolio** page.\n\n" +
+            "Here's what you'll find here:\n" +
+            "- 👨‍💻 About Aditya — AI/ML Engineer & GenAI Developer\n" +
+            "- 💼 Work Experience (DRDO, Shell, Analytics Vidhya)\n" +
+            "- 🚀 Projects (8 AI/ML projects)\n" +
+            "- 🛠️ Skills & Tech Stack\n" +
+            "- 📬 Contact Info\n\n" +
+            "What would you like to explore?"
+        };
+
+        addBotMessage(pageSummaries[PAGE] || pageSummaries.home);
+        scrollToBottom();
+      }, 700);
     }
   }
 

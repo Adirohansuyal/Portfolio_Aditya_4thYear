@@ -16,11 +16,16 @@
         text-align: center;
         padding: 4rem clamp(1rem, 6vw, 4rem) 3rem;
         max-width: 700px;
+        width: 100%;
         margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
       .research-hero .eyebrow {
         margin-bottom: 0.75rem;
+        text-align: center;
       }
 
       .research-hero h1 {
@@ -29,6 +34,7 @@
         line-height: 1.15;
         margin: 0 0 1rem;
         letter-spacing: -0.02em;
+        text-align: center;
       }
 
       .research-hero p {
@@ -36,6 +42,7 @@
         font-size: 1.05rem;
         line-height: 1.7;
         margin: 0;
+        text-align: center;
       }
 
       /* ── Grid ── */
@@ -226,7 +233,7 @@
         </button>
       </div>
       <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
-        <a href="index.html#about">About</a>
+        <a href="index.html">About</a>
         <a href="index.html#experience">Experience</a>
         <a href="index.html#projects">Projects</a>
         <a href="research.html" class="active">Research</a>
@@ -297,6 +304,7 @@
       <p>© <span id="year"></span> Aditya. Built as a static portfolio for GitHub Pages.</p>
     </footer>
 
+    <script src="chatbot.js"></script>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
 
