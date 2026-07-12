@@ -340,7 +340,7 @@
         </span>
       </a>
       <div class="header-right">
-        <a class="button primary" href="index.html" style="font-size:0.85rem;padding:0.45rem 1rem;text-decoration:none;">← Portfolio</a>
+        <button class="header-cta" id="resume-btn" type="button" aria-haspopup="dialog">Resume</button>
         <button
           class="hamburger"
           aria-label="Toggle navigation menu"
@@ -354,11 +354,16 @@
         </button>
       </div>
       <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
-        <a href="index.html">About</a>
+        <a href="index.html#top">About</a>
         <a href="index.html#experience">Experience</a>
         <a href="index.html#projects">Projects</a>
-        <a href="certifications.html">Certifications</a>
+        <a href="research.html">Research</a>
+        <a href="youtube.html">YouTube</a>
+        <a href="index.html#documents">Docs</a>
         <a href="index.html#skills">Skills</a>
+        <a href="certifications.html">Certifications</a>
+        <a href="awards.html" class="active">Awards</a>
+        <a href="leadership.html">Leadership</a>
         <a href="index.html#contact">Contact</a>
       </nav>
     </header>
@@ -470,17 +475,156 @@
       <p>© <span id="year"></span> Aditya. Built as a static portfolio for GitHub Pages.</p>
     </footer>
 
+    <!-- ── Resume Preview Modal ──────────────────────────────────────── -->
+    <div class="resume-modal" id="resume-modal" role="dialog" aria-modal="true" aria-labelledby="resume-modal-title" hidden>
+      <div class="resume-modal-backdrop" id="resume-modal-backdrop"></div>
+      <div class="resume-modal-box">
+        <div class="resume-modal-header">
+          <span id="resume-modal-title" class="resume-modal-title">Resume Preview</span>
+          <div class="resume-modal-actions">
+            <a class="button primary resume-download-btn" href="assets/resume.pdf" download="Aditya_Suyal_Resume.pdf">⬇ Download</a>
+            <button class="resume-modal-close" id="resume-modal-close" type="button" aria-label="Close resume preview">✕</button>
+          </div>
+        </div>
+        <div class="resume-modal-body">
+          <div id="resume-pdfjs-container" class="resume-pdfjs-container">
+            <canvas id="resume-canvas" class="resume-canvas"></canvas>
+            <div id="resume-loading" class="resume-loading">Loading resume…</div>
+          </div>
+          <div class="resume-fallback" id="resume-fallback" hidden>
+            <p>Your browser can't preview PDFs inline.</p>
+            <a class="button primary" href="assets/resume.pdf" download="Aditya_Suyal_Resume.pdf">⬇ Download Resume</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ── /Resume Preview Modal ──────────────────────────────────────── -->
+
     <script src="chatbot.js"></script>
+    <script>
+      // ── Resume modal ──
+      (function () {
+        const resumeBtn = document.querySelector("#resume-btn");
+        const resumeModal = document.querySelector("#resume-modal");
+        const resumeModalClose = document.querySelector("#resume-modal-close");
+        const resumeModalBackdrop = document.querySelector("#resume-modal-backdrop");
+        const resumeFallback = document.querySelector("#resume-fallback");
+        const resumeCanvas = document.querySelector("#resume-canvas");
+        const resumeLoading = document.querySelector("#resume-loading");
+        const RESUME_SRC = "assets/resume.pdf";
+        let pdfRendered = false;
+
+        async function renderPDF() {
+          if (pdfRendered) return;
+          try {
+            const pdfjsLib = await import("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs");
+            pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+            const pdf = await pdfjsLib.getDocument(RESUME_SRC).promise;
+            const page = await pdf.getPage(1);
+            const container = document.querySelector("#resume-pdfjs-container");
+            const containerWidth = container.clientWidth || 800;
+            const viewport = page.getViewport({ scale: 1 });
+            const scale = containerWidth / viewport.width;
+            const scaledViewport = page.getViewport({ scale });
+            resumeCanvas.width = scaledViewport.width;
+            resumeCanvas.height = scaledViewport.height;
+            await page.render({ canvasContext: resumeCanvas.getContext("2d"), viewport: scaledViewport }).promise;
+            resumeLoading.hidden = true;
+            resumeCanvas.hidden = false;
+            pdfRendered = true;
+          } catch (err) {
+            resumeLoading.hidden = true;
+            resumeFallback.hidden = false;
+          }
+        }
+
+        function openModal() { resumeModal.hidden = false; document.body.style.overflow = "hidden"; resumeModalClose.focus(); renderPDF(); }
+        function closeModal() { resumeModal.hidden = true; document.body.style.overflow = ""; resumeBtn.focus(); }
+
+        if (resumeBtn && resumeModal) {
+          resumeBtn.addEventListener("click", openModal);
+          resumeModalClose.addEventListener("click", closeModal);
+          resumeModalBackdrop.addEventListener("click", closeModal);
+          document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !resumeModal.hidden) closeModal(); });
+        }
+      })();
+    </script>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
 
-      // Dynamic island: toggle .scrolled on scroll
-      const _islandHeader = document.querySelector(".site-header");
-      function _updateIsland() {
-        if (_islandHeader) _islandHeader.classList.toggle("scrolled", window.scrollY > 60);
-      }
-      window.addEventListener("scroll", _updateIsland, { passive: true });
-      _updateIsland();
+      // ── Scroll-driven background (corporate: deep navy → light sky blue) ──
+      (function () {
+        const darkR = 10, darkG = 14, darkB = 26;
+        const lightR = 186, lightG = 224, lightB = 255;
+
+        function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+        function lerpF(a, b, t) { return +(a + (b - a) * t).toFixed(3); }
+        function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+        function ease(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+
+        function bgLuminance(t) {
+          const r = lerp(darkR, lightR, t) / 255;
+          const g = lerp(darkG, lightG, t) / 255;
+          const b = lerp(darkB, lightB, t) / 255;
+          return 0.2126*r + 0.7152*g + 0.0722*b;
+        }
+
+        function updateBg() {
+          const scrolled = window.scrollY;
+          const total = document.documentElement.scrollHeight - window.innerHeight;
+          const raw = total > 0 ? Math.min(scrolled / total, 1) : 0;
+          const t = ease(raw);
+          const root = document.documentElement;
+
+          const bR = lerp(darkR, lightR, t);
+          const bG = lerp(darkG, lightG, t);
+          const bB = lerp(darkB, lightB, t);
+
+          const mist = lerpF(0, 0.35, t);
+          document.body.style.background = `
+            radial-gradient(ellipse 60% 45% at 15% 25%, rgba(147,210,255,${mist}) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 40% at 82% 60%, rgba(220,242,255,${mist * 0.7}) 0%, transparent 65%),
+            radial-gradient(ellipse 45% 35% at 45% 90%, rgba(168,218,255,${mist * 0.5}) 0%, transparent 70%),
+            rgb(${bR},${bG},${bB})
+          `.trim();
+
+          const whiteLift = Math.sin(t * Math.PI);
+          const panelR = Math.min(255, lerp(21, 210, t) + Math.round(whiteLift * 60));
+          const panelG = Math.min(255, lerp(28, 235, t) + Math.round(whiteLift * 55));
+          const panelB = Math.min(255, lerp(44, 255, t) + Math.round(whiteLift * 40));
+
+          root.style.setProperty('--panel',       `rgb(${panelR},${panelG},${panelB})`);
+          root.style.setProperty('--panel-strong', `rgb(${Math.min(255,panelR-6)},${Math.min(255,panelG-7)},${Math.min(255,panelB-3)})`);
+          root.style.setProperty('--secondary-bg', `rgb(${lerp(15,195,t)},${lerp(21,220,t)},${lerp(32,248,t)})`);
+          root.style.setProperty('--line',         `rgb(${lerp(46,100,t)},${lerp(58,155,t)},${lerp(78,210,t)})`);
+
+          const cardLum = (panelR/255)*0.2126 + (panelG/255)*0.7152 + (panelB/255)*0.0722;
+          const cT = ease(clamp((cardLum - 0.08) / 0.35, 0, 1));
+          root.style.setProperty('--text',  `rgb(${lerp(241,10,cT)},${lerp(245,22,cT)},${lerp(249,52,cT)})`);
+          root.style.setProperty('--muted', `rgb(${lerp(148,28,cT)},${lerp(163,55,cT)},${lerp(184,90,cT)})`);
+          root.style.setProperty('--quiet', `rgb(${lerp(100,42,cT)},${lerp(116,70,cT)},${lerp(139,108,cT)})`);
+
+          const shadowAlpha = lerpF(0.45, 0.08, t);
+          root.style.setProperty('--shadow', `0 10px 30px rgba(10,14,26,${shadowAlpha})`);
+
+          const navAlpha = lerpF(0.85, 0.92, t);
+          root.style.setProperty('--navbar-bg', `rgba(${bR},${bG},${bB},${navAlpha})`);
+
+          root.style.setProperty('--accent',        `rgb(${lerp(59,30,t)},${lerp(130,64,t)},${lerp(246,175,t)})`);
+          root.style.setProperty('--accent-strong', `rgb(${lerp(96,20,t)},${lerp(165,80,t)},${lerp(250,200,t)})`);
+        }
+
+        window.addEventListener('scroll', updateBg, { passive: true });
+        updateBg();
+
+        // Dynamic island
+        const header = document.querySelector('.site-header');
+        function updateIsland() {
+          if (header) header.classList.toggle('scrolled', window.scrollY > 60);
+        }
+        window.addEventListener('scroll', updateIsland, { passive: true });
+        updateIsland();
+      })();
 
       // Scroll progress
       const bar = document.querySelector(".scroll-progress");

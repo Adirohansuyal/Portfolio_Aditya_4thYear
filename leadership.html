@@ -8,37 +8,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
   <style>
+    /* ── CSS variable defaults (dark mode baseline) ── */
     :root {
-      --bg: #0b0f14;
-      --bg2: #111827;
-      --panel: #151e2d;
-      --panel2: #1b2430;
-      --line: #2a3441;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --quiet: #64748b;
-      --accent: #2563eb;
-      --accent2: #3b82f6;
-      --purple: #7c3aed;
-      --cyan: #06b6d4;
-      --shadow: 0 12px 40px rgba(0,0,0,0.45);
-      --glow: 0 0 24px rgba(37,99,235,0.3);
+      --bg: #0A0E1A;
+      --panel:  #151C2C;
+      --panel2: #1A2236;
+      --line:   #2E3A4E;
+      --text:   #F1F5F9;
+      --muted:  #94A3B8;
+      --quiet:  #64748B;
+      --accent: #3B82F6;
+      --accent-strong: #60A5FA;
+      --accent2: rgba(96,165,250,0.6);
+      --purple: #8B5CF6;
+      --cyan:   #22D3EE;
+      --shadow: 0 8px 24px rgba(0,0,0,0.5);
+      --glow:   0 0 28px rgba(59,130,246,0.18);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: Urbanist, Inter, system-ui, sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-      padding-top: 80px;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
 
     /* ── Animated background grid ── */
     body::before {
@@ -52,58 +40,6 @@
       pointer-events: none;
       z-index: 0;
     }
-
-    /* ── Dynamic Island Navbar ── */
-    .nav-island-wrap {
-      left: 0; right: 0; top: 0;
-      padding: 0.75rem clamp(1rem, 4vw, 2.5rem) 0;
-      position: fixed;
-      z-index: 100;
-      pointer-events: none;
-    }
-    .site-header {
-      align-items: center;
-      backdrop-filter: blur(22px) saturate(180%);
-      -webkit-backdrop-filter: blur(22px) saturate(180%);
-      background: rgba(11,15,20,0.82);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.04) inset;
-      display: flex;
-      gap: 1rem;
-      justify-content: space-between;
-      margin: 0 auto;
-      max-width: 900px;
-      padding: 0.6rem 1.1rem 0.6rem 0.75rem;
-      pointer-events: all;
-      transition: padding 280ms ease, box-shadow 280ms ease, max-width 280ms ease;
-      width: 100%;
-    }
-    .site-header.scrolled {
-      box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.06) inset;
-      max-width: 740px;
-      padding: 0.45rem 1rem 0.45rem 0.65rem;
-    }
-    .brand {
-      display: flex; align-items: center; gap: 0.55rem;
-      font-weight: 800; font-size: 1rem; letter-spacing: 0.01em;
-    }
-    .brand-text { display: flex; flex-direction: column; line-height: 1.2; gap: 0; }
-    .brand-name { font-size: 0.97rem; font-weight: 800; color: #f8fafc; }
-    .brand-role { font-size: 0.68rem; font-weight: 500; color: #3b82f6; letter-spacing: 0.03em; }
-    .brand-avatar {
-      width: 34px; height: 34px; border-radius: 50%;
-      object-fit: cover; object-position: top;
-      border: 2px solid var(--accent2);
-    }
-    .back-link {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      font-size: 0.875rem; font-weight: 600; color: var(--muted);
-      border: 1px solid var(--line); border-radius: 10px;
-      padding: 0.45rem 0.9rem;
-      transition: color 200ms, border-color 200ms, background 200ms;
-    }
-    .back-link:hover { color: var(--text); border-color: var(--accent2); background: var(--panel2); }
 
     /* ── Hero ── */
     .page-hero {
@@ -124,7 +60,7 @@
     .hero-eyebrow {
       display: inline-block;
       font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--accent2);
+      text-transform: uppercase; color: var(--accent-strong);
       background: rgba(37,99,235,0.1);
       border: 1px solid rgba(59,130,246,0.25);
       border-radius: 999px; padding: 0.3rem 1rem;
@@ -134,23 +70,29 @@
       font-size: clamp(2rem, 5vw, 3.2rem);
       font-weight: 900; letter-spacing: -0.03em; line-height: 1.1;
       margin-bottom: 1rem;
+      max-width: 30ch;
+      margin-left: auto;
+      margin-right: auto;
+      text-wrap: balance;
     }
-    .page-hero h1 span { color: var(--accent2); }
+    .page-hero h1 span { color: var(--accent-strong); }
     .page-hero p {
       color: var(--muted); font-size: 1rem; line-height: 1.75;
-      max-width: 46rem; margin: 0 auto;
+      max-width: 60ch; margin: 0 auto;
+      text-wrap: balance;
     }
     .hero-stats {
       display: flex; flex-wrap: wrap; gap: 1rem;
       justify-content: center; margin-top: 2rem;
     }
     .hero-stat {
-      background: var(--panel2);
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 14px; padding: 0.7rem 1.4rem;
       text-align: center;
+      transition: background 300ms, border-color 300ms;
     }
-    .hero-stat strong { display: block; font-size: 1.4rem; font-weight: 900; color: var(--accent2); }
+    .hero-stat strong { display: block; font-size: 1.4rem; font-weight: 900; color: var(--accent-strong); }
     .hero-stat span { font-size: 0.75rem; color: var(--quiet); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
   </style>
 </head>
@@ -158,17 +100,40 @@
 
 <div class="nav-island-wrap">
 <header class="site-header">
-  <a class="brand" href="index.html">
+  <a class="brand" href="index.html" aria-label="Aditya Suyal portfolio home">
     <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
     <span class="brand-text">
       <span class="brand-name">Aditya Suyal</span>
       <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
     </span>
   </a>
-  <a class="back-link" href="index.html">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-    Back to Portfolio
-  </a>
+  <div class="header-right">
+    <button class="header-cta" id="resume-btn" type="button" aria-haspopup="dialog">Resume</button>
+    <button
+      class="hamburger"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      type="button"
+    >
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+  </div>
+  <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+    <a href="index.html#top">About</a>
+    <a href="index.html#experience">Experience</a>
+    <a href="index.html#projects">Projects</a>
+    <a href="research.html">Research</a>
+    <a href="youtube.html">YouTube</a>
+    <a href="index.html#documents">Docs</a>
+    <a href="index.html#skills">Skills</a>
+    <a href="certifications.html">Certifications</a>
+    <a href="awards.html">Awards</a>
+    <a href="leadership.html" class="active">Leadership</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
 </header>
 </div><!-- /nav-island-wrap -->
 
@@ -236,27 +201,27 @@
 
       /* ── Card ── */
       .tl-content {
-        background: linear-gradient(135deg, var(--panel) 0%, var(--panel2) 100%);
+        background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 20px;
         padding: 1.4rem 1.6rem;
         position: relative;
         overflow: hidden;
         transition: transform 280ms cubic-bezier(0.22,1,0.36,1),
-                    border-color 280ms, box-shadow 280ms;
+                    background 300ms, border-color 280ms, box-shadow 280ms;
       }
       .tl-content::before {
         content: "";
         position: absolute; inset: 0;
-        background: linear-gradient(135deg, rgba(37,99,235,0.05) 0%, transparent 60%);
+        background: linear-gradient(135deg, rgba(37,99,235,0.06) 0%, transparent 60%);
         opacity: 0;
         transition: opacity 280ms;
         border-radius: inherit;
       }
       .tl-content:hover {
         transform: translateY(-5px);
-        border-color: var(--accent2);
-        box-shadow: 0 0 0 1px var(--accent2), var(--shadow), var(--glow);
+        border-color: rgba(59,130,246,0.45);
+        box-shadow: 0 0 0 1px rgba(59,130,246,0.2), 0 14px 40px rgba(0,0,0,0.5), 0 0 28px rgba(59,130,246,0.1);
       }
       .tl-content:hover::before { opacity: 1; }
 
@@ -265,45 +230,48 @@
         content: "";
         position: absolute; top: 0; left: 0; right: 0;
         height: 3px;
-        background: linear-gradient(90deg, var(--accent), var(--purple));
+        background: linear-gradient(90deg, #3B82F6, #8B5CF6);
         border-radius: 20px 20px 0 0;
         opacity: 0;
         transition: opacity 280ms;
       }
       .tl-content:hover::after { opacity: 1; }
 
-      /* Alignment */
-      .tl-left .tl-content  { text-align: right; }
-      .tl-right .tl-content { text-align: left; }
-
-      /* ── Number ── */
-      .tl-number {
-        display: flex;
-        font-size: 0.68rem; font-weight: 900;
-        letter-spacing: 0.14em; text-transform: uppercase;
-        color: var(--accent2);
-        background: rgba(37,99,235,0.1);
-        border: 1px solid rgba(59,130,246,0.2);
-        border-radius: 999px;
-        padding: 0.18rem 0.65rem;
-        margin-bottom: 0.55rem;
-        width: fit-content;
-      }
-      .tl-left  .tl-number { margin-left: auto; }
-      .tl-right .tl-number { margin-right: auto; }
-
       /* ── Title ── */
       .tl-title {
         font-size: 1.02rem; font-weight: 800;
         line-height: 1.3; margin-bottom: 0.45rem;
         color: var(--text);
+        transition: color 300ms;
       }
 
       /* ── Desc ── */
       .tl-desc {
         font-size: 0.855rem; line-height: 1.68;
         color: var(--muted); margin: 0;
+        transition: color 300ms;
       }
+
+      /* ── Number badge ── */
+      .tl-number {
+        display: flex;
+        font-size: 0.68rem; font-weight: 900;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--accent-strong);
+        background: rgba(37,99,235,0.12);
+        border: 1px solid rgba(59,130,246,0.25);
+        border-radius: 999px;
+        padding: 0.18rem 0.65rem;
+        margin-bottom: 0.55rem;
+        width: fit-content;
+        transition: color 300ms;
+      }
+
+      /* Alignment */
+      .tl-left .tl-content  { text-align: right; }
+      .tl-right .tl-content { text-align: left; }
+      .tl-left  .tl-number { margin-left: auto; }
+      .tl-right .tl-number { margin-right: auto; }
 
       /* ── Node ── */
       .tl-node {
@@ -312,13 +280,13 @@
         width: 60px; height: 60px;
         border-radius: 50%;
         border: 2.5px solid var(--accent2);
-        background: var(--bg);
+        background: var(--secondary-bg);
         display: flex; align-items: center; justify-content: center;
         overflow: hidden;
         box-shadow: 0 0 0 5px rgba(37,99,235,0.12),
                     0 0 20px rgba(37,99,235,0.25),
                     var(--shadow);
-        transition: box-shadow 280ms, transform 280ms;
+        transition: box-shadow 280ms, transform 280ms, background 300ms;
         flex-shrink: 0;
       }
       .tl-node:hover {
@@ -444,21 +412,36 @@
   </div><!-- /tl-wrap -->
 </main>
 
-<footer style="border-top:1px solid var(--line); color:var(--quiet); font-size:0.85rem; margin-top:2rem; padding:2rem clamp(1rem,4vw,3rem); text-align:center; position:relative; z-index:1;">
+<footer style="border-top:1px solid #2E3A4E; color:#64748B; font-size:0.85rem; margin-top:2rem; padding:2rem clamp(1rem,4vw,3rem); text-align:center; position:relative; z-index:1;">
   <p>© <span id="year"></span> Aditya Suyal. All rights reserved.</p>
 </footer>
 
-<script src="chatbot.js"></script>
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
+<!-- ── Resume Preview Modal ──────────────────────────────────────── -->
+<div class="resume-modal" id="resume-modal" role="dialog" aria-modal="true" aria-labelledby="resume-modal-title" hidden>
+  <div class="resume-modal-backdrop" id="resume-modal-backdrop"></div>
+  <div class="resume-modal-box">
+    <div class="resume-modal-header">
+      <span id="resume-modal-title" class="resume-modal-title">Resume Preview</span>
+      <div class="resume-modal-actions">
+        <a class="button primary resume-download-btn" href="assets/resume.pdf" download="Aditya_Suyal_Resume.pdf">⬇ Download</a>
+        <button class="resume-modal-close" id="resume-modal-close" type="button" aria-label="Close resume preview">✕</button>
+      </div>
+    </div>
+    <div class="resume-modal-body">
+      <div id="resume-pdfjs-container" class="resume-pdfjs-container">
+        <canvas id="resume-canvas" class="resume-canvas"></canvas>
+        <div id="resume-loading" class="resume-loading">Loading resume…</div>
+      </div>
+      <div class="resume-fallback" id="resume-fallback" hidden>
+        <p>Your browser can't preview PDFs inline.</p>
+        <a class="button primary" href="assets/resume.pdf" download="Aditya_Suyal_Resume.pdf">⬇ Download Resume</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ── /Resume Preview Modal ──────────────────────────────────────── -->
 
-  // Dynamic island
-  const _islandHeader = document.querySelector(".site-header");
-  function _updateIsland() {
-    if (_islandHeader) _islandHeader.classList.toggle("scrolled", window.scrollY > 60);
-  }
-  window.addEventListener("scroll", _updateIsland, { passive: true });
-  _updateIsland();
-</script>
+
+<script src="script.js"></script>
 </body>
 </html>

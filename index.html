@@ -646,6 +646,77 @@
     </div>
     <!-- ── /Portfolio Chatbot ──────────────────────────────────────────── -->
 
+    <script>
+// ── Scroll-driven background (corporate: deep navy → light sky blue) ──
+(function () {
+  const darkR = 10, darkG = 14, darkB = 26;
+  const lightR = 186, lightG = 224, lightB = 255;
+
+  function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+  function lerpF(a, b, t) { return +(a + (b - a) * t).toFixed(3); }
+  function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+  function ease(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+
+  function bgLuminance(t) {
+    const r = lerp(darkR, lightR, t) / 255;
+    const g = lerp(darkG, lightG, t) / 255;
+    const b = lerp(darkB, lightB, t) / 255;
+    return 0.2126*r + 0.7152*g + 0.0722*b;
+  }
+
+  function updateBg() {
+    const scrolled = window.scrollY;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    const raw = total > 0 ? Math.min(scrolled / total, 1) : 0;
+    const t = ease(raw);
+
+    const root = document.documentElement;
+    const lum = bgLuminance(t);
+
+    const bR = lerp(darkR, lightR, t);
+    const bG = lerp(darkG, lightG, t);
+    const bB = lerp(darkB, lightB, t);
+
+    const mist = lerpF(0, 0.35, t);
+    document.body.style.background = `
+      radial-gradient(ellipse 60% 45% at 15% 25%, rgba(147,210,255,${mist}) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 82% 60%, rgba(220,242,255,${mist * 0.7}) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 35% at 45% 90%, rgba(168,218,255,${mist * 0.5}) 0%, transparent 70%),
+      rgb(${bR},${bG},${bB})
+    `.trim();
+
+    // Card contrast: sin arc peaks at mid-transition to keep cards visible
+    const whiteLift = Math.sin(t * Math.PI);
+    const panelR = Math.min(255, lerp(21, 210, t) + Math.round(whiteLift * 60));
+    const panelG = Math.min(255, lerp(28, 235, t) + Math.round(whiteLift * 55));
+    const panelB = Math.min(255, lerp(44, 255, t) + Math.round(whiteLift * 40));
+
+    root.style.setProperty('--panel',        `rgb(${panelR},${panelG},${panelB})`);
+    root.style.setProperty('--panel-strong',  `rgb(${Math.min(255,panelR-6)},${Math.min(255,panelG-7)},${Math.min(255,panelB-3)})`);
+    root.style.setProperty('--secondary-bg',  `rgb(${lerp(15,195,t)},${lerp(21,220,t)},${lerp(32,248,t)})`);
+    root.style.setProperty('--line',          `rgb(${lerp(46,100,t)},${lerp(58,155,t)},${lerp(78,210,t)})`);
+
+    // Text driven by card luminance for guaranteed contrast
+    const cardLum = (panelR/255)*0.2126 + (panelG/255)*0.7152 + (panelB/255)*0.0722;
+    const cT = ease(clamp((cardLum - 0.08) / 0.35, 0, 1));
+    root.style.setProperty('--text',  `rgb(${lerp(241,10,cT)},${lerp(245,22,cT)},${lerp(249,52,cT)})`);
+    root.style.setProperty('--muted', `rgb(${lerp(148,28,cT)},${lerp(163,55,cT)},${lerp(184,90,cT)})`);
+    root.style.setProperty('--quiet', `rgb(${lerp(100,42,cT)},${lerp(116,70,cT)},${lerp(139,108,cT)})`);
+
+    const shadowAlpha = lerpF(0.45, 0.08, t);
+    root.style.setProperty('--shadow', `0 10px 30px rgba(10,14,26,${shadowAlpha})`);
+
+    const navAlpha = lerpF(0.85, 0.92, t);
+    root.style.setProperty('--navbar-bg', `rgba(${bR},${bG},${bB},${navAlpha})`);
+
+    root.style.setProperty('--accent',        `rgb(${lerp(59,30,t)},${lerp(130,64,t)},${lerp(246,175,t)})`);
+    root.style.setProperty('--accent-strong', `rgb(${lerp(96,20,t)},${lerp(165,80,t)},${lerp(250,200,t)})`);
+  }
+
+  window.addEventListener('scroll', updateBg, { passive: true });
+  updateBg();
+})();
+    </script>
     <script src="script.js"></script>
   </body>
 </html>

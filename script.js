@@ -39,21 +39,8 @@
     bar.style.width      = "100%";
     subLabel.textContent = "Ready.";
 
-    // Force scroll to absolute top multiple times to override browser restoration
-    document.documentElement.style.scrollBehavior = "auto";
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    window.scrollTo(0, 0);
-    
+    // Re-enable scrolling — page is already at top since overflow was hidden
     document.body.style.overflow = "";
-    document.documentElement.style.scrollBehavior = "";
-
-    // Lock it one more time after paint
-    requestAnimationFrame(() => {
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-      window.scrollTo(0, 0);
-    });
 
     setTimeout(() => {
       loader.classList.add("loader-hidden");
@@ -738,3 +725,4 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   }
 })();
 // ═══════════════════════════════════════════════════════════════════
+
