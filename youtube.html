@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
@@ -33,35 +33,55 @@
       }
 
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      html { scroll-behavior: smooth; overflow-x: hidden; }
+      html { scroll-behavior: smooth; overflow-x: hidden; scroll-padding-top: 84px; }
 
       body {
         background: #0b0f14;
         color: var(--text);
-        font-family: Inter, system-ui, -apple-system, sans-serif;
+        font-family: Urbanist, Inter, system-ui, -apple-system, sans-serif;
         line-height: 1.6;
         overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
         min-height: 100vh;
+        padding-top: 80px;
       }
 
       a { color: inherit; text-decoration: none; }
       a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
       img { display: block; max-width: 100%; }
 
-      /* ── Header ── */
+      /* ── Dynamic Island Navbar ── */
+      .nav-island-wrap {
+        left: 0; right: 0; top: 0;
+        padding: 0.75rem clamp(1rem, 4vw, 2.5rem) 0;
+        position: fixed;
+        z-index: 100;
+        pointer-events: none;
+      }
+
       .site-header {
         align-items: center;
-        backdrop-filter: blur(20px);
-        background: rgba(11,15,20,0.9);
-        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(22px) saturate(180%);
+        -webkit-backdrop-filter: blur(22px) saturate(180%);
+        background: var(--navbar-bg, rgba(11,15,20,0.82));
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.04) inset;
         display: flex;
         gap: 1rem;
         justify-content: space-between;
-        left: 0; right: 0; top: 0;
-        padding: 0.9rem clamp(1rem, 4vw, 3rem);
-        position: sticky;
-        z-index: 50;
+        margin: 0 auto;
+        max-width: 900px;
+        padding: 0.6rem 1.1rem 0.6rem 0.75rem;
+        pointer-events: all;
+        transition: padding 280ms ease, box-shadow 280ms ease, max-width 280ms ease;
+        width: 100%;
+      }
+
+      .site-header.scrolled {
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.06) inset;
+        max-width: 740px;
+        padding: 0.45rem 1rem 0.45rem 0.65rem;
       }
 
       .brand { align-items: center; color: var(--text); display: flex; font-weight: 800; gap: 0.5rem; }
@@ -370,10 +390,12 @@
         .video-desc { font-size: 0.82rem; }
       }
     </style>
+    
   </head>
   <body>
 
     <!-- Header -->
+    <div class="nav-island-wrap">
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Back to Aditya Suyal portfolio">
         <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
@@ -387,6 +409,7 @@
         Back to Portfolio
       </a>
     </header>
+    </div><!-- /nav-island-wrap -->
 
     <main>
 
@@ -821,6 +844,86 @@
     <script src="chatbot.js"></script>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
+
+      // ── Scroll-driven background ──────────────────────────────────────────
+      (function () {
+        const darkR = 11,  darkG = 15,  darkB = 20;
+        const lightR = 232, lightG = 237, lightB = 244;
+
+        function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+        function lerpF(a, b, t) { return +(a + (b - a) * t).toFixed(3); }
+        function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+
+        function bgLuminance(t) {
+          const r = lerp(darkR, lightR, t) / 255;
+          const g = lerp(darkG, lightG, t) / 255;
+          const b = lerp(darkB, lightB, t) / 255;
+          return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        }
+
+        function updateBg() {
+          const scrolled = window.scrollY;
+          const total = document.documentElement.scrollHeight - window.innerHeight;
+          const t = total > 0 ? Math.min(scrolled / total, 1) : 0;
+
+          const root = document.documentElement;
+          const lum = bgLuminance(t);
+
+          // Background
+          document.body.style.background = `rgb(${lerp(darkR,lightR,t)},${lerp(darkG,lightG,t)},${lerp(darkB,lightB,t)})`;
+
+          // Text colors
+          const textT = clamp((lum - 0.16) / 0.04, 0, 1);
+          root.style.setProperty("--text",
+            `rgb(${lerp(248,15,textT)},${lerp(250,23,textT)},${lerp(252,42,textT)})`);
+          root.style.setProperty("--muted",
+            `rgb(${lerp(226,30,textT)},${lerp(232,41,textT)},${lerp(240,59,textT)})`);
+          root.style.setProperty("--quiet",
+            `rgb(${lerp(203,51,textT)},${lerp(213,65,textT)},${lerp(225,85,textT)})`);
+
+          // Panel / card backgrounds
+          root.style.setProperty("--panel",
+            `rgb(${lerp(27,255,t)},${lerp(36,255,t)},${lerp(48,255,t)})`);
+          root.style.setProperty("--panel-strong",
+            `rgb(${lerp(27,241,t)},${lerp(36,245,t)},${lerp(48,249,t)})`);
+          root.style.setProperty("--secondary-bg",
+            `rgb(${lerp(17,241,t)},${lerp(24,245,t)},${lerp(39,249,t)})`);
+
+          // Borders
+          root.style.setProperty("--line",
+            `rgb(${lerp(42,148,t)},${lerp(52,163,t)},${lerp(65,184,t)})`);
+
+          // Shadow
+          const shadowAlpha = lerpF(0.35, 0.10, t);
+          root.style.setProperty("--shadow", `0 10px 30px rgba(15,23,42,${shadowAlpha})`);
+
+          // Navbar
+          const navAlpha = lerpF(0.88, 0.92, t);
+          root.style.setProperty("--navbar-bg",
+            `rgba(${lerp(darkR,lightR,t)},${lerp(darkG,lightG,t)},${lerp(darkB,lightB,t)},${navAlpha})`);
+
+          // Skill cards
+          root.style.setProperty("--card-bg",     `rgba(99,102,241,${lerpF(0.03,0.07,t)})`);
+          root.style.setProperty("--card-border", `rgba(99,102,241,${lerpF(0.08,0.25,t)})`);
+
+          // Skill tags
+          root.style.setProperty("--tag-bg",     `rgba(99,102,241,${lerpF(0.10,0.12,t)})`);
+          root.style.setProperty("--tag-border", `rgba(99,102,241,${lerpF(0.20,0.35,t)})`);
+          root.style.setProperty("--tag-color",
+            `rgb(${lerp(165,55,t)},${lerp(180,48,t)},${lerp(252,163,t)})`);
+        }
+
+        window.addEventListener("scroll", updateBg, { passive: true });
+        updateBg();
+
+        // Dynamic island: toggle .scrolled on the pill
+        const header = document.querySelector(".site-header");
+        function updateIsland() {
+          if (header) header.classList.toggle("scrolled", window.scrollY > 60);
+        }
+        window.addEventListener("scroll", updateIsland, { passive: true });
+        updateIsland();
+      })();
 
       // ── Series filter ──────────────────────────────────────────
       const seriesBtns = document.querySelectorAll(".series-btn");

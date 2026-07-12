@@ -330,6 +330,7 @@
     <div class="scroll-progress" aria-hidden="true"></div>
 
     <!-- ── Header ── -->
+    <div class="nav-island-wrap">
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Aditya Suyal portfolio home">
         <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
@@ -361,6 +362,7 @@
         <a href="index.html#contact">Contact</a>
       </nav>
     </header>
+    </div><!-- /nav-island-wrap -->
 
     <main>
 
@@ -471,6 +473,14 @@
     <script src="chatbot.js"></script>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Dynamic island: toggle .scrolled on scroll
+      const _islandHeader = document.querySelector(".site-header");
+      function _updateIsland() {
+        if (_islandHeader) _islandHeader.classList.toggle("scrolled", window.scrollY > 60);
+      }
+      window.addEventListener("scroll", _updateIsland, { passive: true });
+      _updateIsland();
 
       // Scroll progress
       const bar = document.querySelector(".scroll-progress");

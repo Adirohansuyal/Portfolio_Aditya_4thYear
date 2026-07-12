@@ -331,6 +331,12 @@ const updateScrollState = () => {
     scrollProgress.style.transform = `scaleX(${Math.min(progress, 1)})`;
   }
 
+  // Dynamic island: shrink pill after scrolling down 60px
+  const header = document.querySelector(".site-header");
+  if (header) {
+    header.classList.toggle("scrolled", window.scrollY > 60);
+  }
+
   let currentId = "";
   document.querySelectorAll("main section[id]").forEach((section) => {
     const rect = section.getBoundingClientRect();
