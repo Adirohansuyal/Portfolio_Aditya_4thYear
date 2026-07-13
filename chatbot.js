@@ -154,9 +154,10 @@ GitHub: https://github.com/Adirohansuyal
 
 Keep answers concise, friendly, and professional. Use bullet points for lists. Do not make up any information not listed above.`;
 
-  const GROQ_API_KEY = "Your_API_Key";
-  const GROQ_MODEL   = "llama-3.3-70b-versatile";
-  const GROQ_URL     = "https://api.groq.com/openai/v1/chat/completions";
+  // API key lives in Netlify environment — never hardcoded here.
+  // Requests go to the serverless proxy at netlify/functions/groq-proxy.js
+  const GROQ_MODEL = "llama-3.3-70b-versatile";
+  const GROQ_URL   = "/.netlify/functions/groq-proxy";
 
   // ── Extract readable content from the current page ─────────────────
   function getPageContext() {
@@ -536,8 +537,7 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
         const res = await fetch(GROQ_URL, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${GROQ_API_KEY}`
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
             model: GROQ_MODEL,
