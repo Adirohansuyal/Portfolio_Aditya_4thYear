@@ -242,16 +242,13 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 .chat-fab.is-open .chat-fab-icon--open  { display: none; }
 .chat-fab.is-open .chat-fab-icon--close { display: block; }
 
-/* Backdrop — hidden on desktop, shown on mobile via media query */
-.chat-backdrop { display: none; }
-
 .chat-window {
   background: #0d1117;
   border: 1px solid rgba(59,130,246,0.25);
   border-radius: 20px;
   bottom: 6rem;
   box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.1);
-  display: flex;
+  display: none;
   flex-direction: column;
   font-family: Inter, system-ui, sans-serif;
   height: min(560px, calc(100dvh - 8rem));
@@ -259,17 +256,10 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   right: 1.75rem;
   width: min(380px, calc(100vw - 2rem));
   z-index: 9998;
-  /* Hidden by default — use transform+opacity so transitions work */
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(16px) scale(0.97);
-  transition: opacity 220ms ease, transform 220ms ease;
 }
 .chat-window.is-open {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0) scale(1);
-  animation: none;
+  display: flex;
+  animation: chatbot-in 200ms ease both;
 }
 @keyframes chatbot-in {
   from { opacity: 0; transform: translateY(16px) scale(0.97); }
@@ -287,7 +277,6 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   flex-shrink: 0;
 }
 .chat-header-info { align-items: center; display: flex; gap: 0.65rem; }
-.chat-header-row  { display: flex; align-items: center; justify-content: space-between; width: 100%; }
 .chat-avatar {
   align-items: center;
   background: linear-gradient(135deg,#1d4ed8,#7c3aed);
@@ -417,97 +406,11 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 .chat-send-btn:disabled { background: #1e293b; cursor: not-allowed; transform: none; }
 
 @media (max-width: 480px) {
-  /* ── Full-screen overlay on mobile ── */
-  .chat-backdrop {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(4px);
-    z-index: 9997;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 260ms ease;
-  }
-  .chat-backdrop.is-open {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .chat-window {
-    /* Cover the full screen */
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
-    border-radius: 0;
-    border: none;
-    bottom: auto;
-    right: auto;
-    /* Keyboard: input row respects soft keyboard */
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    /* Override desktop transform with slide-from-bottom */
-    transform: translateY(100%);
-    transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), opacity 260ms ease;
-  }
-  .chat-window.is-open {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  /* Hide the FAB while chat is open on mobile */
-  .chat-fab.is-open {
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(0.8);
-  }
-
-  /* Header: drag handle pill at top */
-  .chat-header {
-    border-radius: 0;
-    padding: 0.6rem 1rem 0.75rem;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .chat-header::before {
-    content: "";
-    display: block;
-    width: 36px;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.2);
-    margin: 0 auto;
-  }
-  .chat-header-sub { display: block; }
-
-  /* Messages area fills remaining space */
-  .chat-messages { flex: 1; padding: 1rem; gap: 0.75rem; }
-  .chat-bubble { font-size: 0.9rem; padding: 0.7rem 0.9rem; }
-
-  /* Suggestions: single scrollable row */
-  .chat-suggestions {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 0.5rem 1rem;
-  }
-  .chat-suggestions::-webkit-scrollbar { display: none; }
-  .chat-suggestions button { flex-shrink: 0; font-size: 0.75rem; }
-
-  /* Input row sticks above keyboard */
-  .chat-input-row {
-    padding: 0.75rem 1rem;
-    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
-    border-radius: 0;
-  }
-  /* font-size 1rem prevents iOS auto-zoom on focus */
-  .chat-input { font-size: 1rem; border-radius: 14px; padding: 0.7rem 0.9rem; }
-  .chat-send-btn { height: 2.6rem; width: 2.6rem; border-radius: 14px; }
+  .chat-window { bottom: 0; border-radius: 20px 20px 0 0; height: min(520px,90dvh); right: 0; width: 100vw; }
+  .chat-fab { bottom: 1.25rem; right: 1.25rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .chat-window { transition: none !important; animation: none !important; }
+  .chat-window { animation: none; }
   .chat-typing-dot { animation: none; opacity: 0.6; }
 }
     `;
@@ -517,25 +420,22 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   // ── Inject chatbot HTML into the page ─────────────────────────────
   function injectHTML() {
     const html = `
-    <div class="chat-backdrop" id="chat-backdrop"></div>
     <button class="chat-fab" id="chat-fab" aria-label="Open portfolio chatbot" type="button">
       <svg class="chat-fab-icon chat-fab-icon--open" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <svg class="chat-fab-icon chat-fab-icon--close" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="chat-window" id="chat-window" role="dialog" aria-modal="true" aria-label="Portfolio assistant">
       <div class="chat-header">
-        <div class="chat-header-row">
-          <div class="chat-header-info">
-            <img class="chat-avatar chat-avatar--img" src="assets/aditya-corporate.png" alt="Aditya" aria-hidden="true" />
-            <div>
-              <p class="chat-header-name">Aditya's Assistant</p>
-              <p class="chat-header-sub">Ask me anything about this portfolio</p>
-            </div>
+        <div class="chat-header-info">
+          <img class="chat-avatar chat-avatar--img" src="assets/aditya-corporate.png" alt="Aditya" aria-hidden="true" />
+          <div>
+            <p class="chat-header-name">Aditya's Assistant</p>
+            <p class="chat-header-sub">Ask me anything about this portfolio</p>
           </div>
-          <button class="chat-close-btn" id="chat-close-btn" type="button" aria-label="Close chat">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
         </div>
+        <button class="chat-close-btn" id="chat-close-btn" type="button" aria-label="Close chat">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
       <div class="chat-messages" id="chat-messages" aria-live="polite" aria-relevant="additions"></div>
       <div class="chat-suggestions" id="chat-suggestions">
@@ -578,20 +478,13 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 
     if (!fab || !win) return;
 
-    const backdrop = document.getElementById("chat-backdrop");
-    const isMobile = () => window.innerWidth <= 480;
-
     // ── Open / close ─────────────────────────────────────────────────
     function openChat() {
       chatOpen = true;
       win.classList.add("is-open");
       fab.classList.add("is-open");
       fab.setAttribute("aria-label", "Close portfolio chatbot");
-      if (backdrop) backdrop.classList.add("is-open");
-      // Lock body scroll while chat is open (especially on mobile)
-      document.body.style.overflow = "hidden";
-      // Delay focus on mobile so the slide-up finishes before keyboard triggers
-      setTimeout(() => inputEl.focus(), isMobile() ? 280 : 0);
+      inputEl.focus();
       if (!messagesEl.children.length) addWelcome();
     }
 
@@ -600,14 +493,10 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
       win.classList.remove("is-open");
       fab.classList.remove("is-open");
       fab.setAttribute("aria-label", "Open portfolio chatbot");
-      if (backdrop) backdrop.classList.remove("is-open");
-      document.body.style.overflow = "";
-      inputEl.blur(); // dismiss keyboard on mobile
     }
 
     fab.addEventListener("click", (e) => { e.stopPropagation(); chatOpen ? closeChat() : openChat(); });
     closeBtn.addEventListener("click", (e) => { e.stopPropagation(); closeChat(); });
-    if (backdrop) backdrop.addEventListener("click", () => closeChat());
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && chatOpen) closeChat(); });
 
     // ── Welcome message with page-specific content ───────────────────
