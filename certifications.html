@@ -511,11 +511,23 @@
           root.style.setProperty('--secondary-bg', `rgb(${lerp(15,195,t)},${lerp(21,220,t)},${lerp(32,248,t)})`);
           root.style.setProperty('--line',         `rgb(${lerp(46,100,t)},${lerp(58,155,t)},${lerp(78,210,t)})`);
 
-          const cardLum = (panelR/255)*0.2126 + (panelG/255)*0.7152 + (panelB/255)*0.0722;
-          const cT = ease(clamp((cardLum - 0.08) / 0.35, 0, 1));
-          root.style.setProperty('--text',  `rgb(${lerp(241,10,cT)},${lerp(245,22,cT)},${lerp(249,52,cT)})`);
-          root.style.setProperty('--muted', `rgb(${lerp(148,28,cT)},${lerp(163,55,cT)},${lerp(184,90,cT)})`);
-          root.style.setProperty('--quiet', `rgb(${lerp(100,42,cT)},${lerp(116,70,cT)},${lerp(139,108,cT)})`);
+          // ── Text contrast ramp (same wide-ramp logic as youtube page) ──
+          // Wide window lum 0.05 → 0.45 so text darkens very gradually through transition
+          //   dark bg  (lum~0):   text = #F1F5F9  contrast 15:1 ✓
+          //   light bg (lum~0.9): text = #0D1526  contrast 16:1 ✓
+          const lum = bgLuminance(t);
+          const textT = clamp((lum - 0.05) / 0.40, 0, 1);
+          const tT = ease(textT);
+
+          // --text  : #F1F5F9 (near-white) → #0D1526 (deep navy-black)
+          root.style.setProperty('--text',
+            `rgb(${lerp(241,13,tT)},${lerp(245,21,tT)},${lerp(249,38,tT)})`);
+          // --muted : #94A3B8 → #1E3A5F  (both ends 7:1+ contrast ✓)
+          root.style.setProperty('--muted',
+            `rgb(${lerp(148,30,tT)},${lerp(163,58,tT)},${lerp(184,95,tT)})`);
+          // --quiet : #64748B → #374151  (both ends ~4.5:1 contrast ✓)
+          root.style.setProperty('--quiet',
+            `rgb(${lerp(100,55,tT)},${lerp(116,65,tT)},${lerp(139,81,tT)})`);
 
           const shadowAlpha = lerpF(0.45, 0.08, t);
           root.style.setProperty('--shadow', `0 10px 30px rgba(10,14,26,${shadowAlpha})`);
