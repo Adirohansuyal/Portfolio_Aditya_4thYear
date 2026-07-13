@@ -406,8 +406,51 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 .chat-send-btn:disabled { background: #1e293b; cursor: not-allowed; transform: none; }
 
 @media (max-width: 480px) {
-  .chat-window { bottom: 0; border-radius: 20px 20px 0 0; height: min(520px,90dvh); right: 0; width: 100vw; }
+  .chat-window {
+    /* Full-width sheet from the bottom */
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+
+    /* Use dvh so it never overflows behind the browser chrome */
+    height: min(75dvh, 540px);
+    max-height: 75dvh;
+
+    /* keyboard offset is applied via JS --kb-offset custom property */
+    transform: translateY(calc(-1 * var(--kb-offset, 0px)));
+    transition: transform 180ms ease, height 180ms ease;
+  }
   .chat-fab { bottom: 1.25rem; right: 1.25rem; }
+
+  /* Tighten header on small screens */
+  .chat-header { padding: 0.75rem 0.9rem; }
+  .chat-header-sub { display: none; }
+
+  /* Let messages area shrink so input is always visible */
+  .chat-messages { padding: 0.75rem; gap: 0.6rem; }
+  .chat-bubble { font-size: 0.82rem; padding: 0.6rem 0.8rem; }
+
+  /* Suggestions: horizontal scroll instead of wrapping */
+  .chat-suggestions {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0.5rem 0.75rem;
+    gap: 0.4rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .chat-suggestions::-webkit-scrollbar { display: none; }
+  .chat-suggestions button { flex-shrink: 0; font-size: 0.71rem; padding: 0.3rem 0.65rem; }
+
+  /* Larger touch targets for input row */
+  .chat-input-row { padding: 0.65rem 0.75rem; gap: 0.45rem; }
+  .chat-input { font-size: 1rem; padding: 0.6rem 0.75rem; border-radius: 12px; }
+  .chat-send-btn { height: 2.4rem; width: 2.4rem; border-radius: 12px; flex-shrink: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .chat-window { animation: none; }
@@ -478,13 +521,35 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 
     if (!fab || !win) return;
 
+    // ── visualViewport keyboard offset (mobile) ──────────────────────
+    // When the soft keyboard opens, the visual viewport shrinks.
+    // We track the gap and push the chat window up by exactly that amount
+    // so the input bar is never hidden behind the keyboard.
+    function applyKeyboardOffset() {
+      if (window.visualViewport && window.innerWidth <= 480) {
+        const offset = Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop);
+        win.style.setProperty("--kb-offset", offset + "px");
+      } else {
+        win.style.setProperty("--kb-offset", "0px");
+      }
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", applyKeyboardOffset);
+      window.visualViewport.addEventListener("scroll", applyKeyboardOffset);
+    }
+
     // ── Open / close ─────────────────────────────────────────────────
     function openChat() {
       chatOpen = true;
       win.classList.add("is-open");
       fab.classList.add("is-open");
       fab.setAttribute("aria-label", "Close portfolio chatbot");
-      inputEl.focus();
+      // Small delay before focus on mobile so the window animation completes
+      // before the keyboard is triggered (avoids layout jank)
+      setTimeout(() => {
+        inputEl.focus();
+        applyKeyboardOffset();
+      }, window.innerWidth <= 480 ? 200 : 0);
       if (!messagesEl.children.length) addWelcome();
     }
 
@@ -493,6 +558,8 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
       win.classList.remove("is-open");
       fab.classList.remove("is-open");
       fab.setAttribute("aria-label", "Open portfolio chatbot");
+      win.style.setProperty("--kb-offset", "0px");
+      inputEl.blur(); // dismiss keyboard on mobile
     }
 
     fab.addEventListener("click", (e) => { e.stopPropagation(); chatOpen ? closeChat() : openChat(); });
