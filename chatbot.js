@@ -242,6 +242,9 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 .chat-fab.is-open .chat-fab-icon--open  { display: none; }
 .chat-fab.is-open .chat-fab-icon--close { display: block; }
 
+/* Backdrop — hidden on desktop, shown on mobile via media query */
+.chat-backdrop { display: none; }
+
 .chat-window {
   background: #0d1117;
   border: 1px solid rgba(59,130,246,0.25);
@@ -406,54 +409,111 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 .chat-send-btn:disabled { background: #1e293b; cursor: not-allowed; transform: none; }
 
 @media (max-width: 480px) {
-  .chat-window {
-    /* Full-width sheet from the bottom */
-    bottom: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    border-radius: 20px 20px 0 0;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-
-    /* Use dvh so it never overflows behind the browser chrome */
-    height: min(75dvh, 540px);
-    max-height: 75dvh;
-
-    /* keyboard offset is applied via JS --kb-offset custom property */
-    transform: translateY(calc(-1 * var(--kb-offset, 0px)));
-    transition: transform 180ms ease, height 180ms ease;
+  /* ── Full-screen overlay on mobile ── */
+  .chat-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    z-index: 9997;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 260ms ease;
   }
-  .chat-fab { bottom: 1.25rem; right: 1.25rem; }
+  .chat-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-  /* Tighten header on small screens */
-  .chat-header { padding: 0.75rem 0.9rem; }
-  .chat-header-sub { display: none; }
+  .chat-window {
+    /* Cover the full screen */
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    border: none;
+    bottom: auto;
+    right: auto;
 
-  /* Let messages area shrink so input is always visible */
-  .chat-messages { padding: 0.75rem; gap: 0.6rem; }
-  .chat-bubble { font-size: 0.82rem; padding: 0.6rem 0.8rem; }
+    /* Keyboard: input row respects soft keyboard via padding */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
 
-  /* Suggestions: horizontal scroll instead of wrapping */
+    /* Slide up from bottom on open */
+    transform: translateY(100%);
+    display: flex !important; /* always in DOM for transition */
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), opacity 260ms ease;
+  }
+  .chat-window.is-open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+    animation: none; /* override desktop animation */
+  }
+
+  /* Hide the FAB while chat is open on mobile */
+  .chat-fab.is-open { opacity: 0; pointer-events: none; transform: scale(0.8); }
+
+  /* Header: full-width with a drag handle pill */
+  .chat-header {
+    border-radius: 0;
+    padding: 0.6rem 1rem 0.75rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .chat-header::before {
+    content: "";
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.2);
+    margin: 0 auto;
+  }
+  .chat-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .chat-header-sub { display: block; }
+
+  /* Messages area fills remaining space */
+  .chat-messages {
+    flex: 1;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+  .chat-bubble { font-size: 0.9rem; padding: 0.7rem 0.9rem; }
+
+  /* Suggestions: single scrollable row */
   .chat-suggestions {
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding: 0.5rem 0.75rem;
-    gap: 0.4rem;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    padding: 0.5rem 1rem;
   }
   .chat-suggestions::-webkit-scrollbar { display: none; }
-  .chat-suggestions button { flex-shrink: 0; font-size: 0.71rem; padding: 0.3rem 0.65rem; }
+  .chat-suggestions button { flex-shrink: 0; font-size: 0.75rem; }
 
-  /* Larger touch targets for input row */
-  .chat-input-row { padding: 0.65rem 0.75rem; gap: 0.45rem; }
-  .chat-input { font-size: 1rem; padding: 0.6rem 0.75rem; border-radius: 12px; }
-  .chat-send-btn { height: 2.4rem; width: 2.4rem; border-radius: 12px; flex-shrink: 0; }
+  /* Input row: sticks above keyboard via interactive-widget */
+  .chat-input-row {
+    padding: 0.75rem 1rem;
+    /* extra bottom padding for home bar on iOS */
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
+    border-radius: 0;
+  }
+  /* Prevent iOS auto-zoom on input focus */
+  .chat-input { font-size: 1rem; border-radius: 14px; padding: 0.7rem 0.9rem; }
+  .chat-send-btn { height: 2.6rem; width: 2.6rem; border-radius: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .chat-window { animation: none; }
+  .chat-window { transition: none; animation: none; }
   .chat-typing-dot { animation: none; opacity: 0.6; }
 }
     `;
@@ -463,22 +523,25 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   // ── Inject chatbot HTML into the page ─────────────────────────────
   function injectHTML() {
     const html = `
+    <div class="chat-backdrop" id="chat-backdrop"></div>
     <button class="chat-fab" id="chat-fab" aria-label="Open portfolio chatbot" type="button">
       <svg class="chat-fab-icon chat-fab-icon--open" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <svg class="chat-fab-icon chat-fab-icon--close" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="chat-window" id="chat-window" role="dialog" aria-modal="true" aria-label="Portfolio assistant">
       <div class="chat-header">
-        <div class="chat-header-info">
-          <img class="chat-avatar chat-avatar--img" src="assets/aditya-corporate.png" alt="Aditya" aria-hidden="true" />
-          <div>
-            <p class="chat-header-name">Aditya's Assistant</p>
-            <p class="chat-header-sub">Ask me anything about this portfolio</p>
+        <div class="chat-header-row">
+          <div class="chat-header-info">
+            <img class="chat-avatar chat-avatar--img" src="assets/aditya-corporate.png" alt="Aditya" aria-hidden="true" />
+            <div>
+              <p class="chat-header-name">Aditya's Assistant</p>
+              <p class="chat-header-sub">Ask me anything about this portfolio</p>
+            </div>
           </div>
+          <button class="chat-close-btn" id="chat-close-btn" type="button" aria-label="Close chat">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
-        <button class="chat-close-btn" id="chat-close-btn" type="button" aria-label="Close chat">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
       </div>
       <div class="chat-messages" id="chat-messages" aria-live="polite" aria-relevant="additions"></div>
       <div class="chat-suggestions" id="chat-suggestions">
@@ -521,22 +584,8 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 
     if (!fab || !win) return;
 
-    // ── visualViewport keyboard offset (mobile) ──────────────────────
-    // When the soft keyboard opens, the visual viewport shrinks.
-    // We track the gap and push the chat window up by exactly that amount
-    // so the input bar is never hidden behind the keyboard.
-    function applyKeyboardOffset() {
-      if (window.visualViewport && window.innerWidth <= 480) {
-        const offset = Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop);
-        win.style.setProperty("--kb-offset", offset + "px");
-      } else {
-        win.style.setProperty("--kb-offset", "0px");
-      }
-    }
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", applyKeyboardOffset);
-      window.visualViewport.addEventListener("scroll", applyKeyboardOffset);
-    }
+    const backdrop = document.getElementById("chat-backdrop");
+    const isMobile = () => window.innerWidth <= 480;
 
     // ── Open / close ─────────────────────────────────────────────────
     function openChat() {
@@ -544,12 +593,11 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
       win.classList.add("is-open");
       fab.classList.add("is-open");
       fab.setAttribute("aria-label", "Close portfolio chatbot");
-      // Small delay before focus on mobile so the window animation completes
-      // before the keyboard is triggered (avoids layout jank)
-      setTimeout(() => {
-        inputEl.focus();
-        applyKeyboardOffset();
-      }, window.innerWidth <= 480 ? 200 : 0);
+      if (backdrop) backdrop.classList.add("is-open");
+      // Lock body scroll while chat is open (especially on mobile)
+      document.body.style.overflow = "hidden";
+      // Delay focus on mobile so the slide-up finishes before keyboard triggers
+      setTimeout(() => inputEl.focus(), isMobile() ? 280 : 0);
       if (!messagesEl.children.length) addWelcome();
     }
 
@@ -558,12 +606,14 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
       win.classList.remove("is-open");
       fab.classList.remove("is-open");
       fab.setAttribute("aria-label", "Open portfolio chatbot");
-      win.style.setProperty("--kb-offset", "0px");
+      if (backdrop) backdrop.classList.remove("is-open");
+      document.body.style.overflow = "";
       inputEl.blur(); // dismiss keyboard on mobile
     }
 
     fab.addEventListener("click", (e) => { e.stopPropagation(); chatOpen ? closeChat() : openChat(); });
     closeBtn.addEventListener("click", (e) => { e.stopPropagation(); closeChat(); });
+    if (backdrop) backdrop.addEventListener("click", () => closeChat());
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && chatOpen) closeChat(); });
 
     // ── Welcome message with page-specific content ───────────────────
