@@ -623,7 +623,6 @@
         <a href="index.html#projects">Projects</a>
         <a href="research.html">Research</a>
         <a href="youtube.html" class="active">YouTube</a>
-        <a href="index.html#documents">Docs</a>
         <a href="index.html#skills">Skills</a>
         <a href="certifications.html">Certifications</a>
         <a href="awards.html">Awards</a>
@@ -1104,6 +1103,43 @@
     <!-- ── /Resume Preview Modal ──────────────────────────────────────── -->
 
     <script src="chatbot.js"></script>
+    <script>
+      // ── Hamburger / mobile nav ──
+      (function () {
+        const hamburger = document.querySelector(".hamburger");
+        const primaryNav = document.querySelector("#primary-nav");
+        if (!hamburger || !primaryNav) return;
+
+        function openNav() {
+          primaryNav.classList.add("nav-open");
+          hamburger.setAttribute("aria-expanded", "true");
+        }
+        function closeNav() {
+          primaryNav.classList.remove("nav-open");
+          hamburger.setAttribute("aria-expanded", "false");
+        }
+
+        hamburger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          primaryNav.classList.contains("nav-open") ? closeNav() : openNav();
+        });
+
+        // Close when a nav link is clicked
+        primaryNav.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", closeNav);
+        });
+
+        // Close when clicking outside the header
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest(".site-header")) closeNav();
+        });
+
+        // Close on Escape
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeNav();
+        });
+      })();
+    </script>
     <script>
       // ── Resume modal ──
       (function () {
