@@ -1220,8 +1220,9 @@
           const lum = bgLuminance(t);
 
           // ── Body background ──
-          document.body.style.background =
-            `rgb(${lerp(darkR,lightR,t)},${lerp(darkG,lightG,t)},${lerp(darkB,lightB,t)})`;
+          const bgValue = `rgb(${lerp(darkR,lightR,t)},${lerp(darkG,lightG,t)},${lerp(darkB,lightB,t)})`;
+          document.body.style.background = bgValue;
+          root.style.setProperty("--bg", bgValue);
 
           // ── Text contrast ramp ──
           // Wide ramp: lum 0.05 → 0.45 so text darkens very gradually.

@@ -91,7 +91,9 @@ const year = document.querySelector("#year");
     const lum = bgLuminance(t); // 0 (very dark) → ~0.83 (light grey)
 
     // Background
-    document.body.style.background = `rgb(${lerp(darkR,lightR,t)},${lerp(darkG,lightG,t)},${lerp(darkB,lightB,t)})`;
+    const bgValue = `rgb(${lerp(darkR,lightR,t)},${lerp(darkG,lightG,t)},${lerp(darkB,lightB,t)})`;
+    document.body.style.background = bgValue;
+    document.documentElement.style.setProperty("--bg", bgValue);
 
     // ── Text colors: maximum contrast at all times ────────────────────
     // Hard switch: white text on dark bg, near-black on light bg.

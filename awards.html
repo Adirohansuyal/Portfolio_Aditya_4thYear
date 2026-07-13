@@ -586,6 +586,7 @@
             radial-gradient(ellipse 45% 35% at 45% 90%, rgba(168,218,255,${mist * 0.5}) 0%, transparent 70%),
             rgb(${bR},${bG},${bB})
           `.trim();
+          root.style.setProperty("--bg", `rgb(${bR},${bG},${bB})`);
 
           const whiteLift = Math.sin(t * Math.PI);
           const panelR = Math.min(255, lerp(21, 210, t) + Math.round(whiteLift * 60));

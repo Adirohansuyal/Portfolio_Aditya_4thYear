@@ -253,6 +253,21 @@ img {
   justify-content: center;
   padding: 0.5rem 0.6rem;
   width: 2.6rem;
+  transition: background 200ms ease, border-color 200ms ease, transform 150ms ease;
+}
+
+.hamburger:hover {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: var(--accent);
+}
+
+.hamburger:active {
+  transform: scale(0.93);
+}
+
+.hamburger[aria-expanded="true"] {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: var(--accent);
 }
 
 .hamburger-bar {
@@ -1253,26 +1268,116 @@ h3 {
 
   .hamburger { display: flex; }
 
+  /* ── Mobile nav drawer ── */
   .site-header .nav-links {
-    display: none;
+    /* Layout */
     flex-direction: column;
     gap: 0;
     grid-column: 1 / -1;
-    background: var(--navbar-bg, rgba(11, 15, 20, 0.97));
-    border-top: 1px solid var(--line);
-    margin: 0 calc(-1 * clamp(1rem, 4vw, 3rem));
-    padding: 0.5rem clamp(1rem, 4vw, 3rem) 1rem;
+
+    /* Solid surface — adapts with the scroll-driven background */
+    background: var(--bg, #0A0E1A);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.45),
+      0 2px 8px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+
+    /* Spacing */
+    margin: 0.6rem 0 0;
+    padding: 0.5rem 0;
+    overflow: hidden;
+
+    /* Hidden state — collapsed & invisible */
+    display: flex;          /* always flex so transitions work */
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px) scale(0.98);
+    transform-origin: top center;
+    transition:
+      max-height 380ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity    280ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform  300ms cubic-bezier(0.34, 1.1, 0.64, 1),
+      box-shadow 280ms ease;
   }
 
-  .site-header .nav-links.nav-open { display: flex; }
+  /* Open state */
+  .site-header .nav-links.nav-open {
+    max-height: 600px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 4px 12px rgba(0, 0, 0, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  }
 
+  /* Individual nav links */
   .site-header .nav-links a {
-    padding: 0.65rem 0;
-    border-bottom: 1px solid var(--line);
+    padding: 0.8rem 1.25rem;
     font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition:
+      background 200ms ease,
+      color      200ms ease,
+      padding-left 200ms ease;
+
+    /* Staggered fade-in per item */
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  .site-header .nav-links.nav-open a {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Stagger delays for each link */
+  .site-header .nav-links.nav-open a:nth-child(1)  { transition-delay: 40ms;  }
+  .site-header .nav-links.nav-open a:nth-child(2)  { transition-delay: 70ms;  }
+  .site-header .nav-links.nav-open a:nth-child(3)  { transition-delay: 100ms; }
+  .site-header .nav-links.nav-open a:nth-child(4)  { transition-delay: 130ms; }
+  .site-header .nav-links.nav-open a:nth-child(5)  { transition-delay: 160ms; }
+  .site-header .nav-links.nav-open a:nth-child(6)  { transition-delay: 190ms; }
+  .site-header .nav-links.nav-open a:nth-child(7)  { transition-delay: 220ms; }
+  .site-header .nav-links.nav-open a:nth-child(8)  { transition-delay: 250ms; }
+  .site-header .nav-links.nav-open a:nth-child(9)  { transition-delay: 280ms; }
+  .site-header .nav-links.nav-open a:nth-child(10) { transition-delay: 310ms; }
+
+  /* Also transition opacity/transform on the items themselves */
+  .site-header .nav-links a {
+    transition:
+      background    200ms ease,
+      color         200ms ease,
+      padding-left  200ms ease,
+      opacity       220ms ease,
+      transform     220ms cubic-bezier(0.34, 1.1, 0.64, 1);
   }
 
   .site-header .nav-links a:last-child { border-bottom: none; }
+
+  /* Hover & active state */
+  .site-header .nav-links a:hover {
+    background: rgba(59, 130, 246, 0.08);
+    color: var(--accent-strong);
+    padding-left: 1.55rem;
+  }
+
+  .site-header .nav-links a.active {
+    background: rgba(59, 130, 246, 0.10);
+    color: var(--accent-strong);
+    border-left: 3px solid var(--accent);
+    padding-left: calc(1.25rem - 3px);
+  }
 
   /* ── Hero ── */
   .hero {
