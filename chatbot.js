@@ -251,7 +251,7 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   border-radius: 20px;
   bottom: 6rem;
   box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.1);
-  display: none;
+  display: flex;
   flex-direction: column;
   font-family: Inter, system-ui, sans-serif;
   height: min(560px, calc(100dvh - 8rem));
@@ -259,10 +259,17 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   right: 1.75rem;
   width: min(380px, calc(100vw - 2rem));
   z-index: 9998;
+  /* Hidden by default — use transform+opacity so transitions work */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(16px) scale(0.97);
+  transition: opacity 220ms ease, transform 220ms ease;
 }
 .chat-window.is-open {
-  display: flex;
-  animation: chatbot-in 200ms ease both;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  animation: none;
 }
 @keyframes chatbot-in {
   from { opacity: 0; transform: translateY(16px) scale(0.97); }
@@ -280,6 +287,7 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   flex-shrink: 0;
 }
 .chat-header-info { align-items: center; display: flex; gap: 0.65rem; }
+.chat-header-row  { display: flex; align-items: center; justify-content: space-between; width: 100%; }
 .chat-avatar {
   align-items: center;
   background: linear-gradient(135deg,#1d4ed8,#7c3aed);
@@ -437,28 +445,25 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
     border: none;
     bottom: auto;
     right: auto;
-
-    /* Keyboard: input row respects soft keyboard via padding */
+    /* Keyboard: input row respects soft keyboard */
     padding-bottom: env(safe-area-inset-bottom, 0px);
-
-    /* Slide up from bottom on open */
+    /* Override desktop transform with slide-from-bottom */
     transform: translateY(100%);
-    display: flex !important; /* always in DOM for transition */
-    opacity: 0;
-    pointer-events: none;
     transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), opacity 260ms ease;
   }
   .chat-window.is-open {
     transform: translateY(0);
     opacity: 1;
-    pointer-events: auto;
-    animation: none; /* override desktop animation */
   }
 
   /* Hide the FAB while chat is open on mobile */
-  .chat-fab.is-open { opacity: 0; pointer-events: none; transform: scale(0.8); }
+  .chat-fab.is-open {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+  }
 
-  /* Header: full-width with a drag handle pill */
+  /* Header: drag handle pill at top */
   .chat-header {
     border-radius: 0;
     padding: 0.6rem 1rem 0.75rem;
@@ -474,20 +479,10 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
     background: rgba(255,255,255,0.2);
     margin: 0 auto;
   }
-  .chat-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
   .chat-header-sub { display: block; }
 
   /* Messages area fills remaining space */
-  .chat-messages {
-    flex: 1;
-    padding: 1rem;
-    gap: 0.75rem;
-  }
+  .chat-messages { flex: 1; padding: 1rem; gap: 0.75rem; }
   .chat-bubble { font-size: 0.9rem; padding: 0.7rem 0.9rem; }
 
   /* Suggestions: single scrollable row */
@@ -501,19 +496,18 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   .chat-suggestions::-webkit-scrollbar { display: none; }
   .chat-suggestions button { flex-shrink: 0; font-size: 0.75rem; }
 
-  /* Input row: sticks above keyboard via interactive-widget */
+  /* Input row sticks above keyboard */
   .chat-input-row {
     padding: 0.75rem 1rem;
-    /* extra bottom padding for home bar on iOS */
     padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
     border-radius: 0;
   }
-  /* Prevent iOS auto-zoom on input focus */
+  /* font-size 1rem prevents iOS auto-zoom on focus */
   .chat-input { font-size: 1rem; border-radius: 14px; padding: 0.7rem 0.9rem; }
   .chat-send-btn { height: 2.6rem; width: 2.6rem; border-radius: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .chat-window { transition: none; animation: none; }
+  .chat-window { transition: none !important; animation: none !important; }
   .chat-typing-dot { animation: none; opacity: 0.6; }
 }
     `;
