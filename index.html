@@ -468,6 +468,36 @@
             class="github-heatmap-img"
             loading="lazy"
           />
+          <!-- ── Live stats: streak + commit history ───────────────── -->
+          <div class="github-live-stats">
+
+            <!-- Longest Streak card -->
+            <div class="github-streak-card" id="github-streak-card" aria-label="Longest commit streak">
+              <div class="gsc-icon" aria-hidden="true">🔥</div>
+              <div class="gsc-body">
+                <span class="gsc-label">Longest Streak</span>
+                <span class="gsc-value" id="github-streak-value">—</span>
+                <span class="gsc-sub" id="github-streak-sub">Loading…</span>
+              </div>
+            </div>
+
+            <!-- Last commit history panel -->
+            <div class="github-commit-panel">
+              <div class="gcp-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+                <span>Recent Commits</span>
+              </div>
+              <ul class="gcp-list" id="github-commit-list" aria-label="Recent commit activity">
+                <li class="gcp-loading">
+                  <span class="gcp-dot"></span>
+                  <span>Fetching latest commits…</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+          <!-- ─────────────────────────────────────────────────────── -->
+
           <div class="github-heatmap-footer">
             <div class="github-heatmap-legend" aria-hidden="true">
               <span class="legend-label">Less</span>

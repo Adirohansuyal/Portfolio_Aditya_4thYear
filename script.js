@@ -763,3 +763,187 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
   });
 })();
 // ── /Page Transition ──────────────────────────────────────────────────
+
+// ── GitHub Live Stats (Streak + Commit History) ───────────────────────
+(function () {
+  const GITHUB_USER = "Adirohansuyal";
+  const EVENTS_URL  = `https://api.github.com/users/${GITHUB_USER}/events/public?per_page=100`;
+
+  // ── Helpers ────────────────────────────────────────────────────────
+
+  /** Format ISO date to a human-friendly relative string */
+  function timeAgo(isoDate) {
+    const diff = (Date.now() - new Date(isoDate).getTime()) / 1000; // seconds
+    if (diff < 60)          return `${Math.floor(diff)}s ago`;
+    if (diff < 3600)        return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400)       return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 86400 * 7)   return `${Math.floor(diff / 86400)}d ago`;
+    const d = new Date(isoDate);
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  }
+
+  /** Escape HTML to prevent XSS from API data */
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // ── Render: commit history panel ──────────────────────────────────
+
+  function renderCommits(commits) {
+    const list = document.getElementById("github-commit-list");
+    if (!list) return;
+
+    if (!commits.length) {
+      list.innerHTML = `<li class="gcp-error">No recent public commits found.</li>`;
+      return;
+    }
+
+    list.innerHTML = commits.map((c, i) => `
+      <li class="gcp-item" style="animation-delay:${i * 45}ms">
+        <span class="gcp-dot"></span>
+        <span class="gcp-item-body">
+          <span class="gcp-repo">${esc(c.repo)}</span>
+          <span class="gcp-msg">${esc(c.message)}</span>
+        </span>
+        <span class="gcp-time">${timeAgo(c.date)}</span>
+      </li>
+    `).join("");
+  }
+
+  // ── Render: streak card ───────────────────────────────────────────
+
+  function renderStreak(longestStreak, streakDates) {
+    const valueEl = document.getElementById("github-streak-value");
+    const subEl   = document.getElementById("github-streak-sub");
+    if (!valueEl || !subEl) return;
+
+    if (longestStreak === 0) {
+      valueEl.textContent = "—";
+      subEl.textContent   = "No streak data found";
+      return;
+    }
+
+    // Animate the number counting up
+    let current = 0;
+    const target = longestStreak;
+    const step = Math.max(1, Math.ceil(target / 20));
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      valueEl.textContent = current + (current === 1 ? " day" : " days");
+      if (current >= target) clearInterval(timer);
+    }, 40);
+
+    subEl.textContent = streakDates
+      ? `${streakDates.start} → ${streakDates.end}`
+      : "from public events";
+  }
+
+  // ── Compute: streak from push events ─────────────────────────────
+
+  /**
+   * Given an array of ISO date strings (one per day of activity),
+   * compute the longest consecutive-day streak.
+   */
+  function computeLongestStreak(activeDays) {
+    if (!activeDays.length) return { streak: 0, start: null, end: null };
+
+    // Deduplicate and sort ascending
+    const days = [...new Set(activeDays)].sort();
+
+    let best = 1, bestStart = days[0], bestEnd = days[0];
+    let cur  = 1, curStart  = days[0];
+
+    for (let i = 1; i < days.length; i++) {
+      const prev = new Date(days[i - 1]);
+      const curr = new Date(days[i]);
+      const diffDays = (curr - prev) / 86400000;
+
+      if (diffDays === 1) {
+        cur++;
+        if (cur > best) {
+          best = cur;
+          bestStart = curStart;
+          bestEnd   = days[i];
+        }
+      } else {
+        cur = 1;
+        curStart = days[i];
+      }
+    }
+
+    return { streak: best, start: bestStart, end: bestEnd };
+  }
+
+  // ── Main fetch + process ──────────────────────────────────────────
+
+  async function loadGitHubStats() {
+    try {
+      const res = await fetch(EVENTS_URL, {
+        headers: { Accept: "application/vnd.github+json" },
+      });
+
+      if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+      const events = await res.json();
+
+      // ── Collect push events ────────────────────────────────────────
+      const pushEvents = events.filter(e => e.type === "PushEvent");
+
+      // ── Build commit list (last 5 unique commits) ──────────────────
+      const commits = [];
+      for (const ev of pushEvents) {
+        for (const c of (ev.payload.commits || [])) {
+          const msg = c.message.split("\n")[0].trim(); // first line only
+          if (!msg) continue;
+          commits.push({
+            repo:    ev.repo.name.replace(`${GITHUB_USER}/`, ""),
+            message: msg.length > 72 ? msg.slice(0, 69) + "…" : msg,
+            date:    ev.created_at,
+          });
+          if (commits.length >= 6) break;
+        }
+        if (commits.length >= 6) break;
+      }
+
+      renderCommits(commits.slice(0, 6));
+
+      // ── Build active-day list for streak ──────────────────────────
+      const activeDays = pushEvents.map(ev =>
+        new Date(ev.created_at).toISOString().slice(0, 10)
+      );
+
+      const { streak, start, end } = computeLongestStreak(activeDays);
+
+      // Format date range for display
+      const fmt = iso => iso
+        ? new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+        : null;
+
+      renderStreak(streak, streak > 0 ? { start: fmt(start), end: fmt(end) } : null);
+
+    } catch (err) {
+      console.warn("[GitHub stats] fetch failed:", err.message);
+
+      // Graceful degradation
+      const list = document.getElementById("github-commit-list");
+      if (list) {
+        list.innerHTML = `<li class="gcp-error">Could not load — GitHub API rate-limited or offline.</li>`;
+      }
+      const valueEl = document.getElementById("github-streak-value");
+      const subEl   = document.getElementById("github-streak-sub");
+      if (valueEl) valueEl.textContent = "—";
+      if (subEl)   subEl.textContent   = "API unavailable";
+    }
+  }
+
+  // Run after DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadGitHubStats);
+  } else {
+    loadGitHubStats();
+  }
+})();
+// ── /GitHub Live Stats ────────────────────────────────────────────────

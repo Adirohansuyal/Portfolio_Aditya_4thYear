@@ -2854,12 +2854,202 @@ h3 {
   opacity: 0.85;
 }
 
+/* ── Live Stats Row (streak + commit history) ─────────────────── */
+.github-live-stats {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+/* Streak card */
+.github-streak-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.1rem;
+  background: rgba(59,130,246,0.06);
+  border: 1px solid rgba(59,130,246,0.22);
+  border-radius: 14px;
+  min-height: 88px;
+  transition: border-color 220ms ease, background 220ms ease;
+}
+
+.github-streak-card:hover {
+  border-color: rgba(59,130,246,0.45);
+  background: rgba(59,130,246,0.10);
+}
+
+.gsc-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(251,146,60,0.5));
+}
+
+.gsc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.gsc-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.gsc-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--accent-strong);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.gsc-sub {
+  font-size: 0.7rem;
+  color: var(--quiet, var(--muted));
+  opacity: 0.75;
+  line-height: 1.3;
+}
+
+/* Commit history panel */
+.github-commit-panel {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  overflow: hidden;
+}
+
+.gcp-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.65rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+  opacity: 0.8;
+}
+
+.gcp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Each commit row */
+.gcp-item {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  animation: gcp-slide-in 280ms ease both;
+}
+
+@keyframes gcp-slide-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.gcp-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.gcp-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.gcp-repo {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent-strong);
+  font-family: "SF Mono", "Fira Code", monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.9;
+}
+
+.gcp-msg {
+  color: var(--fg, #e2e8f0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.77rem;
+}
+
+.gcp-time {
+  font-size: 0.65rem;
+  color: var(--muted);
+  white-space: nowrap;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  align-self: start;
+  padding-top: 1px;
+}
+
+/* Loading placeholder */
+.gcp-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.gcp-loading .gcp-dot {
+  animation: gcp-pulse 1.2s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes gcp-pulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.9; }
+}
+
+/* Error state */
+.gcp-error {
+  font-size: 0.75rem;
+  color: var(--muted);
+  opacity: 0.6;
+  padding: 0.25rem 0;
+}
+
 @media (max-width: 640px) {
   .github-heatmap-wrap { padding: 1.25rem 1rem; }
   .github-heatmap-header { flex-direction: column; align-items: flex-start; }
   .github-heatmap-footer { flex-direction: column; align-items: flex-start; }
   .github-stats-row { gap: 0.5rem; }
   .github-stat-pill { font-size: 0.72rem; padding: 0.38rem 0.8rem; }
+  .github-live-stats { grid-template-columns: 1fr; }
+  .github-streak-card { min-height: unset; }
 }
 
 /* ── Page Transitions ────────────────────────────────────────────── */
