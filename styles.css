@@ -194,7 +194,7 @@ img {
   backdrop-filter: blur(10px) saturate(160%);
   -webkit-backdrop-filter: blur(10px) saturate(160%);
   background: rgba(10, 14, 26, 0.50) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--nav-border, rgba(255,255,255,0.14));
   border-radius: 999px;
   box-shadow:
     0 4px 30px rgba(0, 0, 0, 0.15),
@@ -207,7 +207,7 @@ img {
   max-width: 1100px;
   padding: 0.6rem 1.1rem 0.6rem 0.75rem;
   pointer-events: all;
-  transition: padding 280ms ease, box-shadow 280ms ease, max-width 280ms ease;
+  transition: padding 280ms ease, box-shadow 280ms ease, max-width 280ms ease, border-color 350ms ease;
   width: 100%;
 }
 
@@ -298,12 +298,13 @@ img {
 .brand {
   grid-area: brand;
   align-items: center;
-  color: var(--text);
+  color: var(--nav-text, var(--text));
   display: flex;
   font-size: 1.03rem;
   font-weight: 800;
   gap: 0.5rem;
   letter-spacing: 0.01em;
+  transition: color 350ms ease;
 }
 
 .brand-text {
@@ -316,14 +317,16 @@ img {
 .brand-name {
   font-size: 0.97rem;
   font-weight: 800;
-  color: var(--text);
+  color: var(--nav-text, var(--text));
+  transition: color 350ms ease;
 }
 
 .brand-role {
   font-size: 0.68rem;
   font-weight: 500;
-  color: var(--accent-strong);
+  color: var(--nav-accent, var(--accent-strong));
   letter-spacing: 0.03em;
+  transition: color 350ms ease;
 }
 
 .brand-avatar {
@@ -345,18 +348,18 @@ img {
 
 .nav-links a,
 .header-cta {
-  color: var(--muted);
+  color: var(--nav-muted, var(--muted));
   font-size: 0.86rem;
   font-weight: 600;
   position: relative;
   transition:
     background 250ms ease,
     border-color 250ms ease,
-    color 250ms ease;
+    color 350ms ease;
 }
 
 .nav-links a::after {
-  background: var(--accent);
+  background: var(--nav-accent, var(--accent));
   border-radius: 999px;
   bottom: -0.42rem;
   content: "";
@@ -375,7 +378,7 @@ img {
 .card-links a:hover,
 .resource-grid a:hover,
 .research-list a:hover {
-  color: var(--accent-strong);
+  color: var(--nav-accent, var(--accent-strong));
 }
 
 .nav-links a:hover::after,
@@ -385,10 +388,11 @@ img {
 
 .header-cta {
   background: transparent;
-  border: 1px solid var(--line);
+  border: 1px solid var(--nav-border, var(--line));
   border-radius: 12px;
-  color: var(--text);
+  color: var(--nav-text, var(--text));
   padding: 0.55rem 0.95rem;
+  transition: background 250ms ease, border-color 350ms ease, color 350ms ease;
 }
 
 .header-cta:hover {
@@ -1283,55 +1287,52 @@ h3 {
   .site-header {
     grid-template-columns: 1fr auto;
     row-gap: 0;
+    position: relative;   /* anchor for absolute nav dropdown */
+    border-radius: 20px;  /* flatten pill → rounded rect on mobile */
+    overflow: visible;    /* let the dropdown escape the header box */
   }
 
   .hamburger { display: flex; }
 
   /* ── Mobile nav drawer ── */
   .site-header .nav-links {
-    /* Layout */
+    /* Pull out of document flow so open/close never causes reflow */
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 999;
+
     flex-direction: column;
     gap: 0;
-    grid-column: 1 / -1;
 
-    /* Solid surface — adapts with the scroll-driven background */
     background: var(--bg, #0A0E1A);
-    border: none;
     border-radius: 16px;
     box-shadow:
       0 16px 48px rgba(0, 0, 0, 0.45),
       0 2px 8px rgba(0, 0, 0, 0.3),
       0 0 0 1px var(--line) inset;
 
-    /* Spacing */
-    margin: 0.6rem 0 0;
     padding: 0.4rem 0;
     overflow: hidden;
 
-    /* Hidden state — collapsed & invisible */
-    display: flex;          /* always flex so transitions work */
-    max-height: 0;
+    /* GPU-only hidden state — NO max-height, NO layout changes */
+    display: flex;
     opacity: 0;
     pointer-events: none;
-    transform: translateY(-8px) scale(0.98);
+    transform: translateY(-10px) scale(0.98);
     transform-origin: top center;
+    will-change: opacity, transform;
     transition:
-      max-height 380ms cubic-bezier(0.4, 0, 0.2, 1),
-      opacity    280ms cubic-bezier(0.4, 0, 0.2, 1),
-      transform  300ms cubic-bezier(0.34, 1.1, 0.64, 1),
-      box-shadow 280ms ease;
+      opacity   220ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform 220ms cubic-bezier(0.34, 1.1, 0.64, 1);
   }
 
-  /* Open state */
+  /* Open state — only GPU properties change, zero reflow */
   .site-header .nav-links.nav-open {
-    max-height: 600px;
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0) scale(1);
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.5),
-      0 4px 12px rgba(0, 0, 0, 0.35),
-      0 0 0 1px var(--line) inset;
   }
 
   /* Individual nav links */
@@ -1340,7 +1341,6 @@ h3 {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--muted);
-    /* Divider only spans the inner content width, not full card edge-to-edge */
     border-bottom: none;
     box-shadow: inset 0 -1px 0 var(--line);
     margin: 0 0.75rem;
@@ -1349,40 +1349,9 @@ h3 {
     align-items: center;
     gap: 0.6rem;
     transition:
-      background 200ms ease,
-      color      200ms ease,
-      padding-left 200ms ease;
-
-    /* Staggered fade-in per item */
-    opacity: 0;
-    transform: translateX(-6px);
-  }
-
-  .site-header .nav-links.nav-open a {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  /* Stagger delays for each link */
-  .site-header .nav-links.nav-open a:nth-child(1)  { transition-delay: 40ms;  }
-  .site-header .nav-links.nav-open a:nth-child(2)  { transition-delay: 70ms;  }
-  .site-header .nav-links.nav-open a:nth-child(3)  { transition-delay: 100ms; }
-  .site-header .nav-links.nav-open a:nth-child(4)  { transition-delay: 130ms; }
-  .site-header .nav-links.nav-open a:nth-child(5)  { transition-delay: 160ms; }
-  .site-header .nav-links.nav-open a:nth-child(6)  { transition-delay: 190ms; }
-  .site-header .nav-links.nav-open a:nth-child(7)  { transition-delay: 220ms; }
-  .site-header .nav-links.nav-open a:nth-child(8)  { transition-delay: 250ms; }
-  .site-header .nav-links.nav-open a:nth-child(9)  { transition-delay: 280ms; }
-  .site-header .nav-links.nav-open a:nth-child(10) { transition-delay: 310ms; }
-
-  /* Also transition opacity/transform on the items themselves */
-  .site-header .nav-links a {
-    transition:
-      background    200ms ease,
-      color         200ms ease,
-      padding-left  200ms ease,
-      opacity       220ms ease,
-      transform     220ms cubic-bezier(0.34, 1.1, 0.64, 1);
+      background  180ms ease,
+      color       180ms ease,
+      padding-left 180ms ease;
   }
 
   .site-header .nav-links a:last-child { box-shadow: none; }
@@ -2696,44 +2665,178 @@ h3 {
 /* ═══════════════════════════════════════════════════════════════════ */
 
 /* ── GitHub Activity Heatmap ─────────────────────────────────────── */
+
+/* Section subtitle */
+.github-section-sub {
+  margin-top: 0.55rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+/* Stat pills row */
+.github-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+
+.github-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: border-color 220ms ease, color 220ms ease;
+}
+
+.github-stat-pill svg {
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.github-stat-pill:hover {
+  border-color: rgba(59,130,246,0.45);
+  color: var(--accent-strong);
+}
+
+/* Main card */
 .github-heatmap-wrap {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 20px;
-  padding: 2rem 2.5rem;
+  padding: 1.75rem 2rem 1.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
+  align-items: stretch;
+  gap: 1.1rem;
   transition: border-color 250ms ease, box-shadow 250ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle top accent line */
+.github-heatmap-wrap::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.55) 40%, rgba(99,102,241,0.4) 70%, transparent 100%);
+  border-radius: 20px 20px 0 0;
 }
 
 .github-heatmap-wrap:hover {
-  border-color: rgba(59,130,246,0.35);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  border-color: rgba(59,130,246,0.4);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.22), 0 0 0 1px rgba(59,130,246,0.12);
 }
 
+/* Chart card header */
+.github-heatmap-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.github-heatmap-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.github-heatmap-title-row svg {
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+
+.github-heatmap-chart-label {
+  font-family: "SF Mono", "Fira Code", "Fira Mono", monospace;
+  opacity: 0.85;
+}
+
+.github-heatmap-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.28);
+  color: var(--accent-strong);
+  white-space: nowrap;
+}
+
+/* Contribution image */
 .github-heatmap-img {
   width: 100%;
-  max-width: 860px;
   height: auto;
   border-radius: 8px;
-  opacity: 0.92;
-  filter: saturate(1.2);
-  transition: opacity 300ms ease;
+  opacity: 0.9;
+  filter: saturate(1.25) contrast(1.05);
+  transition: opacity 300ms ease, filter 300ms ease;
+  display: block;
 }
 
 .github-heatmap-wrap:hover .github-heatmap-img {
   opacity: 1;
+  filter: saturate(1.35) contrast(1.08);
 }
 
+/* Footer: legend + link */
 .github-heatmap-footer {
-  width: 100%;
-  max-width: 860px;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
 }
 
+/* Contribution legend */
+.github-heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legend-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--quiet);
+  letter-spacing: 0.02em;
+}
+
+.legend-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+}
+
+.lc-0 { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.15); }
+.lc-1 { background: rgba(59,130,246,0.22); }
+.lc-2 { background: rgba(59,130,246,0.42); }
+.lc-3 { background: rgba(59,130,246,0.65); }
+.lc-4 { background: rgba(59,130,246,0.90); }
+
+/* CTA link */
 .github-heatmap-link {
   display: inline-flex;
   align-items: center;
@@ -2741,14 +2844,22 @@ h3 {
   color: var(--accent-strong);
   font-size: 0.82rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
   text-decoration: none;
-  transition: gap 200ms ease;
+  transition: gap 200ms ease, opacity 200ms ease;
 }
 
-.github-heatmap-link:hover { gap: 0.6rem; }
+.github-heatmap-link:hover {
+  gap: 0.65rem;
+  opacity: 0.85;
+}
 
 @media (max-width: 640px) {
-  .github-heatmap-wrap { padding: 1.25rem; }
+  .github-heatmap-wrap { padding: 1.25rem 1rem; }
+  .github-heatmap-header { flex-direction: column; align-items: flex-start; }
+  .github-heatmap-footer { flex-direction: column; align-items: flex-start; }
+  .github-stats-row { gap: 0.5rem; }
+  .github-stat-pill { font-size: 0.72rem; padding: 0.38rem 0.8rem; }
 }
 
 /* ── Page Transitions ────────────────────────────────────────────── */

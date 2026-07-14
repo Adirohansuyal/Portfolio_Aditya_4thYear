@@ -427,20 +427,60 @@
 
       <section id="github-activity" class="section-shell reveal-section" aria-labelledby="github-activity-title">
         <div class="section-heading">
-          <p class="eyebrow">Open Source</p>
-          <h2 id="github-activity-title"><span style="color:var(--accent-strong)">GitHub</span> Contribution Activity</h2>
+          <div>
+            <p class="eyebrow">Open Source Contributions</p>
+            <h2 id="github-activity-title"><span style="color:var(--accent-strong)">GitHub</span> Contribution Activity</h2>
+            <p class="github-section-sub">A consistent record of engineering activity across AI/ML projects, research prototypes, and open-source tooling.</p>
+          </div>
         </div>
+
+        <!-- Stat pills row -->
+        <div class="github-stats-row" aria-label="GitHub profile highlights">
+          <div class="github-stat-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span class="github-stat-label">Consistent Commits</span>
+          </div>
+          <div class="github-stat-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>
+            <span class="github-stat-label">AI / ML Repositories</span>
+          </div>
+          <div class="github-stat-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span class="github-stat-label">Active Since 2023</span>
+          </div>
+          <div class="github-stat-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span class="github-stat-label">Research + Products</span>
+          </div>
+        </div>
+
         <div class="github-heatmap-wrap">
+          <div class="github-heatmap-header">
+            <div class="github-heatmap-title-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              <span class="github-heatmap-chart-label">Contribution Graph — github.com/Adirohansuyal</span>
+            </div>
+            <span class="github-heatmap-badge">Last 12 months</span>
+          </div>
           <img
             src="https://ghchart.rshah.org/3b82f6/Adirohansuyal"
-            alt="Aditya Suyal GitHub contribution chart"
+            alt="Aditya Suyal GitHub contribution chart showing consistent AI/ML engineering activity"
             class="github-heatmap-img"
             loading="lazy"
           />
           <div class="github-heatmap-footer">
+            <div class="github-heatmap-legend" aria-hidden="true">
+              <span class="legend-label">Less</span>
+              <span class="legend-cell lc-0"></span>
+              <span class="legend-cell lc-1"></span>
+              <span class="legend-cell lc-2"></span>
+              <span class="legend-cell lc-3"></span>
+              <span class="legend-cell lc-4"></span>
+              <span class="legend-label">More</span>
+            </div>
             <a class="github-heatmap-link" href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-              View full profile on GitHub
+              View Full GitHub Profile
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
           </div>
@@ -732,6 +772,16 @@
 
     const navAlpha = lerpF(0.85, 0.92, t);
     root.style.setProperty('--navbar-bg', `rgba(${bR},${bG},${bB},${navAlpha})`);
+
+    // Navbar-specific text colors — driven by the navbar's own background luminance
+    // (navbar is ~85-92% opaque over bg, so perceived color ≈ bg color itself)
+    const navLum = (bR/255)*0.2126 + (bG/255)*0.7152 + (bB/255)*0.0722;
+    // nT = 0 means dark bg → use light text; nT = 1 means light bg → use dark text
+    const nT = ease(clamp((navLum - 0.06) / 0.30, 0, 1));
+    root.style.setProperty('--nav-text',   `rgb(${lerp(240,12,nT)},${lerp(244,20,nT)},${lerp(248,45,nT)})`);
+    root.style.setProperty('--nav-muted',  `rgb(${lerp(148,40,nT)},${lerp(163,60,nT)},${lerp(184,95,nT)})`);
+    root.style.setProperty('--nav-border', `rgba(${lerp(255,30,nT)},${lerp(255,30,nT)},${lerp(255,30,nT)},${lerpF(0.14,0.18,nT)})`);
+    root.style.setProperty('--nav-accent', `rgb(${lerp(96,20,nT)},${lerp(165,80,nT)},${lerp(250,190,nT)})`);
 
     root.style.setProperty('--accent',        `rgb(${lerp(59,30,t)},${lerp(130,64,t)},${lerp(246,175,t)})`);
     root.style.setProperty('--accent-strong', `rgb(${lerp(96,20,t)},${lerp(165,80,t)},${lerp(250,200,t)})`);

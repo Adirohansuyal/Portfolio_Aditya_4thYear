@@ -234,6 +234,7 @@ const primaryNav = document.querySelector("#primary-nav");
 function openNav() {
   primaryNav.classList.add("nav-open");
   hamburger.setAttribute("aria-expanded", "true");
+  document.body.style.overflow = "";   // never lock scroll on mobile nav
 }
 
 function closeNav() {
