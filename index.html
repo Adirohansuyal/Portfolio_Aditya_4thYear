@@ -460,14 +460,29 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
               <span class="github-heatmap-chart-label">Contribution Graph — github.com/Adirohansuyal</span>
             </div>
-            <span class="github-heatmap-badge">Last 12 months</span>
+            <div class="github-heatmap-header-right">
+              <span class="github-total-pill" id="github-total-pill" aria-label="Total contributions">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                <span id="github-total-count">…</span> contributions
+              </span>
+              <span class="github-heatmap-badge" id="github-heatmap-badge">Last 12 months</span>
+            </div>
           </div>
-          <img
-            src="https://ghchart.rshah.org/22c55e/Adirohansuyal"
-            alt="Aditya Suyal GitHub contribution chart showing consistent AI/ML engineering activity"
-            class="github-heatmap-img"
-            loading="lazy"
-          />
+
+          <!-- Month filter buttons -->
+          <div class="github-month-filters" id="github-month-filters" aria-label="Filter by month">
+            <button class="gmf-btn gmf-btn--active" data-month="all">All</button>
+          </div>
+
+          <!-- Interactive HTML heatmap grid (replaces static img) -->
+          <div class="github-grid-wrap" id="github-grid-wrap">
+            <div class="github-grid-loading" id="github-grid-loading">
+              <span class="github-grid-spinner"></span>
+              Loading contributions…
+            </div>
+            <div class="github-grid-months" id="github-grid-months"></div>
+            <div class="github-grid" id="github-grid" aria-label="Contribution heatmap grid"></div>
+          </div>
           <!-- ── Live stats: streak + commit history ───────────────── -->
           <div class="github-live-stats">
 
@@ -534,17 +549,17 @@
               <span class="skill-tag"><i class="devicon-tensorflow-original colored"></i>TensorFlow</span>
               <span class="skill-tag"><i class="devicon-scikitlearn-plain colored"></i>scikit-learn</span>
               <span class="skill-tag"><i class="devicon-opencv-plain colored"></i>OpenCV</span>
-              <span class="skill-tag">🔬 CLIP</span>
-              <span class="skill-tag">🧠 CNNs</span>
-              <span class="skill-tag">🔁 RNNs</span>
-              <span class="skill-tag">🔁 LSTMs</span>
-              <span class="skill-tag">⚡ Transformers</span>
-              <span class="skill-tag">🎯 Fine-tuning</span>
-              <span class="skill-tag">🔧 LoRA</span>
-              <span class="skill-tag">🔧 QLoRA</span>
-              <span class="skill-tag">📊 Model Evaluation</span>
-              <span class="skill-tag">💬 NLP</span>
-              <span class="skill-tag">👁️ Computer Vision</span>
+              <span class="skill-tag">CLIP</span>
+              <span class="skill-tag">CNNs</span>
+              <span class="skill-tag">RNNs</span>
+              <span class="skill-tag">LSTMs</span>
+              <span class="skill-tag">Transformers</span>
+              <span class="skill-tag">Fine-tuning</span>
+              <span class="skill-tag">LoRA</span>
+              <span class="skill-tag">QLoRA</span>
+              <span class="skill-tag">Model Evaluation</span>
+              <span class="skill-tag">NLP</span>
+              <span class="skill-tag">Computer Vision</span>
             </div>
           </div>
 
@@ -553,18 +568,18 @@
               <h3>Generative AI &amp; LLM Engineering</h3>
             </div>
             <div class="skill-tags">
-              <span class="skill-tag">🦜 LangChain</span>
-              <span class="skill-tag">🦙 LlamaIndex</span>
-              <span class="skill-tag">🤝 CrewAI</span>
-              <span class="skill-tag">🤖 Autogen</span>
-              <span class="skill-tag">🕸️ LangGraph</span>
-              <span class="skill-tag">🔍 RAG Pipelines</span>
-              <span class="skill-tag">📐 Embeddings</span>
-              <span class="skill-tag">🗄️ Vector Databases</span>
-              <span class="skill-tag">✏️ Prompt Engineering</span>
-              <span class="skill-tag">🤖 Agentic AI</span>
-              <span class="skill-tag">👥 Multi-Agent Systems</span>
-              <span class="skill-tag">🎼 LLM Orchestration</span>
+              <span class="skill-tag">LangChain</span>
+              <span class="skill-tag">LlamaIndex</span>
+              <span class="skill-tag">CrewAI</span>
+              <span class="skill-tag">Autogen</span>
+              <span class="skill-tag">LangGraph</span>
+              <span class="skill-tag">RAG Pipelines</span>
+              <span class="skill-tag">Embeddings</span>
+              <span class="skill-tag">Vector Databases</span>
+              <span class="skill-tag">Prompt Engineering</span>
+              <span class="skill-tag">Agentic AI</span>
+              <span class="skill-tag">Multi-Agent Systems</span>
+              <span class="skill-tag">LLM Orchestration</span>
             </div>
           </div>
 
@@ -573,16 +588,16 @@
               <h3>LLM Stack &amp; Models</h3>
             </div>
             <div class="skill-tags">
-              <span class="skill-tag">✨ GPT-4</span>
-              <span class="skill-tag">💎 Gemini Pro</span>
-              <span class="skill-tag">🦙 Llama 2/3</span>
-              <span class="skill-tag">💨 Mistral</span>
-              <span class="skill-tag">🎨 Stable Diffusion</span>
-              <span class="skill-tag">📝 Instruction Tuning</span>
-              <span class="skill-tag">🏆 RLHF</span>
-              <span class="skill-tag">🔨 Tool Calling</span>
-              <span class="skill-tag">🎯 Agent Orchestration</span>
-              <span class="skill-tag">📊 LLM Evaluation</span>
+              <span class="skill-tag">GPT-4</span>
+              <span class="skill-tag">Gemini Pro</span>
+              <span class="skill-tag">Llama 2/3</span>
+              <span class="skill-tag">Mistral</span>
+              <span class="skill-tag">Stable Diffusion</span>
+              <span class="skill-tag">Instruction Tuning</span>
+              <span class="skill-tag">RLHF</span>
+              <span class="skill-tag">Tool Calling</span>
+              <span class="skill-tag">Agent Orchestration</span>
+              <span class="skill-tag">LLM Evaluation</span>
             </div>
           </div>
 
@@ -591,9 +606,9 @@
               <h3>Data, Deployment &amp; MLOps</h3>
             </div>
             <div class="skill-tags">
-              <span class="skill-tag">⚡ FAISS</span>
-              <span class="skill-tag">🌲 Pinecone</span>
-              <span class="skill-tag">🎨 ChromaDB</span>
+              <span class="skill-tag">FAISS</span>
+              <span class="skill-tag">Pinecone</span>
+              <span class="skill-tag">ChromaDB</span>
               <span class="skill-tag"><i class="devicon-mongodb-plain colored"></i>MongoDB</span>
               <span class="skill-tag"><i class="devicon-mysql-plain colored"></i>SQL</span>
               <span class="skill-tag"><i class="devicon-amazonwebservices-plain-wordmark colored"></i>AWS EC2</span>
@@ -601,11 +616,11 @@
               <span class="skill-tag"><i class="devicon-amazonwebservices-plain-wordmark colored"></i>AWS S3</span>
               <span class="skill-tag"><i class="devicon-docker-plain colored"></i>Docker</span>
               <span class="skill-tag"><i class="devicon-kubernetes-plain colored"></i>Kubernetes</span>
-              <span class="skill-tag">🌐 REST APIs</span>
-              <span class="skill-tag">⚙️ MLOps</span>
+              <span class="skill-tag">REST APIs</span>
+              <span class="skill-tag">MLOps</span>
               <span class="skill-tag"><i class="devicon-githubactions-plain colored"></i>CI/CD</span>
-              <span class="skill-tag">🚀 Model Serving</span>
-              <span class="skill-tag">☁️ Cloud Deployment</span>
+              <span class="skill-tag">Model Serving</span>
+              <span class="skill-tag">Cloud Deployment</span>
             </div>
           </div>
 
@@ -822,5 +837,7 @@
 })();
     </script>
     <script src="script.js"></script>
+  <!-- GitHub heatmap tooltip — lives at body level to avoid stacking/overflow clipping -->
+  <div class="github-tooltip" id="github-tooltip" role="tooltip" aria-hidden="true"></div>
   </body>
 </html>

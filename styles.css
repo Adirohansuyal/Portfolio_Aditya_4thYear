@@ -2721,7 +2721,7 @@ h3 {
   gap: 1.1rem;
   transition: border-color 250ms ease, box-shadow 250ms ease;
   position: relative;
-  overflow: hidden;
+  isolation: isolate;
 }
 
 /* Subtle top accent line */
@@ -2783,20 +2783,200 @@ h3 {
   white-space: nowrap;
 }
 
-/* Contribution image */
-.github-heatmap-img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  opacity: 0.9;
-  filter: saturate(1.25) contrast(1.05);
-  transition: opacity 300ms ease, filter 300ms ease;
-  display: block;
+/* Header right side: total pill + badge */
+.github-heatmap-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
 }
 
-.github-heatmap-wrap:hover .github-heatmap-img {
+/* Total contributions pill */
+.github-total-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.28rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(34,197,94,0.10);
+  border: 1px solid rgba(34,197,94,0.28);
+  color: #22c55e;
+  white-space: nowrap;
+  transition: background 200ms ease;
+}
+
+.github-total-pill svg { opacity: 0.8; flex-shrink: 0; }
+
+/* Month filter buttons */
+.github-month-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding-bottom: 0.25rem;
+}
+
+.gmf-btn {
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+}
+
+.gmf-btn:hover {
+  border-color: rgba(34,197,94,0.4);
+  color: #22c55e;
+}
+
+.gmf-btn--active {
+  border-color: #22c55e;
+  background: rgba(34,197,94,0.12);
+  color: #22c55e;
+}
+
+/* Grid wrapper */
+.github-grid-wrap {
+  position: relative;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+/* Month labels row */
+.github-grid-months {
+  display: flex;
+  margin-left: 28px; /* align with grid (day-label width) */
+  margin-bottom: 4px;
+  min-width: max-content;
+}
+
+.ggm-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+  opacity: 0.65;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  /* width set dynamically via JS */
+}
+
+/* The grid itself: CSS grid of day cells */
+.github-grid {
+  display: flex;
+  gap: 3px;
+  min-width: max-content;
+}
+
+/* Day-of-week label column */
+.gg-day-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-right: 4px;
+}
+
+.gg-day-label {
+  width: 20px;
+  height: 11px;
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--muted);
+  opacity: 0.5;
+  text-align: right;
+  line-height: 11px;
+}
+
+/* One column = one week */
+.gg-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* One cell = one day */
+.gg-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: transform 120ms ease, outline 120ms ease, opacity 200ms ease;
+  outline: 1px solid transparent;
+}
+
+.gg-cell:hover {
+  transform: scale(1.35);
+  outline: 1px solid rgba(255,255,255,0.35);
+  z-index: 2;
+}
+
+/* Contribution level colors — green scale */
+.gg-cell[data-level="0"] { background: rgba(34,197,94,0.10); border: 1px solid rgba(34,197,94,0.18); }
+.gg-cell[data-level="1"] { background: rgba(34,197,94,0.38); }
+.gg-cell[data-level="2"] { background: rgba(34,197,94,0.60); }
+.gg-cell[data-level="3"] { background: rgba(34,197,94,0.80); }
+.gg-cell[data-level="4"] { background: rgba(34,197,94,1.00); }
+
+/* Dimmed state when a month is selected */
+.gg-cell--dimmed {
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+/* Loading spinner */
+.github-grid-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 1.5rem 0;
+  opacity: 0.7;
+}
+
+.github-grid-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(34,197,94,0.2);
+  border-top-color: #22c55e;
+  border-radius: 50%;
+  animation: gg-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes gg-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Tooltip */
+.github-tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #f1f5f9;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 140ms ease, transform 140ms ease;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  line-height: 1.5;
+}
+
+.github-tooltip.visible {
   opacity: 1;
-  filter: saturate(1.35) contrast(1.08);
+  transform: translateY(0);
 }
 
 /* Footer: legend + link */

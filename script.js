@@ -764,44 +764,254 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 })();
 // ── /Page Transition ──────────────────────────────────────────────────
 
-// ── GitHub Live Stats (Streak + Commit History) ───────────────────────
+// ── GitHub Live Stats (Heatmap + Streak + Commit History) ────────────
 (function () {
-  const GITHUB_USER = "Adirohansuyal";
-  const EVENTS_URL  = `https://api.github.com/users/${GITHUB_USER}/events/public?per_page=100`;
+  const GITHUB_USER   = "Adirohansuyal";
+  const EVENTS_URL    = `https://api.github.com/users/${GITHUB_USER}/events/public?per_page=100`;
+  const CONTRIB_URL   = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USER}?y=last`;
+  const MONTHS_SHORT  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const DAY_LABELS    = ["", "Mon", "", "Wed", "", "Fri", ""];
 
-  // ── Helpers ────────────────────────────────────────────────────────
+  // ── Helpers ──────────────────────────────────────────────────────
 
-  /** Format ISO date to a human-friendly relative string */
   function timeAgo(isoDate) {
-    const diff = (Date.now() - new Date(isoDate).getTime()) / 1000; // seconds
-    if (diff < 60)          return `${Math.floor(diff)}s ago`;
-    if (diff < 3600)        return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400)       return `${Math.floor(diff / 3600)}h ago`;
-    if (diff < 86400 * 7)   return `${Math.floor(diff / 86400)}d ago`;
+    const diff = (Date.now() - new Date(isoDate).getTime()) / 1000;
+    if (diff < 60)        return `${Math.floor(diff)}s ago`;
+    if (diff < 3600)      return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400)     return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 86400 * 7) return `${Math.floor(diff / 86400)}d ago`;
     const d = new Date(isoDate);
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   }
 
-  /** Escape HTML to prevent XSS from API data */
   function esc(str) {
     return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  // ── Render: commit history panel ──────────────────────────────────
+  function fmtDate(isoDate) {
+    const d = new Date(isoDate);
+    return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  }
+
+  // ── Heatmap renderer ─────────────────────────────────────────────
+
+  let allContributions = []; // kept for month filter re-renders
+  let activeMonth = "all";   // "all" or 0-11
+
+  function renderHeatmap(contributions) {
+    allContributions = contributions;
+
+    const gridEl    = document.getElementById("github-grid");
+    const monthsEl  = document.getElementById("github-grid-months");
+    const loadingEl = document.getElementById("github-grid-loading");
+    const tooltip   = document.getElementById("github-tooltip");
+    if (!gridEl || !monthsEl) return;
+
+    // Hide loader
+    if (loadingEl) loadingEl.style.display = "none";
+
+    // Group days into weeks (Sun-first columns)
+    // Pad the start so the first day lands on correct row
+    const firstDate = new Date(contributions[0].date);
+    const startPad  = firstDate.getDay(); // 0=Sun
+    const paddedDays = Array(startPad).fill(null).concat(contributions);
+
+    const weeks = [];
+    for (let i = 0; i < paddedDays.length; i += 7) {
+      weeks.push(paddedDays.slice(i, i + 7));
+    }
+
+    // ── Month labels ──────────────────────────────────────────────
+    monthsEl.innerHTML = "";
+    let lastMonth = -1;
+    let labelSpans = []; // { month, weekStart, weekEnd }
+    weeks.forEach((week, wi) => {
+      const firstReal = week.find(d => d !== null);
+      if (firstReal) {
+        const m = new Date(firstReal.date).getMonth();
+        if (m !== lastMonth) {
+          labelSpans.push({ month: m, weekStart: wi });
+          if (labelSpans.length > 1) {
+            labelSpans[labelSpans.length - 2].weekEnd = wi - 1;
+          }
+          lastMonth = m;
+        }
+      }
+    });
+    if (labelSpans.length) labelSpans[labelSpans.length - 1].weekEnd = weeks.length - 1;
+
+    const CELL_W = 11, GAP = 3;
+    const weekPx = CELL_W + GAP;
+
+    labelSpans.forEach(span => {
+      const spanEl = document.createElement("span");
+      spanEl.className = "ggm-label";
+      const widthPx = (span.weekEnd - span.weekStart + 1) * weekPx;
+      spanEl.style.width = widthPx + "px";
+      spanEl.textContent = MONTHS_SHORT[span.month];
+      monthsEl.appendChild(spanEl);
+    });
+
+    // ── Day-of-week labels + grid ─────────────────────────────────
+    gridEl.innerHTML = "";
+
+    // Day labels column
+    const dayLabelsCol = document.createElement("div");
+    dayLabelsCol.className = "gg-day-labels";
+    DAY_LABELS.forEach(label => {
+      const el = document.createElement("div");
+      el.className = "gg-day-label";
+      el.textContent = label;
+      dayLabelsCol.appendChild(el);
+    });
+    gridEl.appendChild(dayLabelsCol);
+
+    // Week columns
+    weeks.forEach(week => {
+      const weekEl = document.createElement("div");
+      weekEl.className = "gg-week";
+
+      week.forEach(day => {
+        const cell = document.createElement("div");
+        cell.className = "gg-cell";
+
+        if (day === null) {
+          // padding cell — invisible placeholder
+          cell.setAttribute("data-level", "0");
+          cell.style.visibility = "hidden";
+        } else {
+          cell.setAttribute("data-level", day.level);
+          cell.setAttribute("data-date", day.date);
+          cell.setAttribute("data-count", day.count);
+
+          // Apply dimming if a month is active
+          if (activeMonth !== "all") {
+            const cellMonth = new Date(day.date).getMonth();
+            if (cellMonth !== activeMonth) {
+              cell.classList.add("gg-cell--dimmed");
+            }
+          }
+
+          // Tooltip
+          cell.addEventListener("mouseenter", e => {
+            const label = day.count === 0
+              ? `No contributions on ${fmtDate(day.date)}`
+              : `${day.count} contribution${day.count > 1 ? "s" : ""} on ${fmtDate(day.date)}`;
+            tooltip.textContent = label;
+            tooltip.setAttribute("aria-hidden", "false");
+            tooltip.classList.add("visible");
+            positionTooltip(e);
+          });
+          cell.addEventListener("mousemove", positionTooltip);
+          cell.addEventListener("mouseleave", () => {
+            tooltip.classList.remove("visible");
+            tooltip.setAttribute("aria-hidden", "true");
+          });
+        }
+
+        weekEl.appendChild(cell);
+      });
+
+      gridEl.appendChild(weekEl);
+    });
+  }
+
+  function positionTooltip(e) {
+    const tooltip = document.getElementById("github-tooltip");
+    if (!tooltip) return;
+    const pad = 10;
+    let x = e.clientX + pad;
+    let y = e.clientY - 36;
+    // Keep within viewport
+    const tw = tooltip.offsetWidth || 160;
+    if (x + tw > window.innerWidth - pad) x = e.clientX - tw - pad;
+    if (y < pad) y = e.clientY + pad;
+    tooltip.style.left = x + "px";
+    tooltip.style.top  = y + "px";
+  }
+
+  // ── Month filter buttons ─────────────────────────────────────────
+
+  function buildMonthFilters(contributions) {
+    const container = document.getElementById("github-month-filters");
+    if (!container) return;
+
+    // Find which months have any data
+    const months = new Set(
+      contributions.map(d => new Date(d.date).getMonth())
+    );
+
+    // Clear and rebuild (keep "All" first)
+    container.innerHTML = `<button class="gmf-btn gmf-btn--active" data-month="all">All</button>`;
+
+    // Add months in calendar order (most recent first)
+    const today = new Date();
+    for (let i = 0; i < 12; i++) {
+      const monthIdx = (today.getMonth() - i + 12) % 12;
+      if (!months.has(monthIdx)) continue;
+      const btn = document.createElement("button");
+      btn.className = "gmf-btn";
+      btn.dataset.month = monthIdx;
+      btn.textContent = MONTHS_SHORT[monthIdx];
+      container.appendChild(btn);
+    }
+
+    // Click handler
+    container.addEventListener("click", e => {
+      const btn = e.target.closest(".gmf-btn");
+      if (!btn) return;
+
+      container.querySelectorAll(".gmf-btn").forEach(b => b.classList.remove("gmf-btn--active"));
+      btn.classList.add("gmf-btn--active");
+
+      const val = btn.dataset.month;
+      activeMonth = val === "all" ? "all" : parseInt(val, 10);
+
+      // Update badge label
+      const badge = document.getElementById("github-heatmap-badge");
+      if (badge) {
+        badge.textContent = activeMonth === "all"
+          ? "Last 12 months"
+          : MONTHS_SHORT[activeMonth];
+      }
+
+      // Re-apply dimming without full re-render
+      document.querySelectorAll(".gg-cell[data-date]").forEach(cell => {
+        if (activeMonth === "all") {
+          cell.classList.remove("gg-cell--dimmed");
+        } else {
+          const cellMonth = new Date(cell.dataset.date).getMonth();
+          cell.classList.toggle("gg-cell--dimmed", cellMonth !== activeMonth);
+        }
+      });
+
+      // Update total pill to show month total
+      updateTotalPill(activeMonth);
+    });
+  }
+
+  function updateTotalPill(month) {
+    const countEl = document.getElementById("github-total-count");
+    if (!countEl || !allContributions.length) return;
+
+    const total = allContributions
+      .filter(d => month === "all" || new Date(d.date).getMonth() === month)
+      .reduce((sum, d) => sum + d.count, 0);
+
+    countEl.textContent = total.toLocaleString();
+  }
+
+  // ── Commit history ───────────────────────────────────────────────
 
   function renderCommits(commits) {
     const list = document.getElementById("github-commit-list");
     if (!list) return;
-
     if (!commits.length) {
       list.innerHTML = `<li class="gcp-error">No recent public commits found.</li>`;
       return;
     }
-
     list.innerHTML = commits.map((c, i) => `
       <li class="gcp-item" style="animation-delay:${i * 45}ms">
         <span class="gcp-dot"></span>
@@ -814,20 +1024,17 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
     `).join("");
   }
 
-  // ── Render: streak card ───────────────────────────────────────────
+  // ── Streak ───────────────────────────────────────────────────────
 
   function renderStreak(longestStreak, streakDates) {
     const valueEl = document.getElementById("github-streak-value");
     const subEl   = document.getElementById("github-streak-sub");
     if (!valueEl || !subEl) return;
-
     if (longestStreak === 0) {
       valueEl.textContent = "—";
       subEl.textContent   = "No streak data found";
       return;
     }
-
-    // Animate the number counting up
     let current = 0;
     const target = longestStreak;
     const step = Math.max(1, Math.ceil(target / 20));
@@ -836,53 +1043,30 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
       valueEl.textContent = current + (current === 1 ? " day" : " days");
       if (current >= target) clearInterval(timer);
     }, 40);
-
     subEl.textContent = streakDates
       ? `${streakDates.start} → ${streakDates.end}`
       : "from public events";
   }
 
-  // ── Compute: streak from push events ─────────────────────────────
-
-  /**
-   * Given an array of ISO date strings (one per day of activity),
-   * compute the longest consecutive-day streak.
-   */
   function computeLongestStreak(activeDays) {
     if (!activeDays.length) return { streak: 0, start: null, end: null };
-
-    // Deduplicate and sort ascending
     const days = [...new Set(activeDays)].sort();
-
     let best = 1, bestStart = days[0], bestEnd = days[0];
     let cur  = 1, curStart  = days[0];
-
     for (let i = 1; i < days.length; i++) {
-      const prev = new Date(days[i - 1]);
-      const curr = new Date(days[i]);
-      const diffDays = (curr - prev) / 86400000;
-
+      const diffDays = (new Date(days[i]) - new Date(days[i - 1])) / 86400000;
       if (diffDays === 1) {
         cur++;
-        if (cur > best) {
-          best = cur;
-          bestStart = curStart;
-          bestEnd   = days[i];
-        }
+        if (cur > best) { best = cur; bestStart = curStart; bestEnd = days[i]; }
       } else {
-        cur = 1;
-        curStart = days[i];
+        cur = 1; curStart = days[i];
       }
     }
-
     return { streak: best, start: bestStart, end: bestEnd };
   }
 
-  /**
-   * Fetch a single commit message by SHA.
-   * GitHub public events API omits payload.commits for many push events,
-   * so we resolve the head SHA directly.
-   */
+  // ── Fetch commit messages ────────────────────────────────────────
+
   async function fetchCommitMessage(repoFullName, sha) {
     try {
       const r = await fetch(
@@ -893,53 +1077,67 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
       const data = await r.json();
       const msg = (data.commit?.message || "").split("\n")[0].trim();
       return msg || null;
-    } catch {
-      return null;
-    }
+    } catch { return null; }
   }
 
-  // ── Main fetch + process ──────────────────────────────────────────
+  // ── Main ────────────────────────────────────────────────────────
 
   async function loadGitHubStats() {
+    // Run both fetches in parallel
+    const [contribRes, eventsRes] = await Promise.allSettled([
+      fetch(CONTRIB_URL),
+      fetch(EVENTS_URL, { headers: { Accept: "application/vnd.github+json" } }),
+    ]);
+
+    // ── Contributions: heatmap + total ──────────────────────────
     try {
-      const res = await fetch(EVENTS_URL, {
-        headers: { Accept: "application/vnd.github+json" },
-      });
+      if (contribRes.status === "fulfilled" && contribRes.value.ok) {
+        const data = await contribRes.value.json();
+        const contributions = data.contributions || [];
 
-      if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-      const events = await res.json();
+        // Total commits pill
+        const totalCountEl = document.getElementById("github-total-count");
+        if (totalCountEl) {
+          totalCountEl.textContent = (data.total?.lastYear ?? contributions.reduce((s, d) => s + d.count, 0)).toLocaleString();
+        }
 
-      // ── Collect push events ────────────────────────────────────────
+        renderHeatmap(contributions);
+        buildMonthFilters(contributions);
+      } else {
+        throw new Error("contributions API failed");
+      }
+    } catch (err) {
+      console.warn("[GitHub heatmap] failed:", err.message);
+      const loadingEl = document.getElementById("github-grid-loading");
+      if (loadingEl) loadingEl.textContent = "Could not load contribution data.";
+    }
+
+    // ── Events: streak + recent commits ─────────────────────────
+    try {
+      if (eventsRes.status !== "fulfilled" || !eventsRes.value.ok) {
+        throw new Error(`events API ${eventsRes.value?.status}`);
+      }
+      const events = await eventsRes.value.json();
       const pushEvents = events.filter(e => e.type === "PushEvent");
 
-      // ── Build commit list ──────────────────────────────────────────
-      // GitHub public events API often omits payload.commits[].message.
-      // Strategy: try payload.commits first, then fall back to fetching
-      // the head commit SHA individually (max 6 fetches, run in parallel).
+      // Recent commits
       const candidates = pushEvents.slice(0, 3).map(ev => ({
-        repo:    ev.repo.name,
+        repo:      ev.repo.name,
         repoShort: ev.repo.name.replace(`${GITHUB_USER}/`, ""),
-        sha:     ev.payload.head,
-        // inline message if the API happened to include it
-        inlineMsg: (ev.payload.commits && ev.payload.commits.length > 0)
+        sha:       ev.payload.head,
+        inlineMsg: (ev.payload.commits?.length > 0)
           ? ev.payload.commits[ev.payload.commits.length - 1].message
           : null,
-        date:    ev.created_at,
+        date: ev.created_at,
       }));
 
-      // Resolve messages: use inline if present, else fetch
       const resolved = await Promise.all(
         candidates.map(async c => {
           let msg = c.inlineMsg
             ? c.inlineMsg.split("\n")[0].trim()
             : await fetchCommitMessage(c.repo, c.sha);
-
-          if (!msg && c.sha) {
-            // Last resort: show short SHA
-            msg = `push ${c.sha.slice(0, 7)}`;
-          }
+          if (!msg && c.sha) msg = `push ${c.sha.slice(0, 7)}`;
           if (!msg) return null;
-
           return {
             repo:    c.repoShort,
             message: msg.length > 72 ? msg.slice(0, 69) + "…" : msg,
@@ -947,32 +1145,22 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
           };
         })
       );
+      renderCommits(resolved.filter(Boolean));
 
-      const commits = resolved.filter(Boolean).slice(0, 3);
-      renderCommits(commits);
-
-      // ── Build active-day list for streak ──────────────────────────
+      // Streak
       const activeDays = pushEvents.map(ev =>
         new Date(ev.created_at).toISOString().slice(0, 10)
       );
-
       const { streak, start, end } = computeLongestStreak(activeDays);
-
-      // Format date range for display
       const fmt = iso => iso
         ? new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" })
         : null;
-
       renderStreak(streak, streak > 0 ? { start: fmt(start), end: fmt(end) } : null);
 
     } catch (err) {
-      console.warn("[GitHub stats] fetch failed:", err.message);
-
-      // Graceful degradation
+      console.warn("[GitHub events] failed:", err.message);
       const list = document.getElementById("github-commit-list");
-      if (list) {
-        list.innerHTML = `<li class="gcp-error">Could not load — GitHub API rate-limited or offline.</li>`;
-      }
+      if (list) list.innerHTML = `<li class="gcp-error">Could not load — API unavailable.</li>`;
       const valueEl = document.getElementById("github-streak-value");
       const subEl   = document.getElementById("github-streak-sub");
       if (valueEl) valueEl.textContent = "—";
@@ -980,7 +1168,6 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
     }
   }
 
-  // Run after DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", loadGitHubStats);
   } else {
