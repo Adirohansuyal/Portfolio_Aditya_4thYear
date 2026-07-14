@@ -726,3 +726,39 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 })();
 // ═══════════════════════════════════════════════════════════════════
 
+
+// ── Page Transition ───────────────────────────────────────────────────
+(function () {
+  function isSameSite(href) {
+    try {
+      const url = new URL(href, location.href);
+      return url.origin === location.origin;
+    } catch { return false; }
+  }
+
+  document.addEventListener("click", function (e) {
+    const link = e.target.closest("a[href]");
+    if (!link) return;
+
+    const href = link.getAttribute("href");
+
+    // Skip: new tab, hash-only, external, mailto, tel
+    if (
+      link.target === "_blank" ||
+      link.hasAttribute("download") ||
+      href.startsWith("#") ||
+      href.startsWith("mailto:") ||
+      href.startsWith("tel:") ||
+      !isSameSite(href)
+    ) return;
+
+    e.preventDefault();
+
+    document.body.classList.add("page-leaving");
+
+    setTimeout(() => {
+      window.location.href = href;
+    }, 270);
+  });
+})();
+// ── /Page Transition ──────────────────────────────────────────────────
