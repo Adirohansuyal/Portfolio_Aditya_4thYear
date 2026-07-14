@@ -2705,7 +2705,7 @@ h3 {
 }
 
 .github-stat-pill:hover {
-  border-color: rgba(59,130,246,0.45);
+  border-color: rgba(34,197,94,0.45);
   color: var(--accent-strong);
 }
 
@@ -2731,13 +2731,13 @@ h3 {
   inset-inline: 0;
   top: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.55) 40%, rgba(99,102,241,0.4) 70%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.55) 40%, rgba(16,185,129,0.4) 70%, transparent 100%);
   border-radius: 20px 20px 0 0;
 }
 
 .github-heatmap-wrap:hover {
-  border-color: rgba(59,130,246,0.4);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.22), 0 0 0 1px rgba(59,130,246,0.12);
+  border-color: rgba(34,197,94,0.4);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.22), 0 0 0 1px rgba(34,197,94,0.12);
 }
 
 /* Chart card header */
@@ -2777,8 +2777,8 @@ h3 {
   text-transform: uppercase;
   padding: 0.28rem 0.75rem;
   border-radius: 999px;
-  background: rgba(59,130,246,0.12);
-  border: 1px solid rgba(59,130,246,0.28);
+  background: rgba(34,197,94,0.12);
+  border: 1px solid rgba(34,197,94,0.28);
   color: var(--accent-strong);
   white-space: nowrap;
 }
@@ -2830,11 +2830,11 @@ h3 {
   border-radius: 2px;
 }
 
-.lc-0 { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.15); }
-.lc-1 { background: rgba(59,130,246,0.22); }
-.lc-2 { background: rgba(59,130,246,0.42); }
-.lc-3 { background: rgba(59,130,246,0.65); }
-.lc-4 { background: rgba(59,130,246,0.90); }
+.lc-0 { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.15); }
+.lc-1 { background: rgba(34,197,94,0.22); }
+.lc-2 { background: rgba(34,197,94,0.42); }
+.lc-3 { background: rgba(34,197,94,0.65); }
+.lc-4 { background: rgba(34,197,94,0.90); }
 
 /* CTA link */
 .github-heatmap-link {
@@ -2996,11 +2996,12 @@ h3 {
 }
 
 .gcp-msg {
-  color: var(--fg, #e2e8f0);
+  color: #f1f5f9;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 0.77rem;
+  font-weight: 500;
 }
 
 .gcp-time {

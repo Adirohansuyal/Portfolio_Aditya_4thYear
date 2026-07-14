@@ -878,6 +878,26 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
     return { streak: best, start: bestStart, end: bestEnd };
   }
 
+  /**
+   * Fetch a single commit message by SHA.
+   * GitHub public events API omits payload.commits for many push events,
+   * so we resolve the head SHA directly.
+   */
+  async function fetchCommitMessage(repoFullName, sha) {
+    try {
+      const r = await fetch(
+        `https://api.github.com/repos/${repoFullName}/commits/${sha}`,
+        { headers: { Accept: "application/vnd.github+json" } }
+      );
+      if (!r.ok) return null;
+      const data = await r.json();
+      const msg = (data.commit?.message || "").split("\n")[0].trim();
+      return msg || null;
+    } catch {
+      return null;
+    }
+  }
+
   // ── Main fetch + process ──────────────────────────────────────────
 
   async function loadGitHubStats() {
@@ -892,23 +912,44 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
       // ── Collect push events ────────────────────────────────────────
       const pushEvents = events.filter(e => e.type === "PushEvent");
 
-      // ── Build commit list (last 5 unique commits) ──────────────────
-      const commits = [];
-      for (const ev of pushEvents) {
-        for (const c of (ev.payload.commits || [])) {
-          const msg = c.message.split("\n")[0].trim(); // first line only
-          if (!msg) continue;
-          commits.push({
-            repo:    ev.repo.name.replace(`${GITHUB_USER}/`, ""),
-            message: msg.length > 72 ? msg.slice(0, 69) + "…" : msg,
-            date:    ev.created_at,
-          });
-          if (commits.length >= 6) break;
-        }
-        if (commits.length >= 6) break;
-      }
+      // ── Build commit list ──────────────────────────────────────────
+      // GitHub public events API often omits payload.commits[].message.
+      // Strategy: try payload.commits first, then fall back to fetching
+      // the head commit SHA individually (max 6 fetches, run in parallel).
+      const candidates = pushEvents.slice(0, 3).map(ev => ({
+        repo:    ev.repo.name,
+        repoShort: ev.repo.name.replace(`${GITHUB_USER}/`, ""),
+        sha:     ev.payload.head,
+        // inline message if the API happened to include it
+        inlineMsg: (ev.payload.commits && ev.payload.commits.length > 0)
+          ? ev.payload.commits[ev.payload.commits.length - 1].message
+          : null,
+        date:    ev.created_at,
+      }));
 
-      renderCommits(commits.slice(0, 6));
+      // Resolve messages: use inline if present, else fetch
+      const resolved = await Promise.all(
+        candidates.map(async c => {
+          let msg = c.inlineMsg
+            ? c.inlineMsg.split("\n")[0].trim()
+            : await fetchCommitMessage(c.repo, c.sha);
+
+          if (!msg && c.sha) {
+            // Last resort: show short SHA
+            msg = `push ${c.sha.slice(0, 7)}`;
+          }
+          if (!msg) return null;
+
+          return {
+            repo:    c.repoShort,
+            message: msg.length > 72 ? msg.slice(0, 69) + "…" : msg,
+            date:    c.date,
+          };
+        })
+      );
+
+      const commits = resolved.filter(Boolean).slice(0, 3);
+      renderCommits(commits);
 
       // ── Build active-day list for streak ──────────────────────────
       const activeDays = pushEvents.map(ev =>
