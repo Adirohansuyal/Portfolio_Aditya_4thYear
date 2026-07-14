@@ -64,8 +64,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     const shadowAlpha = lerpF(0.45, 0.08, t);
     root.style.setProperty("--shadow", `0 10px 30px rgba(10,14,26,${shadowAlpha})`);
 
-    const navAlpha = lerpF(0.85, 0.92, t);
-    root.style.setProperty("--navbar-bg", `rgba(${bR},${bG},${bB},${navAlpha})`);
+    // navbar background is handled by CSS glassmorphism — do not override
 
     root.style.setProperty("--accent",        `rgb(${lerp(59,30,t)},${lerp(130,64,t)},${lerp(246,175,t)})`);
     root.style.setProperty("--accent-strong", `rgb(${lerp(96,20,t)},${lerp(165,80,t)},${lerp(250,200,t)})`);
