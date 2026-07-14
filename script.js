@@ -46,9 +46,6 @@
       loader.addEventListener("transitionend", () => {
         loader.style.display = "none";
       }, { once: true });
-
-      // Signal chime to arm itself — fires on the very next user touch/scroll/click
-      window._loaderDone = true;
     }, 320);
   }
 
@@ -63,71 +60,7 @@
 })();
 // ── /Page Loader ──────────────────────────────────────────────────────
 
-// ── Welcome Chime (Web Audio API — Safari compatible) ────────────────────
-(function () {
-  function playWelcomeChime() {
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
 
-      const ctx = new AudioCtx();
-
-      function scheduleNotes() {
-        const notes = [
-          { freq: 523.25, time: 0.0,  dur: 0.7 },
-          { freq: 659.25, time: 0.22, dur: 0.7 },
-          { freq: 783.99, time: 0.44, dur: 0.7 },
-          { freq: 1046.5, time: 0.66, dur: 1.2 },
-        ];
-
-        notes.forEach(({ freq, time, dur }) => {
-          const osc  = ctx.createOscillator();
-          const gain = ctx.createGain();
-
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(freq, ctx.currentTime + time);
-
-          const start = ctx.currentTime + time;
-          gain.gain.setValueAtTime(0, start);
-          gain.gain.linearRampToValueAtTime(0.22, start + 0.012);
-          gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(start);
-          osc.stop(start + dur + 0.1);
-        });
-
-        setTimeout(() => ctx.close(), 3000);
-      }
-
-      // Safari starts context in "suspended" state — must resume() first
-      if (ctx.state === "suspended") {
-        ctx.resume().then(scheduleNotes);
-      } else {
-        scheduleNotes();
-      }
-    } catch (e) {}
-  }
-
-  if (!sessionStorage.getItem("chime_played")) {
-    sessionStorage.setItem("chime_played", "1");
-
-    const events = ["touchstart", "touchmove", "pointerdown", "click", "keydown"];
-
-    function onFirstInteraction() {
-      if (!window._loaderDone) return;
-      playWelcomeChime();
-      events.forEach(ev => document.removeEventListener(ev, onFirstInteraction));
-      window.removeEventListener("scroll", onFirstInteraction);
-    }
-
-    // scroll on window catches mobile swipe immediately
-    window.addEventListener("scroll", onFirstInteraction, { passive: true });
-    events.forEach(ev => document.addEventListener(ev, onFirstInteraction, { passive: true }));
-  }
-})();
-// ── /Welcome Chime ────────────────────────────────────────────────────
 
 const year = document.querySelector("#year");
 // ── Scroll-driven background ──────────────────────────────────────────
