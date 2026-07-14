@@ -1,0 +1,12 @@
+Read /Users/adityasuyal/Desktop/Portfolio/script.js (L61-140)
+
+  Now I can see the difference clearly. script.js uses a luminance-based hard switch — it calculates the actual background brightness and
+  flips text to dark when the background gets light. The blogs.js uses a different formula based on card luminance (cardLum) which lags
+  behind or doesn't track the background directly.
+  
+  Let me read the exact blogs.js text color section vs script.js:
+● Read /Users/adityasuyal/Desktop/Portfolio/blogs.js (L11-65)
+
+  Found the exact problem. blogs.js drives text color from card/panel luminance (cardLum) instead of the background luminance (bgLuminance).
+  The panel has a whiteLift sine arc that peaks mid-scroll — so at mid-scroll, cards go very bright but the background is still a medium
+  blue, causing text to flip dark while the background is still dark. They mismatch.

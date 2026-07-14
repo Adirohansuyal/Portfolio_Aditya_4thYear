@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blog | Aditya Suyal — AI/ML Engineer</title>
+    <meta name="description" content="Aditya Suyal's technical blog — deep dives on LLM agents, RAG pipelines, generative AI, NLP, computer vision, and applied machine learning." />
+    <meta name="author" content="Aditya Suyal" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://adirohansuyal.github.io/blogs.html" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://adirohansuyal.github.io/blogs.html" />
+    <meta property="og:title" content="Blog | Aditya Suyal — AI/ML Engineer" />
+    <meta property="og:description" content="Technical writing on LLM agents, RAG, generative AI, NLP, and applied ML by Aditya Suyal." />
+    <meta property="og:image" content="https://adirohansuyal.github.io/assets/aditya-corporate.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="blogs.css" />
+    <style>
+      :root {
+        --bg:            #0A0E1A;
+        --panel:         #151C2C;
+        --panel-strong:  #131A29;
+        --secondary-bg:  #0F1520;
+        --line:          #2E3A4E;
+        --text:          #F1F5F9;
+        --muted:         #94A3B8;
+        --quiet:         #64748B;
+        --accent:        #3B82F6;
+        --accent-strong: #60A5FA;
+        --shadow:        0 10px 30px rgba(10,14,26,0.45);
+        --navbar-bg:     rgba(10,14,26,0.85);
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <!-- ── Nav Island ─────────────────────────────────────────────── -->
+    <div class="nav-island-wrap">
+      <header class="site-header">
+        <a class="brand" href="index.html" aria-label="Aditya Suyal portfolio home">
+          <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
+          <span class="brand-text">
+            <span class="brand-name">Aditya Suyal</span>
+            <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
+          </span>
+        </a>
+        <div class="header-right">
+          <button class="header-cta" id="resume-btn" type="button">Resume</button>
+          <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" type="button">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </button>
+        </div>
+        <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+          <a href="index.html#top">About</a>
+          <a href="index.html#experience">Experience</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="research.html">Research</a>
+          <a href="youtube.html">YouTube</a>
+          <a href="index.html#skills">Skills</a>
+          <a href="certifications.html">Certifications</a>
+          <a href="awards.html">Awards</a>
+          <a href="leadership.html">Leadership</a>
+          <a href="blogs.html" class="active">Blog</a>
+          <a href="index.html#contact">Contact</a>
+        </nav>
+      </header>
+    </div>
+
+    <main>
+
+      <!-- ── Hero ─────────────────────────────────────────────────── -->
+      <section class="blog-hero" aria-labelledby="blog-hero-title">
+        <div class="blog-hero-badge" aria-hidden="true">
+          <span class="blog-hero-badge-dot"></span>
+          Technical Writing
+        </div>
+        <h1 id="blog-hero-title">
+          Thoughts on <span style="color:var(--accent-strong)">AI, ML</span><br />and Engineering.
+        </h1>
+        <p class="blog-hero-sub">
+          Deep dives on large language models, agentic systems, RAG pipelines,
+          computer vision, and the craft of building AI products that actually ship.
+        </p>
+      </section>
+
+      <!-- ── Controls: search + categories ────────────────────────── -->
+      <div class="blog-controls" role="search" aria-label="Filter and search blog posts">
+        <div class="blog-search-wrap">
+          <span class="blog-search-icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input
+            class="blog-search"
+            id="blog-search"
+            type="search"
+            placeholder="Search articles…"
+            aria-label="Search blog posts"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="blog-category-group" role="group" aria-label="Filter by category">
+          <button class="blog-cat-btn active" type="button" data-cat="all">All</button>
+          <button class="blog-cat-btn" type="button" data-cat="llm">LLMs</button>
+          <button class="blog-cat-btn" type="button" data-cat="rag">RAG</button>
+          <button class="blog-cat-btn" type="button" data-cat="agents">Agents</button>
+          <button class="blog-cat-btn" type="button" data-cat="vision">Vision</button>
+          <button class="blog-cat-btn" type="button" data-cat="mlops">MLOps</button>
+        </div>
+
+        <span class="blog-count" id="blog-count" aria-live="polite" aria-atomic="true"></span>
+      </div>
+
+      <!-- ── Blog Section ────────────────────────────────────────── -->
+      <section class="blog-section" aria-label="Blog posts">
+
+        <!-- Featured post -->
+        <p class="blog-featured-label" aria-hidden="true">Featured</p>
+        <article
+          class="blog-card blog-card--featured"
+          data-category="llm agents"
+          aria-labelledby="post-featured-title"
+          tabindex="0"
+        >
+          <div class="blog-card-visual blog-thumb-blue" aria-hidden="true">
+            <span class="blog-card-visual-icon">🤖</span>
+          </div>
+          <div class="blog-card-body">
+            <span class="blog-card-category">
+              <span class="blog-card-category-dot"></span>LLM Systems
+            </span>
+            <h3 id="post-featured-title">
+              Building a 10-Agent Modular AI Framework: Architecture, Routing, and Lessons Learned
+            </h3>
+            <p class="blog-card-excerpt">
+              How I designed a hybrid multi-agent conversational AI system with supervisor routing,
+              competitive debate between agents, and expertise-aware personalization — achieving
+              +11.9% accuracy over a single-model baseline while cutting unnecessary tool calls by 31%.
+            </p>
+            <div class="blog-card-meta">
+              <span class="blog-card-date">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                March 2026
+              </span>
+              <span class="blog-card-read">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                12 min read
+              </span>
+              <div class="blog-card-tags">
+                <span class="blog-card-tag">CrewAI</span>
+                <span class="blog-card-tag">Llama 3.3</span>
+                <span class="blog-card-tag">Multi-Agent</span>
+              </div>
+            </div>
+            <a class="blog-read-link" href="#" aria-label="Read: Building a 10-Agent Modular AI Framework">
+              Read article
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- All posts grid -->
+        <p class="blog-grid-label" aria-hidden="true">All Articles</p>
+        <div class="blog-grid" id="blog-grid">
+
+          <!-- Post 1 -->
+          <article class="blog-card" data-category="rag llm" tabindex="0" aria-labelledby="post-1-title">
+            <div class="blog-card-thumb blog-thumb-purple" aria-hidden="true">
+              <span class="blog-card-thumb-emoji">🔍</span>
+            </div>
+            <div class="blog-card-body">
+              <span class="blog-card-category">
+                <span class="blog-card-category-dot"></span>RAG
+              </span>
+              <h3 id="post-1-title">Hybrid Dense + Sparse Retrieval: Why BM25 Still Matters in 2025</h3>
+              <p class="blog-card-excerpt">
+                Dense embeddings alone miss keyword-critical queries. I benchmarked pure FAISS,
+                pure BM25, and a reciprocal-rank fusion hybrid on 5K enterprise docs — the results
+                might surprise you.
+              </p>
+              <div class="blog-card-meta">
+                <span class="blog-card-date">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Feb 2026
+                </span>
+                <span class="blog-card-read">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  8 min read
+                </span>
+                <div class="blog-card-tags">
+                  <span class="blog-card-tag">FAISS</span>
+                  <span class="blog-card-tag">BM25</span>
+                </div>
+              </div>
+              <a class="blog-read-link" href="#" aria-label="Read: Hybrid Dense + Sparse Retrieval">
+                Read article
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Post 2 -->
+          <article class="blog-card" data-category="agents llm" tabindex="0" aria-labelledby="post-2-title">
+            <div class="blog-card-thumb blog-thumb-teal" aria-hidden="true">
+              <span class="blog-card-thumb-emoji">⚙️</span>
+            </div>
+            <div class="blog-card-body">
+              <span class="blog-card-category">
+                <span class="blog-card-category-dot"></span>Agents
+              </span>
+              <h3 id="post-2-title">Tool Calling vs. Function Calling: Picking the Right Pattern for Agentic Workflows</h3>
+              <p class="blog-card-excerpt">
+                LangChain, LlamaIndex, and CrewAI each handle tool use differently. Here's a
+                practical breakdown of when to use each pattern, with real latency and reliability numbers.
+              </p>
+              <div class="blog-card-meta">
+                <span class="blog-card-date">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Jan 2026
+                </span>
+                <span class="blog-card-read">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  10 min read
+                </span>
+                <div class="blog-card-tags">
+                  <span class="blog-card-tag">LangChain</span>
+                  <span class="blog-card-tag">CrewAI</span>
+                </div>
+              </div>
+              <a class="blog-read-link" href="#" aria-label="Read: Tool Calling vs. Function Calling">
+                Read article
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Post 3 -->
+          <article class="blog-card" data-category="vision mlops" tabindex="0" aria-labelledby="post-3-title">
+            <div class="blog-card-thumb blog-thumb-amber" aria-hidden="true">
+              <span class="blog-card-thumb-emoji">🛰️</span>
+            </div>
+            <div class="blog-card-body">
+              <span class="blog-card-category">
+                <span class="blog-card-category-dot"></span>Computer Vision
+              </span>
+              <h3 id="post-3-title">Physics-Guided Cloud Removal from Satellite Imagery Using SAR-Optical Fusion</h3>
+              <p class="blog-card-excerpt">
+                How I preserved NDVI vegetation signals while reconstructing cloud-obscured LISS-IV
+                scenes. A walkthrough of the SAR-optical fusion pipeline, loss functions, and PSNR/SSIM evaluation.
+              </p>
+              <div class="blog-card-meta">
+                <span class="blog-card-date">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Dec 2025
+                </span>
+                <span class="blog-card-read">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  14 min read
+                </span>
+                <div class="blog-card-tags">
+                  <span class="blog-card-tag">PyTorch</span>
+                  <span class="blog-card-tag">SAR</span>
+                </div>
+              </div>
+              <a class="blog-read-link" href="#" aria-label="Read: Physics-Guided Cloud Removal">
+                Read article
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Post 4 -->
+          <article class="blog-card" data-category="llm" tabindex="0" aria-labelledby="post-4-title">
+            <div class="blog-card-thumb blog-thumb-rose" aria-hidden="true">
+              <span class="blog-card-thumb-emoji">🧠</span>
+            </div>
+            <div class="blog-card-body">
+              <span class="blog-card-category">
+                <span class="blog-card-category-dot"></span>LLMs
+              </span>
+              <h3 id="post-4-title">Memory-Augmented LLMs: Combining Transformers with LSTM Temporal Memory</h3>
+              <p class="blog-card-excerpt">
+                Context windows are expensive. I built a hybrid architecture that offloads long-term
+                sequential memory to an LSTM, keeping the Transformer focused on reasoning —
+                here's what worked and what didn't.
+              </p>
+              <div class="blog-card-meta">
+                <span class="blog-card-date">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Nov 2025
+                </span>
+                <span class="blog-card-read">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  9 min read
+                </span>
+                <div class="blog-card-tags">
+                  <span class="blog-card-tag">LSTM</span>
+                  <span class="blog-card-tag">Transformers</span>
+                </div>
+              </div>
+              <a class="blog-read-link" href="#" aria-label="Read: Memory-Augmented LLMs">
+                Read article
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Post 5 -->
+          <article class="blog-card" data-category="mlops agents" tabindex="0" aria-labelledby="post-5-title">
+            <div class="blog-card-thumb blog-thumb-green" aria-hidden="true">
+              <span class="blog-card-thumb-emoji">☁️</span>
+            </div>
+            <div class="blog-card-body">
+              <span class="blog-card-category">
+                <span class="blog-card-category-dot"></span>MLOps
+              </span>
+              <h3 id="post-5-title">Deploying Multi-Agent AI on AWS: Lambda, EC2, and Cost Tradeoffs</h3>
+              <p class="blog-card-excerpt">
+                A practical guide to shipping agentic AI systems on AWS — when to use serverless Lambda
+                vs. persistent EC2, how to handle cold starts, and keeping costs sane at scale.
+              </p>
+              <div class="blog-card-meta">
+                <span class="blog-card-date">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Oct 2025
+                </span>
+                <span class="blog-card-read">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  11 min read
+                </span>
+                <div class="blog-card-tags">
+                  <span class="blog-card-tag">AWS</span>
+                  <span class="blog-card-tag">Docker</span>
+                </div>
+              </div>
+              <a class="blog-read-link" href="#" aria-label="Read: Deploying Multi-Agent AI on AWS">
+                Read article
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Post 6 -->
+          <article class="blog-card" data-category="rag vision" tabindex="0" aria-labelledby="post-6-title">
+            <div class="blog-card-thumb blog-thumb-indigo" aria-hidden="true">
+              <span class="blog-card-thumb-emoji">🎯</span>
+            </div>
+            <div class="blog-card-body">
+              <span class="blog-card-category">
+                <span class="blog-card-category-dot"></span>Embeddings
+              </span>
+              <h3 id="post-6-title">CLIP Embeddings for Product Search: Building a Visual Recommendation Engine</h3>
+              <p class="blog-card-excerpt">
+                How I used OpenAI's CLIP model and FAISS vector search to build a fashion product
+                intelligence system — covering embedding strategy, deduplication, and query-time tricks.
+              </p>
+              <div class="blog-card-meta">
+                <span class="blog-card-date">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Sep 2025
+                </span>
+                <span class="blog-card-read">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  7 min read
+                </span>
+                <div class="blog-card-tags">
+                  <span class="blog-card-tag">CLIP</span>
+                  <span class="blog-card-tag">FAISS</span>
+                </div>
+              </div>
+              <a class="blog-read-link" href="#" aria-label="Read: CLIP Embeddings for Product Search">
+                Read article
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </article>
+
+        </div><!-- /blog-grid -->
+
+        <!-- Empty state -->
+        <div class="blog-empty" id="blog-empty" role="status" aria-live="polite">
+          <span class="blog-empty-icon" aria-hidden="true">🔎</span>
+          <p>No articles match your search.</p>
+          <p style="color:var(--quiet); font-size:0.85rem;">Try a different keyword or category.</p>
+        </div>
+
+      </section><!-- /blog-section -->
+
+      <!-- ── Subscribe CTA ──────────────────────────────────────── -->
+      <section class="blog-subscribe-section" aria-labelledby="subscribe-title">
+        <div class="blog-subscribe-inner">
+          <p class="eyebrow" style="margin:0;">Stay Updated</p>
+          <h2 id="subscribe-title">
+            New articles on <span style="color:var(--accent-strong)">AI &amp; ML</span> — straight to your inbox.
+          </h2>
+          <p>No spam. Just deep technical writing on LLMs, RAG, agents, and applied machine learning, whenever I publish.</p>
+          <form class="blog-subscribe-form" id="subscribe-form" novalidate>
+            <input
+              class="blog-subscribe-input"
+              type="email"
+              placeholder="your@email.com"
+              aria-label="Email address for newsletter"
+              required
+              autocomplete="email"
+            />
+            <button class="blog-subscribe-btn" type="submit">Subscribe</button>
+          </form>
+          <p class="blog-subscribe-note">Unsubscribe anytime. No spam, ever.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ── Footer ─────────────────────────────────────────────────── -->
+    <footer class="site-footer">
+      <p>© <span id="year"></span> Aditya Suyal, All Rights Reserved.</p>
+    </footer>
+
+    <script src="blogs.js"></script>
+  </body>
+</html>
