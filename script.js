@@ -167,7 +167,7 @@ const resumeModalBackdrop = document.querySelector("#resume-modal-backdrop");
 const resumeFallback = document.querySelector("#resume-fallback");
 const resumeCanvas = document.querySelector("#resume-canvas");
 const resumeLoading = document.querySelector("#resume-loading");
-const RESUME_SRC = "assets/resume.pdf";
+const RESUME_SRC = "assets/Aditya_Suyal_Final_Resume2027.pdf";
 
 let pdfRendered = false;
 
@@ -375,7 +375,7 @@ LinkedIn: https://www.linkedin.com/in/aditya-suyal
 Email: adityasuyal0001@gmail.com
 
 === EXPERIENCE ===
-1. AI Research and Development Trainee — CAIR, DIBER (DRDO), Bengaluru (Current)
+1. AI Research and Development Trainee — DIBER & DIPAS, DRDO (Current)
    - Working on AI/ML engineering, agentic systems, and applied generative AI
    - Building LLM workflows combining model reasoning, retrieval, tool use, and structured outputs
    - Exploring autonomous agents and AI automation for defense research contexts
