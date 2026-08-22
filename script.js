@@ -343,7 +343,7 @@ window.addEventListener("resize", updateScrollState);
 updateScrollState();
 
 // ═══════════════════════════════════════════════════════════════════
-// PORTFOLIO CHATBOT — Groq llama-3.3-70b-versatile
+// PORTFOLIO CHATBOT — Groq openai/gpt-oss-120b
 // ═══════════════════════════════════════════════════════════════════
 (function () {
   // ── Knowledge base (system prompt) ────────────────────────────────
@@ -495,7 +495,7 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 
   // API key lives in Netlify environment — never hardcoded here.
   // Requests go to the serverless proxy at netlify/functions/groq-proxy.js
-  const GROQ_MODEL = "llama-3.3-70b-versatile";
+  const GROQ_MODEL = "openai/gpt-oss-120b";
   const GROQ_URL   = "/.netlify/functions/groq-proxy";
 
   // ── State ──────────────────────────────────────────────────────────
