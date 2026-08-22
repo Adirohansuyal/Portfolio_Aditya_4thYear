@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════
-// PORTFOLIO CHATBOT — Groq llama-3.3-70b-versatile
+// PORTFOLIO CHATBOT — Groq openai/gpt-oss-120b
 // Works on all pages. Detects current page and shows a relevant
 // welcome message + page summary when navigated to from another page.
 // ═══════════════════════════════════════════════════════════════════
@@ -156,7 +156,7 @@ Keep answers concise, friendly, and professional. Use bullet points for lists. D
 
   // API key lives in Netlify environment — never hardcoded here.
   // Requests go to the serverless proxy at netlify/functions/groq-proxy.js
-  const GROQ_MODEL = "llama-3.3-70b-versatile";
+  const GROQ_MODEL = "openai/gpt-oss-120b";
   const GROQ_URL   = "/.netlify/functions/groq-proxy";
 
   // ── Extract readable content from the current page ─────────────────
