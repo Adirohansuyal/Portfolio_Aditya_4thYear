@@ -839,5 +839,177 @@
     <script src="script.js"></script>
   <!-- GitHub heatmap tooltip — lives at body level to avoid stacking/overflow clipping -->
   <div class="github-tooltip" id="github-tooltip" role="tooltip" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════
+       WATER RIPPLE — height-field simulation
+       ══════════════════════════════════════════════ -->
+  <canvas id="ripple-canvas" aria-hidden="true"></canvas>
+
+  <script>
+/* ================================================================
+   WATER RIPPLE — height-field ping-pong simulation
+   ================================================================ */
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const canvas = document.getElementById('ripple-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  const C = {
+    SCALE    : 3,
+    DAMPING  : 0.988,
+    MOVE_STR : 70,
+    CLICK_STR: 380,
+    RIPPLE_R : 5,
+    GAP_SQ   : 36,
+  };
+
+  let W, H, cols, rows, buf0, buf1;
+
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = W;
+    canvas.height = H;
+    const nc = Math.ceil(W / C.SCALE) + 2;
+    const nr = Math.ceil(H / C.SCALE) + 2;
+    if (nc !== cols || nr !== rows) {
+      cols = nc; rows = nr;
+      buf0 = new Float32Array(cols * rows);
+      buf1 = new Float32Array(cols * rows);
+    }
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  function drop(gx, gy, str) {
+    const r = C.RIPPLE_R;
+    for (let dy = -r; dy <= r; dy++) {
+      for (let dx = -r; dx <= r; dx++) {
+        const d2 = dx*dx + dy*dy;
+        if (d2 > r*r) continue;
+        const nx = gx+dx, ny = gy+dy;
+        if (nx < 1 || nx >= cols-1 || ny < 1 || ny >= rows-1) continue;
+        const t = Math.cos((Math.sqrt(d2)/r) * (Math.PI*0.5));
+        buf0[ny*cols+nx] -= str * t;
+      }
+    }
+  }
+
+  let lx = -999, ly = -999;
+  function onMove(cx, cy) {
+    const dx = cx-lx, dy = cy-ly;
+    if (dx*dx+dy*dy < C.GAP_SQ) return;
+    lx = cx; ly = cy;
+    drop(Math.round(cx/C.SCALE), Math.round(cy/C.SCALE), C.MOVE_STR);
+  }
+  window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY), { passive:true });
+  window.addEventListener('touchmove', e => {
+    if (e.touches[0]) onMove(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive:true });
+  window.addEventListener('click', e =>
+    drop(Math.round(e.clientX/C.SCALE), Math.round(e.clientY/C.SCALE), C.CLICK_STR),
+    { passive:true }
+  );
+
+  const ABSORB = 14;
+  let sponge = null;
+
+  function buildSponge() {
+    sponge = new Float32Array(cols * rows);
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const dist = Math.min(x, y, cols-1-x, rows-1-y);
+        const t = dist >= ABSORB ? 1 : (1 - Math.cos((dist / ABSORB) * Math.PI)) * 0.5;
+        sponge[y*cols + x] = t;
+      }
+    }
+  }
+  buildSponge();
+  window.addEventListener('resize', buildSponge, { passive: true });
+
+  function simulate() {
+    const D = C.DAMPING;
+    for (let y = 1; y < rows-1; y++) {
+      const row = y*cols, rU = row-cols, rD = row+cols;
+      for (let x = 1; x < cols-1; x++) {
+        const i = row+x;
+        buf1[i] = ((buf0[i-1]+buf0[i+1]+buf0[rU+x]+buf0[rD+x]) * 0.5 - buf1[i])
+                  * D * sponge[i];
+      }
+    }
+    for (let x = 0; x < cols; x++) { buf1[x] = 0; buf1[(rows-1)*cols+x] = 0; }
+    for (let y = 0; y < rows; y++) { buf1[y*cols] = 0; buf1[y*cols+cols-1] = 0; }
+    const t = buf0; buf0 = buf1; buf1 = t;
+  }
+
+  let imgData = null;
+
+  function render() {
+    if (!imgData || imgData.width !== W || imgData.height !== H) {
+      imgData = ctx.createImageData(W, H);
+    }
+    const d = imgData.data;
+    d.fill(0);
+    const S = C.SCALE;
+
+    for (let y = 1; y < rows-1; y++) {
+      const row = y*cols, rU = row-cols, rD = row+cols;
+      const py0 = (y-1)*S, py1 = Math.min(py0+S, H);
+      if (py0 >= H || py1 <= 0) continue;
+
+      for (let x = 1; x < cols-1; x++) {
+        const i = row+x;
+        const h = buf0[i];
+        if (Math.abs(h) < 0.6) continue;
+
+        const nx = buf0[i+1] - buf0[i-1];
+        const ny = buf0[rD+x] - buf0[rU+x];
+        const light = (nx + ny) * 0.38;
+
+        const px0 = (x-1)*S, px1 = Math.min(px0+S, W);
+        if (px0 >= W || px1 <= 0) continue;
+
+        if (light > 0) {
+          const a = Math.min(light * 2.2, 200) | 0;
+          for (let py = Math.max(py0,0); py < py1; py++) {
+            let idx = (py*W + Math.max(px0,0)) * 4;
+            for (let px = Math.max(px0,0); px < px1; px++, idx += 4) {
+              d[idx] = 255; d[idx+1] = 255; d[idx+2] = 255; d[idx+3] = a;
+            }
+          }
+        } else {
+          const a = Math.min(-light * 1.4, 110) | 0;
+          for (let py = Math.max(py0,0); py < py1; py++) {
+            let idx = (py*W + Math.max(px0,0)) * 4;
+            for (let px = Math.max(px0,0); px < px1; px++, idx += 4) {
+              d[idx] = 10; d[idx+1] = 30; d[idx+2] = 80; d[idx+3] = a;
+            }
+          }
+        }
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+  }
+
+  let running = true;
+  function loop() {
+    if (!running) return;
+    simulate();
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  if (document.readyState === 'complete') { loop(); }
+  else { window.addEventListener('load', loop); }
+
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden;
+    if (running) loop();
+  });
+})();
+/* ================================================================ */
+  </script>
   </body>
 </html>
