@@ -17,8 +17,8 @@
       --text: #F1F5F9;
       --muted: #94A3B8;
       --quiet: #64748B;
-      --accent: #3B82F6;
-      --accent-strong: #60A5FA;
+      /* --accent driven by CSS accentCycle */
+      /* --accent-strong driven by CSS accentCycle */
       --panel: #151C2C;
       --line: #2E3A4E;
     }
@@ -42,8 +42,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(37,99,235,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(37,99,235,0.04) 1px, transparent 1px);
+        linear-gradient(color-mix(in srgb, var(--accent) 4%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--accent) 4%, transparent) 1px, transparent 1px);
       background-size: 48px 48px;
       pointer-events: none;
       animation: grid-drift 24s linear infinite;
@@ -137,8 +137,8 @@
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-      background: rgba(37,99,235,0.10);
-      border: 1px solid rgba(59,130,246,0.25);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
       border-radius: 999px;
       color: var(--accent-strong);
       font-size: 0.72rem;
@@ -192,7 +192,7 @@
     .btn-primary:hover {
       background: var(--accent-strong);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(37,99,235,0.35);
+      box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 35%, transparent);
     }
 
     .btn-secondary {

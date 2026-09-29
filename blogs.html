@@ -31,8 +31,6 @@
         --text:          #F1F5F9;
         --muted:         #94A3B8;
         --quiet:         #64748B;
-        --accent:        #3B82F6;
-        --accent-strong: #60A5FA;
         --shadow:        0 10px 30px rgba(10,14,26,0.45);
         --navbar-bg:     rgba(10,14,26,0.85);
       }
@@ -124,144 +122,29 @@
       <!-- ── Blog Section ────────────────────────────────────────── -->
       <section class="blog-section" aria-label="Blog posts">
 
-        <!-- Featured post -->
-        <p class="blog-featured-label" aria-hidden="true">Featured</p>
-        <article
-          class="blog-card blog-card--featured"
-          data-category="llm agents"
-          aria-labelledby="post-featured-title"
-          tabindex="0"
-        >
-          <div class="blog-card-visual blog-thumb-blue" aria-hidden="true">
-            <span class="blog-card-visual-icon">🤖</span>
-          </div>
-          <div class="blog-card-body">
-            <span class="blog-card-category">
-              <span class="blog-card-category-dot"></span>LLM Systems
-            </span>
-            <h3 id="post-featured-title">
-              Building a 10-Agent Modular AI Framework: Architecture, Routing, and Lessons Learned
-            </h3>
-            <p class="blog-card-excerpt">
-              How I designed a hybrid multi-agent conversational AI system with supervisor routing,
-              competitive debate between agents, and expertise-aware personalization — achieving
-              +11.9% accuracy over a single-model baseline while cutting unnecessary tool calls by 31%.
-            </p>
-            <div class="blog-card-meta">
-              <span class="blog-card-date">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                March 2026
-              </span>
-              <span class="blog-card-read">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                12 min read
-              </span>
-              <div class="blog-card-tags">
-                <span class="blog-card-tag">CrewAI</span>
-                <span class="blog-card-tag">Llama 3.3</span>
-                <span class="blog-card-tag">Multi-Agent</span>
-              </div>
-            </div>
-            <a class="blog-read-link" href="#" aria-label="Read: Building a 10-Agent Modular AI Framework">
-              Read article
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </a>
-          </div>
-        </article>
-
         <!-- All posts grid -->
         <p class="blog-grid-label" aria-hidden="true">All Articles</p>
         <div class="blog-grid" id="blog-grid">
 
-          <!-- Post 1 -->
-          <article class="blog-card" data-category="rag llm" tabindex="0" aria-labelledby="post-1-title">
-            <div class="blog-card-thumb blog-thumb-purple" aria-hidden="true">
-              <span class="blog-card-thumb-emoji">🔍</span>
+          <!-- Post 1 — Transformers from Scratch -->
+          <article class="blog-card" data-category="llm" data-href="blog-transformers-from-scratch.html" tabindex="0" aria-labelledby="post-featured-title">
+            <div class="blog-card-thumb blog-thumb-blue" aria-hidden="true">
+              <span class="blog-card-thumb-emoji">🧠</span>
             </div>
             <div class="blog-card-body">
               <span class="blog-card-category">
-                <span class="blog-card-category-dot"></span>RAG
+                <span class="blog-card-category-dot"></span>Deep Learning
               </span>
-              <h3 id="post-1-title">Hybrid Dense + Sparse Retrieval: Why BM25 Still Matters in 2025</h3>
+              <h3 id="post-featured-title">Transformers from Scratch: A Deep Dive into Self-Attention</h3>
               <p class="blog-card-excerpt">
-                Dense embeddings alone miss keyword-critical queries. I benchmarked pure FAISS,
-                pure BM25, and a reciprocal-rank fusion hybrid on 5K enterprise docs — the results
-                might surprise you.
+                Forget the black-box explanation. We build a Transformer step by step —
+                from raw token embeddings to multi-head attention — with PyTorch code
+                and the intuition behind every design decision.
               </p>
               <div class="blog-card-meta">
                 <span class="blog-card-date">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  Feb 2026
-                </span>
-                <span class="blog-card-read">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  8 min read
-                </span>
-                <div class="blog-card-tags">
-                  <span class="blog-card-tag">FAISS</span>
-                  <span class="blog-card-tag">BM25</span>
-                </div>
-              </div>
-              <a class="blog-read-link" href="#" aria-label="Read: Hybrid Dense + Sparse Retrieval">
-                Read article
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </a>
-            </div>
-          </article>
-
-          <!-- Post 2 -->
-          <article class="blog-card" data-category="agents llm" tabindex="0" aria-labelledby="post-2-title">
-            <div class="blog-card-thumb blog-thumb-teal" aria-hidden="true">
-              <span class="blog-card-thumb-emoji">⚙️</span>
-            </div>
-            <div class="blog-card-body">
-              <span class="blog-card-category">
-                <span class="blog-card-category-dot"></span>Agents
-              </span>
-              <h3 id="post-2-title">Tool Calling vs. Function Calling: Picking the Right Pattern for Agentic Workflows</h3>
-              <p class="blog-card-excerpt">
-                LangChain, LlamaIndex, and CrewAI each handle tool use differently. Here's a
-                practical breakdown of when to use each pattern, with real latency and reliability numbers.
-              </p>
-              <div class="blog-card-meta">
-                <span class="blog-card-date">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  Jan 2026
-                </span>
-                <span class="blog-card-read">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  10 min read
-                </span>
-                <div class="blog-card-tags">
-                  <span class="blog-card-tag">LangChain</span>
-                  <span class="blog-card-tag">CrewAI</span>
-                </div>
-              </div>
-              <a class="blog-read-link" href="#" aria-label="Read: Tool Calling vs. Function Calling">
-                Read article
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </a>
-            </div>
-          </article>
-
-          <!-- Post 3 -->
-          <article class="blog-card" data-category="vision mlops" tabindex="0" aria-labelledby="post-3-title">
-            <div class="blog-card-thumb blog-thumb-amber" aria-hidden="true">
-              <span class="blog-card-thumb-emoji">🛰️</span>
-            </div>
-            <div class="blog-card-body">
-              <span class="blog-card-category">
-                <span class="blog-card-category-dot"></span>Computer Vision
-              </span>
-              <h3 id="post-3-title">Physics-Guided Cloud Removal from Satellite Imagery Using SAR-Optical Fusion</h3>
-              <p class="blog-card-excerpt">
-                How I preserved NDVI vegetation signals while reconstructing cloud-obscured LISS-IV
-                scenes. A walkthrough of the SAR-optical fusion pipeline, loss functions, and PSNR/SSIM evaluation.
-              </p>
-              <div class="blog-card-meta">
-                <span class="blog-card-date">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  Dec 2025
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  September 2025
                 </span>
                 <span class="blog-card-read">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -269,116 +152,48 @@
                 </span>
                 <div class="blog-card-tags">
                   <span class="blog-card-tag">PyTorch</span>
-                  <span class="blog-card-tag">SAR</span>
-                </div>
-              </div>
-              <a class="blog-read-link" href="#" aria-label="Read: Physics-Guided Cloud Removal">
-                Read article
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </a>
-            </div>
-          </article>
-
-          <!-- Post 4 -->
-          <article class="blog-card" data-category="llm" tabindex="0" aria-labelledby="post-4-title">
-            <div class="blog-card-thumb blog-thumb-rose" aria-hidden="true">
-              <span class="blog-card-thumb-emoji">🧠</span>
-            </div>
-            <div class="blog-card-body">
-              <span class="blog-card-category">
-                <span class="blog-card-category-dot"></span>LLMs
-              </span>
-              <h3 id="post-4-title">Memory-Augmented LLMs: Combining Transformers with LSTM Temporal Memory</h3>
-              <p class="blog-card-excerpt">
-                Context windows are expensive. I built a hybrid architecture that offloads long-term
-                sequential memory to an LSTM, keeping the Transformer focused on reasoning —
-                here's what worked and what didn't.
-              </p>
-              <div class="blog-card-meta">
-                <span class="blog-card-date">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  Nov 2025
-                </span>
-                <span class="blog-card-read">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  9 min read
-                </span>
-                <div class="blog-card-tags">
-                  <span class="blog-card-tag">LSTM</span>
                   <span class="blog-card-tag">Transformers</span>
+                  <span class="blog-card-tag">NLP</span>
                 </div>
               </div>
-              <a class="blog-read-link" href="#" aria-label="Read: Memory-Augmented LLMs">
+              <a class="blog-read-link" href="blog-transformers-from-scratch.html" aria-label="Read: Transformers from Scratch">
                 Read article
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </a>
             </div>
           </article>
 
-          <!-- Post 5 -->
-          <article class="blog-card" data-category="mlops agents" tabindex="0" aria-labelledby="post-5-title">
-            <div class="blog-card-thumb blog-thumb-green" aria-hidden="true">
-              <span class="blog-card-thumb-emoji">☁️</span>
+          <!-- Post 2 — LoRA Fine-Tuning -->
+          <article class="blog-card" data-category="llm" data-href="blog-lora-fine-tuning.html" tabindex="0" aria-labelledby="post-1-title">
+            <div class="blog-card-thumb blog-thumb-rose" aria-hidden="true">
+              <span class="blog-card-thumb-emoji">⚡</span>
             </div>
             <div class="blog-card-body">
               <span class="blog-card-category">
-                <span class="blog-card-category-dot"></span>MLOps
+                <span class="blog-card-category-dot"></span>LLMs · Fine-Tuning
               </span>
-              <h3 id="post-5-title">Deploying Multi-Agent AI on AWS: Lambda, EC2, and Cost Tradeoffs</h3>
+              <h3 id="post-1-title">Fine-Tuning LLMs with LoRA: A Practical Guide</h3>
               <p class="blog-card-excerpt">
-                A practical guide to shipping agentic AI systems on AWS — when to use serverless Lambda
-                vs. persistent EC2, how to handle cold starts, and keeping costs sane at scale.
+                Full fine-tuning a 7B model needs 80 GB+ VRAM. LoRA does it under 10 GB —
+                with comparable results. The math, the PEFT code, hyperparameter choices,
+                and the pitfalls to avoid.
               </p>
               <div class="blog-card-meta">
                 <span class="blog-card-date">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  Oct 2025
+                  October 2025
                 </span>
                 <span class="blog-card-read">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  11 min read
+                  16 min read
                 </span>
                 <div class="blog-card-tags">
-                  <span class="blog-card-tag">AWS</span>
-                  <span class="blog-card-tag">Docker</span>
+                  <span class="blog-card-tag">LoRA</span>
+                  <span class="blog-card-tag">QLoRA</span>
+                  <span class="blog-card-tag">PEFT</span>
                 </div>
               </div>
-              <a class="blog-read-link" href="#" aria-label="Read: Deploying Multi-Agent AI on AWS">
-                Read article
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </a>
-            </div>
-          </article>
-
-          <!-- Post 6 -->
-          <article class="blog-card" data-category="rag vision" tabindex="0" aria-labelledby="post-6-title">
-            <div class="blog-card-thumb blog-thumb-indigo" aria-hidden="true">
-              <span class="blog-card-thumb-emoji">🎯</span>
-            </div>
-            <div class="blog-card-body">
-              <span class="blog-card-category">
-                <span class="blog-card-category-dot"></span>Embeddings
-              </span>
-              <h3 id="post-6-title">CLIP Embeddings for Product Search: Building a Visual Recommendation Engine</h3>
-              <p class="blog-card-excerpt">
-                How I used OpenAI's CLIP model and FAISS vector search to build a fashion product
-                intelligence system — covering embedding strategy, deduplication, and query-time tricks.
-              </p>
-              <div class="blog-card-meta">
-                <span class="blog-card-date">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  Sep 2025
-                </span>
-                <span class="blog-card-read">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  7 min read
-                </span>
-                <div class="blog-card-tags">
-                  <span class="blog-card-tag">CLIP</span>
-                  <span class="blog-card-tag">FAISS</span>
-                </div>
-              </div>
-              <a class="blog-read-link" href="#" aria-label="Read: CLIP Embeddings for Product Search">
+              <a class="blog-read-link" href="blog-lora-fine-tuning.html" aria-label="Read: Fine-Tuning LLMs with LoRA">
                 Read article
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </a>

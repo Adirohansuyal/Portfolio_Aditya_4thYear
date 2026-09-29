@@ -20,8 +20,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(37, 99, 235, 0.1);
-  border: 1px solid rgba(37, 99, 235, 0.28);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
   border-radius: 999px;
   color: var(--accent-strong);
   font-size: 0.72rem;
@@ -104,7 +104,7 @@
 
 .blog-search:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .blog-category-group {
@@ -136,7 +136,7 @@
 }
 
 .blog-cat-btn.active {
-  background: rgba(37, 99, 235, 0.1);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
   color: var(--accent-strong);
 }
 
@@ -190,13 +190,13 @@
 }
 
 .blog-card--featured:hover {
-  border-color: rgba(37, 99, 235, 0.4);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
   box-shadow: 0 20px 56px rgba(0, 0, 0, 0.38);
   transform: translateY(-4px);
 }
 
 .blog-card--featured .blog-card-visual {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1a1a2e 100%);
+  background: linear-gradient(135deg, var(--accent-deep) 0%, var(--accent-mid) 50%, color-mix(in srgb, var(--accent-deep) 80%, #1a1a2e) 100%);
   position: relative;
   overflow: hidden;
   min-height: 280px;
@@ -218,8 +218,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(37,99,235,0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37,99,235,0.08) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--accent) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 8%, transparent) 1px, transparent 1px);
   background-size: 32px 32px;
   animation: grid-drift 18s linear infinite;
 }
@@ -228,7 +228,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(37,99,235,0.14) 0%, transparent 70%);
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 70%);
 }
 
 @keyframes grid-drift {
@@ -266,7 +266,7 @@
 
 .blog-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.25rem;
 }
 
@@ -284,7 +284,7 @@
 }
 
 .blog-card:hover {
-  border-color: rgba(37, 99, 235, 0.35);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.32);
   transform: translateY(-4px);
 }
@@ -308,9 +308,15 @@
   left: -50%;
   background: conic-gradient(
     from 0deg,
-    transparent 0%, transparent 42%,
-    #1d4ed8 56%, #3b82f6 60%, #bfdbfe 62%, #3b82f6 64%, #1d4ed8 68%,
-    transparent 80%, transparent 100%
+    transparent            0%,
+    transparent           42%,
+    var(--accent-dark)    56%,
+    var(--accent-strong)  60%,
+    var(--accent-lighter) 62%,
+    var(--accent-strong)  64%,
+    var(--accent-dark)    68%,
+    transparent           80%,
+    transparent          100%
   );
   opacity: 0;
   animation: cardSpin 2.2s linear infinite;
@@ -361,8 +367,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(37,99,235,0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37,99,235,0.07) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--accent) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 7%, transparent) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -574,8 +580,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  background: rgba(37,99,235,0.10);
-  border: 1px solid rgba(37,99,235,0.25);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
   border-radius: 999px;
   color: var(--accent-strong);
   font-size: 0.7rem;
@@ -704,7 +710,7 @@
 
 .blog-subscribe-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.14);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
 .blog-subscribe-btn {
@@ -728,7 +734,7 @@
 .blog-subscribe-btn:hover {
   background: var(--accent-strong);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37,99,235,0.35);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .blog-subscribe-btn svg {
@@ -765,13 +771,13 @@
 }
 
 /* ── Color themes for card thumbnails ────────────────────────────── */
-.blog-thumb-blue   { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); }
+.blog-thumb-blue   { background: linear-gradient(135deg, var(--accent-deep) 0%, var(--accent-mid) 100%); }
 .blog-thumb-purple { background: linear-gradient(135deg, #130f1a 0%, #2d1b4e 100%); }
-.blog-thumb-teal   { background: linear-gradient(135deg, #0a1f1f 0%, #0d4040 100%); }
+.blog-thumb-teal   { background: linear-gradient(135deg, var(--accent-deep) 0%, var(--accent-mid) 100%); }
 .blog-thumb-amber  { background: linear-gradient(135deg, #1a1200 0%, #3d2c00 100%); }
 .blog-thumb-rose   { background: linear-gradient(135deg, #1a0a0a 0%, #3d1515 100%); }
 .blog-thumb-green  { background: linear-gradient(135deg, #0a1a0a 0%, #0d3d1b 100%); }
-.blog-thumb-indigo { background: linear-gradient(135deg, #0d0f26 0%, #1a1f5e 100%); }
+.blog-thumb-indigo { background: linear-gradient(135deg, var(--accent-deep) 0%, var(--accent-mid) 100%); }
 
 /* ── Stagger animation ───────────────────────────────────────────── */
 .blog-card {
@@ -795,9 +801,7 @@
     min-height: 200px;
   }
 
-  .blog-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  /* Keep 2 cols until mobile */
 }
 
 @media (max-width: 640px) {
@@ -830,14 +834,6 @@
 
   .blog-grid {
     grid-template-columns: 1fr;
-  }
-
-  .blog-card--featured .blog-card-body {
-    padding: 1.5rem 1.25rem;
-  }
-
-  .blog-card--featured .blog-card-body h3 {
-    font-size: 1.2rem;
   }
 
   .blog-subscribe-form {

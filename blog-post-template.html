@@ -1,0 +1,354 @@
+<!doctype html>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  BLOG POST TEMPLATE — copy this file, rename it, fill it in     ║
+  ║                                                                  ║
+  ║  STEPS:                                                          ║
+  ║  1. Copy this file → blog-{your-slug}.html                       ║
+  ║  2. Find every "TEMPLATE:" comment and fill in your content      ║
+  ║  3. Add images to blogs_assets/ (see blogs_assets/README.md)     ║
+  ║  4. Add a card in blogs.html pointing to this file               ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- TEMPLATE: SEO — update title, description, and URL slug -->
+    <title>POST TITLE HERE | Aditya Suyal</title>
+    <meta name="description" content="TEMPLATE: 1–2 sentence description of the post for Google." />
+    <meta name="author" content="Aditya Suyal" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://adirohansuyal.github.io/blog-YOUR-SLUG.html" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://adirohansuyal.github.io/blog-YOUR-SLUG.html" />
+    <meta property="og:title" content="TEMPLATE: OG title here" />
+    <meta property="og:description" content="TEMPLATE: OG description here." />
+    <!-- TEMPLATE: Replace with your hero image: blogs_assets/blog-YOUR-SLUG-hero.png -->
+    <meta property="og:image" content="https://adirohansuyal.github.io/blogs_assets/blog-YOUR-SLUG-hero.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="blog-post.css" />
+  </head>
+  <body>
+
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <!-- ── Nav Island ─────────────────────────────────────────── -->
+    <div class="nav-island-wrap">
+      <header class="site-header">
+        <a class="brand" href="index.html" aria-label="Aditya Suyal portfolio home">
+          <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
+          <span class="brand-text">
+            <span class="brand-name">Aditya Suyal</span>
+            <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
+          </span>
+        </a>
+        <div class="header-right">
+          <a class="header-cta" href="blogs.html">← All Posts</a>
+          <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" type="button">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </button>
+        </div>
+        <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+          <a href="index.html#top">About</a>
+          <a href="index.html#experience">Experience</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="research.html">Research</a>
+          <a href="youtube.html">YouTube</a>
+          <a href="blogs.html" class="active">Blog</a>
+          <a href="index.html#skills">Skills</a>
+          <a href="certifications.html">Certifications</a>
+          <a href="awards.html">Awards</a>
+          <a href="leadership.html">Leadership</a>
+          <a href="index.html#contact">Contact</a>
+        </nav>
+      </header>
+    </div>
+
+    <main class="post-main">
+
+      <!-- ── Post Header ─────────────────────────────────────── -->
+      <header class="post-header">
+        <div class="post-header-inner">
+
+          <nav class="post-breadcrumb" aria-label="Breadcrumb">
+            <a href="index.html">Home</a>
+            <span aria-hidden="true">›</span>
+            <a href="blogs.html">Blog</a>
+            <span aria-hidden="true">›</span>
+            <!-- TEMPLATE: Short breadcrumb label for this post -->
+            <span aria-current="page">YOUR POST SHORT TITLE</span>
+          </nav>
+
+          <!-- TEMPLATE: Category label. Options: llm | rag | agents | vision | mlops | deep-learning -->
+          <span class="post-category-badge" data-cat="llm">CATEGORY HERE</span>
+
+          <!-- TEMPLATE: Main title. Wrap key phrase in <span style="color:var(--accent)"> -->
+          <h1 class="post-title">
+            Your Post Title:<br />
+            <span style="color:var(--accent)">Highlighted Subtitle</span>
+          </h1>
+
+          <!-- TEMPLATE: Hook sentence — what will the reader learn? -->
+          <p class="post-subtitle">
+            TEMPLATE: One or two punchy sentences about what this post covers and why it matters.
+          </p>
+
+          <!-- TEMPLATE: Update date, read time estimate, and tags -->
+          <div class="post-meta-row">
+            <div class="post-author">
+              <img src="assets/aditya-corporate.png" alt="Aditya Suyal" class="post-author-avatar" />
+              <div>
+                <span class="post-author-name">Aditya Suyal</span>
+                <span class="post-author-role">AI/ML Engineer</span>
+              </div>
+            </div>
+            <div class="post-meta-details">
+              <span class="post-meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <!-- TEMPLATE: Month Year -->
+                Month Year
+              </span>
+              <span class="post-meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <!-- TEMPLATE: Estimated read time -->
+                X min read
+              </span>
+              <div class="post-tag-row">
+                <!-- TEMPLATE: 3–5 tags relevant to the post -->
+                <span class="post-tag">Tag1</span>
+                <span class="post-tag">Tag2</span>
+                <span class="post-tag">Tag3</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </header>
+
+      <!-- ── Hero Image ──────────────────────────────────────── -->
+      <!--
+        TEMPLATE:
+        1. Add image: blogs_assets/blog-YOUR-SLUG-hero.png (1200×630px recommended)
+        2. Update src, alt text
+        3. The onerror handler shows a placeholder if the image is missing — remove it once you add the real image
+      -->
+      <div class="post-hero-image-wrap">
+        <img
+          class="post-hero-image"
+          src="blogs_assets/blog-YOUR-SLUG-hero.png"
+          alt="TEMPLATE: Describe the hero image here for screen readers"
+          onerror="this.closest('.post-hero-image-wrap').classList.add('post-hero-placeholder')"
+        />
+        <div class="post-hero-image-fallback" aria-hidden="true">
+          <span>🖼️</span>
+          <p>Hero image coming soon<br /><code>blogs_assets/blog-YOUR-SLUG-hero.png</code></p>
+        </div>
+      </div>
+
+      <!-- ── Article Body ────────────────────────────────────── -->
+      <article class="post-body" id="post-content">
+
+        <!-- Table of Contents — update anchors to match your section IDs -->
+        <aside class="post-toc" aria-label="Table of contents">
+          <p class="post-toc-title">In this article</p>
+          <ol class="post-toc-list">
+            <!-- TEMPLATE: One <li> per section. href must match the section's id -->
+            <li><a href="#section-1">Section 1 Title</a></li>
+            <li><a href="#section-2">Section 2 Title</a></li>
+            <li><a href="#section-3">Section 3 Title</a></li>
+            <li><a href="#section-takeaways">Key Takeaways</a></li>
+          </ol>
+        </aside>
+
+        <!-- ═══════════════════════════════════════════════════
+             TEMPLATE SECTIONS — copy/paste as needed
+             Available components:
+               • .post-section h2               — section heading
+               • <p>                             — paragraph
+               • .post-callout--info/tip/warning — callout box
+               • .post-code-block               — code snippet
+               • .post-math-block               — formula
+               • <figure class="post-figure">   — image with caption
+               • .post-key-points               — numbered key point cards
+               • .post-list / .post-list--check — plain or checkmark list
+             ═══════════════════════════════════════════════════ -->
+
+        <!-- TEMPLATE SECTION: copy this block and repeat for each section -->
+        <section id="section-1" class="post-section">
+          <h2>Section 1 Title</h2>
+          <p>
+            TEMPLATE: Write your paragraph content here. Use <code>inline code</code> for
+            technical terms, class names, or short snippets.
+          </p>
+
+          <!-- TEMPLATE: Callout box — change class to --info, --tip, --warning, or --resource -->
+          <div class="post-callout post-callout--info">
+            <span class="post-callout-icon" aria-hidden="true">💡</span>
+            <div>
+              <strong>Key insight or definition title</strong>
+              TEMPLATE: Explanation of the insight.
+            </div>
+          </div>
+
+          <!-- TEMPLATE: Code block — update lang, filename, and code -->
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">filename.py</span>
+            </div>
+            <pre><code># TEMPLATE: Your code here
+print("Hello, world!")</code></pre>
+          </div>
+
+          <!-- TEMPLATE: Section image — add image to blogs_assets/ and update src + alt -->
+          <figure class="post-figure">
+            <img
+              class="post-figure-img"
+              src="blogs_assets/blog-YOUR-SLUG-section1.png"
+              alt="TEMPLATE: Describe the image"
+              onerror="this.closest('figure').classList.add('post-figure--missing')"
+            />
+            <div class="post-figure-placeholder" aria-hidden="true">
+              <span>🖼️</span>
+              <span><code>blogs_assets/blog-YOUR-SLUG-section1.png</code></span>
+            </div>
+            <!-- TEMPLATE: Caption -->
+            <figcaption>TEMPLATE: Image caption describing what is shown.</figcaption>
+          </figure>
+        </section>
+
+        <!-- TEMPLATE SECTION 2 -->
+        <section id="section-2" class="post-section">
+          <h2>Section 2 Title</h2>
+          <p>TEMPLATE: Section 2 content.</p>
+
+          <!-- TEMPLATE: Key points cards -->
+          <div class="post-key-points" aria-label="Key points">
+            <div class="post-key-point">
+              <span class="post-key-point-num">01</span>
+              <div>
+                <strong>Point Title</strong>
+                <p>TEMPLATE: Explanation of this point in 2–3 sentences.</p>
+              </div>
+            </div>
+            <div class="post-key-point">
+              <span class="post-key-point-num">02</span>
+              <div>
+                <strong>Point Title</strong>
+                <p>TEMPLATE: Explanation of this point.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TEMPLATE SECTION 3 -->
+        <section id="section-3" class="post-section">
+          <h2>Section 3 Title</h2>
+          <p>TEMPLATE: Section 3 content.</p>
+
+          <!-- Math formula block -->
+          <div class="post-math-block" aria-label="Formula name">
+            <p>TEMPLATE: formula goes here, e.g.  f(x) = σ(Wx + b)</p>
+          </div>
+        </section>
+
+        <!-- TEMPLATE: Takeaways section — always end with this -->
+        <section id="section-takeaways" class="post-section">
+          <h2>Key Takeaways</h2>
+          <ul class="post-list post-list--check">
+            <!-- TEMPLATE: 4–6 bullet takeaways -->
+            <li>TEMPLATE: Takeaway 1</li>
+            <li>TEMPLATE: Takeaway 2</li>
+            <li>TEMPLATE: Takeaway 3</li>
+          </ul>
+
+          <!-- TEMPLATE: Further reading callout -->
+          <div class="post-callout post-callout--resource">
+            <span class="post-callout-icon" aria-hidden="true">📚</span>
+            <div>
+              <strong>Further reading:</strong>
+              <ul style="margin: 0.4rem 0 0; padding-left: 1.2rem;">
+                <li><a href="#" target="_blank" rel="noreferrer">TEMPLATE: Paper or resource title — Authors, Year</a></li>
+                <li><a href="#" target="_blank" rel="noreferrer">TEMPLATE: Another resource</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Post Footer ─────────────────────────────────────── -->
+        <footer class="post-footer">
+          <div class="post-footer-tags">
+            <!-- TEMPLATE: Same tags as in the header -->
+            <span class="post-tag">Tag1</span>
+            <span class="post-tag">Tag2</span>
+          </div>
+
+          <div class="post-author-card">
+            <img src="assets/aditya-corporate.png" alt="Aditya Suyal" class="post-author-card-avatar" />
+            <div class="post-author-card-body">
+              <span class="post-author-card-name">Aditya Suyal</span>
+              <p class="post-author-card-bio">
+                AI/ML Engineer building LLM agents, RAG pipelines, and applied deep learning systems.
+                Currently researching multi-agent AI architectures at Birla Institute of Applied Sciences.
+              </p>
+              <div class="post-author-card-links">
+                <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://www.linkedin.com/in/aditya-suyal" target="_blank" rel="noreferrer">LinkedIn</a>
+                <a href="mailto:adityasuyal@birlainstitute.co.in">Email</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <!-- ── Adjacent Post Nav ──────────────────────────────── -->
+      <!--
+        TEMPLATE: Update these links. Remove either .post-adjacent--prev or --next
+        if there's no previous/next post yet.
+      -->
+      <nav class="post-adjacent-nav" aria-label="Adjacent posts">
+        <a class="post-adjacent post-adjacent--prev" href="blogs.html">
+          <span class="post-adjacent-label">← Previous</span>
+          <span class="post-adjacent-title">TEMPLATE: Prev post title or "All Posts"</span>
+        </a>
+        <a class="post-adjacent post-adjacent--next" href="blogs.html">
+          <span class="post-adjacent-label">Next →</span>
+          <span class="post-adjacent-title">TEMPLATE: Next post title or "All Posts"</span>
+        </a>
+      </nav>
+
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year"></span> Aditya Suyal, All Rights Reserved.</p>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      const bar = document.querySelector(".scroll-progress");
+      window.addEventListener("scroll", () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.transform = `scaleX(${total > 0 ? window.scrollY / total : 0})`;
+      }, { passive: true });
+      const ham = document.querySelector(".hamburger");
+      const nav = document.getElementById("primary-nav");
+      ham?.addEventListener("click", () => {
+        const open = ham.getAttribute("aria-expanded") === "true";
+        ham.setAttribute("aria-expanded", String(!open));
+        nav.classList.toggle("nav-open", !open);
+      });
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- ═══════════════════════════════════════════════════════
+         TEMPLATE: Update these meta tags for each new post
+         ═══════════════════════════════════════════════════════ -->
+    <title>Fine-Tuning LLMs with LoRA: A Practical Guide | Aditya Suyal</title>
+    <meta name="description" content="A hands-on guide to fine-tuning large language models with LoRA and QLoRA — covering the math, the Hugging Face PEFT setup, hyperparameter choices, and common pitfalls." />
+    <meta name="author" content="Aditya Suyal" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://adirohansuyal.github.io/blog-lora-fine-tuning.html" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://adirohansuyal.github.io/blog-lora-fine-tuning.html" />
+    <meta property="og:title" content="Fine-Tuning LLMs with LoRA: A Practical Guide" />
+    <meta property="og:description" content="A hands-on guide to fine-tuning large language models with LoRA and QLoRA — covering the math, PEFT setup, hyperparameter choices, and common pitfalls." />
+    <!-- TEMPLATE: Replace with your actual hero image path -->
+    <meta property="og:image" content="https://adirohansuyal.github.io/blogs_assets/blog-lora-hero.png" />
+    <!-- ════════════════════════════════════════════════════════ -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="blog-post.css" />
+  </head>
+  <body>
+
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <!-- ── Nav Island ─────────────────────────────────────────── -->
+    <div class="nav-island-wrap">
+      <header class="site-header">
+        <a class="brand" href="index.html" aria-label="Aditya Suyal portfolio home">
+          <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
+          <span class="brand-text">
+            <span class="brand-name">Aditya Suyal</span>
+            <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
+          </span>
+        </a>
+        <div class="header-right">
+          <a class="header-cta" href="blogs.html">← All Posts</a>
+          <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" type="button">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </button>
+        </div>
+        <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+          <a href="index.html#top">About</a>
+          <a href="index.html#experience">Experience</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="research.html">Research</a>
+          <a href="youtube.html">YouTube</a>
+          <a href="blogs.html" class="active">Blog</a>
+          <a href="index.html#skills">Skills</a>
+          <a href="certifications.html">Certifications</a>
+          <a href="awards.html">Awards</a>
+          <a href="leadership.html">Leadership</a>
+          <a href="index.html#contact">Contact</a>
+        </nav>
+      </header>
+    </div>
+
+    <main class="post-main">
+
+      <!-- ── Post Header ─────────────────────────────────────── -->
+      <header class="post-header">
+        <div class="post-header-inner">
+
+          <!-- Breadcrumb -->
+          <nav class="post-breadcrumb" aria-label="Breadcrumb">
+            <a href="index.html">Home</a>
+            <span aria-hidden="true">›</span>
+            <a href="blogs.html">Blog</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">Fine-Tuning with LoRA</span>
+          </nav>
+
+          <!-- TEMPLATE: Change data-cat and text to match your category -->
+          <span class="post-category-badge" data-cat="llm">LLMs · Fine-Tuning</span>
+
+          <!-- TEMPLATE: Replace with your post title -->
+          <h1 class="post-title">
+            Fine-Tuning LLMs with LoRA:<br />
+            <span style="color:var(--accent)">A Practical Guide</span>
+          </h1>
+
+          <!-- TEMPLATE: One punchy sentence explaining the post's value -->
+          <p class="post-subtitle">
+            Full fine-tuning a 7B model requires 80 GB+ of VRAM. LoRA does it in under 10 GB —
+            with comparable results. Here's the math, the code, and the lessons learned
+            from actually doing it.
+          </p>
+
+          <!-- TEMPLATE: Update date, read time, and tags -->
+          <div class="post-meta-row">
+            <div class="post-author">
+              <img src="assets/aditya-corporate.png" alt="Aditya Suyal" class="post-author-avatar" />
+              <div>
+                <span class="post-author-name">Aditya Suyal</span>
+                <span class="post-author-role">AI/ML Engineer</span>
+              </div>
+            </div>
+            <div class="post-meta-details">
+              <span class="post-meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                October 2025
+              </span>
+              <span class="post-meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                16 min read
+              </span>
+              <div class="post-tag-row">
+                <span class="post-tag">LoRA</span>
+                <span class="post-tag">LLMs</span>
+                <span class="post-tag">PEFT</span>
+                <span class="post-tag">Fine-Tuning</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </header>
+
+      <!-- ── Hero Image ──────────────────────────────────────── -->
+      <!--
+        TEMPLATE: Drop your hero image into blogs_assets/ and update src.
+        Recommended size: 1200×630px
+        Filename convention: blog-{slug}-hero.{ext}
+      -->
+      <div class="post-hero-image-wrap">
+        <img
+          class="post-hero-image"
+          src="blogs_assets/blog-lora-hero.png"
+          alt="Illustration of LoRA low-rank decomposition applied to a weight matrix in a large language model"
+          onerror="this.closest('.post-hero-image-wrap').classList.add('post-hero-placeholder')"
+        />
+        <div class="post-hero-image-fallback" aria-hidden="true">
+          <span>🖼️</span>
+          <p>Hero image coming soon<br /><code>blogs_assets/blog-lora-hero.png</code></p>
+        </div>
+      </div>
+
+      <!-- ── Article Body ────────────────────────────────────── -->
+      <article class="post-body" id="post-content">
+
+        <!-- Table of Contents -->
+        <aside class="post-toc" aria-label="Table of contents">
+          <p class="post-toc-title">In this article</p>
+          <ol class="post-toc-list">
+            <li><a href="#section-problem">The Problem with Full Fine-Tuning</a></li>
+            <li><a href="#section-lora">What LoRA Actually Does</a></li>
+            <li><a href="#section-qlora">QLoRA: 4-bit Quantisation + LoRA</a></li>
+            <li><a href="#section-setup">Setup: PEFT + Transformers</a></li>
+            <li><a href="#section-config">Key Hyperparameters Explained</a></li>
+            <li><a href="#section-training">Training Loop</a></li>
+            <li><a href="#section-pitfalls">Common Pitfalls</a></li>
+            <li><a href="#section-results">Results and Evaluation</a></li>
+          </ol>
+        </aside>
+
+        <!-- ── Section 1 ──────────────────────────────────────── -->
+        <section id="section-problem" class="post-section">
+          <h2>The Problem with Full Fine-Tuning</h2>
+          <p>
+            Suppose you want to fine-tune LLaMA-3-8B on your own domain-specific dataset —
+            medical notes, legal documents, customer support transcripts. Full fine-tuning updates
+            every one of the model's 8 billion parameters on each training step. To do that in
+            16-bit precision, you need roughly <strong>16 GB just to hold the weights</strong>,
+            plus another 48 GB+ for gradients and the Adam optimiser states. That's an A100 or
+            better. Not exactly accessible.
+          </p>
+          <p>
+            Parameter-efficient fine-tuning (PEFT) is the umbrella term for techniques that
+            achieve comparable results while touching only a small fraction of the total parameters.
+            LoRA — Low-Rank Adaptation — is currently the most widely used PEFT method,
+            and for good reason.
+          </p>
+
+          <div class="post-callout post-callout--info">
+            <span class="post-callout-icon" aria-hidden="true">📊</span>
+            <div>
+              <strong>Numbers at a glance:</strong> Full fine-tuning a 7B model updates ~7 billion parameters.
+              A LoRA adapter with rank r=16 typically adds ~4–8 million trainable parameters — around
+              0.1% of the original model. The VRAM requirement drops from 80 GB+ to under 10 GB.
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Section 2 ──────────────────────────────────────── -->
+        <section id="section-lora" class="post-section">
+          <h2>What LoRA Actually Does</h2>
+          <p>
+            The key insight behind LoRA is a hypothesis about the <em>intrinsic dimensionality</em>
+            of fine-tuning: the weight updates needed to adapt a pretrained model to a new task
+            are actually low-rank. You don't need to change all the weights — you only need to
+            learn a small delta that lives in a low-dimensional subspace.
+          </p>
+          <p>
+            Formally, for a pretrained weight matrix <code>W₀ ∈ ℝ^(d×k)</code>, LoRA freezes
+            <code>W₀</code> and adds a trainable decomposition:
+          </p>
+
+          <div class="post-math-block">
+            <p>W = W₀ + ΔW = W₀ + B · A</p>
+            <p>where  A ∈ ℝ^(r×k),  B ∈ ℝ^(d×r),  r ≪ min(d, k)</p>
+          </div>
+
+          <p>
+            <code>A</code> is initialised with random Gaussian values; <code>B</code> is
+            initialised to zero so that <code>ΔW = 0</code> at the start of training (preserving
+            the pretrained behaviour). Only <code>A</code> and <code>B</code> are updated by
+            the optimiser.
+          </p>
+
+          <!-- Section image slot -->
+          <figure class="post-figure">
+            <img
+              class="post-figure-img"
+              src="blogs_assets/blog-lora-diagram.png"
+              alt="Diagram showing LoRA low-rank decomposition: W0 frozen, B·A trainable adapters added in parallel"
+              onerror="this.closest('figure').classList.add('post-figure--missing')"
+            />
+            <div class="post-figure-placeholder" aria-hidden="true">
+              <span>🖼️</span>
+              <span><code>blogs_assets/blog-lora-diagram.png</code></span>
+            </div>
+            <figcaption>LoRA inserts two small matrices A and B in parallel to the frozen pretrained weight W₀. Only A and B are trained.</figcaption>
+          </figure>
+
+          <p>
+            During inference, you can fold the adapter back into the original weights
+            (<code>W = W₀ + BA</code>) with no added latency — this is a key advantage over
+            adapter layers, which add extra computation at inference time.
+          </p>
+
+          <p>
+            The rank <code>r</code> controls the capacity of the adapter. Typical values range
+            from 4 to 64. Higher rank = more expressiveness = more VRAM + longer training.
+            For most tasks, <code>r=8</code> or <code>r=16</code> is a solid starting point.
+          </p>
+        </section>
+
+        <!-- ── Section 3 ──────────────────────────────────────── -->
+        <section id="section-qlora" class="post-section">
+          <h2>QLoRA: 4-bit Quantisation + LoRA</h2>
+          <p>
+            QLoRA, introduced by Dettmers et al. (2023), pushes memory efficiency further by
+            quantising the frozen base model weights to 4-bit NormalFloat (NF4), a data type
+            optimised for normally distributed weights. The LoRA adapters themselves remain in
+            16-bit and are trained normally.
+          </p>
+
+          <div class="post-callout post-callout--tip">
+            <span class="post-callout-icon" aria-hidden="true">⚡</span>
+            <div>
+              <strong>With QLoRA you can fine-tune a 13B model on a single 24 GB consumer GPU</strong>
+              (e.g. an RTX 3090) — something that would have required a full A100 cluster just two years ago.
+            </div>
+          </div>
+
+          <p>
+            QLoRA also introduces <strong>double quantisation</strong> (quantising the quantisation
+            constants themselves) and <strong>paged optimisers</strong> (using CPU RAM as overflow
+            when GPU memory spikes). Both are handled automatically by the
+            <code>bitsandbytes</code> library.
+          </p>
+        </section>
+
+        <!-- ── Section 4 ──────────────────────────────────────── -->
+        <section id="section-setup" class="post-section">
+          <h2>Setup: PEFT + Transformers</h2>
+          <p>
+            The Hugging Face ecosystem makes LoRA surprisingly straightforward. You need three
+            libraries: <code>transformers</code>, <code>peft</code>, and <code>bitsandbytes</code>
+            (for QLoRA).
+          </p>
+
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">bash</span>
+              <span class="post-code-filename">install</span>
+            </div>
+            <pre><code>pip install transformers peft bitsandbytes accelerate datasets trl</code></pre>
+          </div>
+
+          <p>Load the base model in 4-bit for QLoRA:</p>
+
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">load_model.py</span>
+            </div>
+            <pre><code>import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+
+MODEL_ID = "meta-llama/Meta-Llama-3-8B"
+
+# 4-bit quantisation config (QLoRA)
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",          # NormalFloat4 — best for LLM weights
+    bnb_4bit_compute_dtype=torch.bfloat16,
+    bnb_4bit_use_double_quant=True,     # double quantisation saves ~0.5 GB
+)
+
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_ID,
+    quantization_config=bnb_config,
+    device_map="auto",
+    trust_remote_code=True,
+)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+tokenizer.pad_token = tokenizer.eos_token  # LLaMA has no pad token by default</code></pre>
+          </div>
+        </section>
+
+        <!-- ── Section 5 ──────────────────────────────────────── -->
+        <section id="section-config" class="post-section">
+          <h2>Key Hyperparameters Explained</h2>
+
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">lora_config.py</span>
+            </div>
+            <pre><code>from peft import LoraConfig, get_peft_model, TaskType
+
+lora_config = LoraConfig(
+    r=16,                        # Rank — start here, increase if underfitting
+    lora_alpha=32,               # Scaling factor: effective LR = alpha/r * LR
+    target_modules=[             # Which weight matrices to adapt
+        "q_proj", "k_proj",
+        "v_proj", "o_proj",
+        "gate_proj", "up_proj", "down_proj",
+    ],
+    lora_dropout=0.05,           # Small dropout on adapter weights
+    bias="none",                 # Don't train biases — saves parameters
+    task_type=TaskType.CAUSAL_LM,
+)
+
+model = get_peft_model(model, lora_config)
+model.print_trainable_parameters()
+# Trainable params: 6,553,600 || All params: 8,037,699,584 || Trainable%: 0.082%</code></pre>
+          </div>
+
+          <div class="post-key-points" aria-label="Hyperparameter explanations">
+            <div class="post-key-point">
+              <span class="post-key-point-num">r</span>
+              <div>
+                <strong>Rank</strong>
+                <p>Controls adapter capacity. r=4 is very efficient; r=64 approaches full fine-tuning
+                   quality. For most instruction-following tasks, r=8–16 is optimal. Doubling r roughly
+                   doubles VRAM and training time.</p>
+              </div>
+            </div>
+            <div class="post-key-point">
+              <span class="post-key-point-num">α</span>
+              <div>
+                <strong>lora_alpha</strong>
+                <p>Scales the adapter output: <code>ΔW = (alpha/r) · BA</code>. Setting
+                   <code>alpha = 2r</code> is a common default. Think of it as controlling how much
+                   the adapter can shift the original weights.</p>
+              </div>
+            </div>
+            <div class="post-key-point">
+              <span class="post-key-point-num">mod</span>
+              <div>
+                <strong>target_modules</strong>
+                <p>Which layers to apply LoRA to. Applying to all attention projections
+                   <em>and</em> the MLP gates (gate_proj, up_proj, down_proj) generally gives
+                   better results than attention-only, at a modest VRAM cost.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Section 6 ──────────────────────────────────────── -->
+        <section id="section-training" class="post-section">
+          <h2>Training Loop</h2>
+          <p>
+            Using the <code>trl</code> library's <code>SFTTrainer</code> (Supervised Fine-Tuning Trainer)
+            is the fastest path to a working training loop:
+          </p>
+
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">train.py</span>
+            </div>
+            <pre><code>from transformers import TrainingArguments
+from trl import SFTTrainer
+from datasets import load_dataset
+
+dataset = load_dataset("json", data_files="your_dataset.jsonl", split="train")
+
+training_args = TrainingArguments(
+    output_dir="./lora-llama3-output",
+    num_train_epochs=3,
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=4,   # effective batch = 2×4 = 8
+    learning_rate=2e-4,
+    lr_scheduler_type="cosine",
+    warmup_ratio=0.05,
+    fp16=False,
+    bf16=True,                        # bfloat16 is better on Ampere+ GPUs
+    logging_steps=10,
+    save_strategy="epoch",
+    optim="paged_adamw_8bit",         # QLoRA's memory-efficient optimiser
+    report_to="none",
+)
+
+trainer = SFTTrainer(
+    model=model,
+    tokenizer=tokenizer,
+    train_dataset=dataset,
+    dataset_text_field="text",        # column in your dataset that has the text
+    max_seq_length=2048,
+    args=training_args,
+    peft_config=lora_config,
+)
+
+trainer.train()
+trainer.model.save_pretrained("./lora-adapter")</code></pre>
+          </div>
+
+          <!-- Section image slot -->
+          <figure class="post-figure">
+            <img
+              class="post-figure-img"
+              src="blogs_assets/blog-lora-loss.png"
+              alt="Training and validation loss curve showing convergence during LoRA fine-tuning"
+              onerror="this.closest('figure').classList.add('post-figure--missing')"
+            />
+            <div class="post-figure-placeholder" aria-hidden="true">
+              <span>🖼️</span>
+              <span><code>blogs_assets/blog-lora-loss.png</code></span>
+            </div>
+            <figcaption>Training loss curve over 3 epochs. Monitor for divergence in the first 50 steps — a sign the learning rate is too high.</figcaption>
+          </figure>
+        </section>
+
+        <!-- ── Section 7 ──────────────────────────────────────── -->
+        <section id="section-pitfalls" class="post-section">
+          <h2>Common Pitfalls</h2>
+
+          <div class="post-callout post-callout--warning">
+            <span class="post-callout-icon" aria-hidden="true">⚠️</span>
+            <div>
+              <strong>Forgetting to set the pad token</strong> — LLaMA-based models have no
+              default padding token. If you don't set <code>tokenizer.pad_token = tokenizer.eos_token</code>,
+              the trainer will crash or silently produce garbage gradients on batched inputs.
+            </div>
+          </div>
+
+          <ul class="post-list">
+            <li>
+              <strong>Learning rate too high:</strong> LoRA adapters are sensitive. Start at
+              <code>2e-4</code> and lower to <code>1e-4</code> if loss diverges in the first epoch.
+            </li>
+            <li>
+              <strong>Dataset format mismatch:</strong> SFTTrainer expects a
+              <code>"text"</code> column with the full formatted prompt+completion. Wrap your
+              data in the model's chat template before training.
+            </li>
+            <li>
+              <strong>Merging at the wrong time:</strong> Only merge the adapter into base weights
+              for deployment. During development, keep them separate — you can swap adapters
+              without reloading the 8B base model.
+            </li>
+            <li>
+              <strong>Evaluating on the training set:</strong> Use a held-out eval set and compute
+              perplexity or task-specific metrics (ROUGE, accuracy) — not just training loss.
+            </li>
+          </ul>
+        </section>
+
+        <!-- ── Section 8 ──────────────────────────────────────── -->
+        <section id="section-results" class="post-section">
+          <h2>Results and Evaluation</h2>
+          <p>
+            After training, merge the adapter and run inference:
+          </p>
+
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">inference.py</span>
+            </div>
+            <pre><code>from peft import PeftModel
+
+# Load base model (can be quantised or full precision)
+base_model = AutoModelForCausalLM.from_pretrained(MODEL_ID, device_map="auto")
+
+# Load and merge adapter
+model = PeftModel.from_pretrained(base_model, "./lora-adapter")
+model = model.merge_and_unload()   # fold BA into W0 — zero latency overhead
+
+# Inference
+inputs = tokenizer("Summarise this document:", return_tensors="pt").to("cuda")
+outputs = model.generate(**inputs, max_new_tokens=256, do_sample=False)
+print(tokenizer.decode(outputs[0], skip_special_tokens=True))</code></pre>
+          </div>
+
+          <p>
+            For task-specific evaluation, the <code>lm-evaluation-harness</code> library by
+            EleutherAI benchmarks fine-tuned models on standard academic tasks. For RAG or
+            instruction-following, RAGAS or custom human eval rubrics are more informative
+            than perplexity alone.
+          </p>
+
+          <div class="post-callout post-callout--resource">
+            <span class="post-callout-icon" aria-hidden="true">📚</span>
+            <div>
+              <strong>Further reading:</strong>
+              <ul style="margin: 0.4rem 0 0; padding-left: 1.2rem;">
+                <li><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noreferrer">LoRA: Low-Rank Adaptation of Large Language Models — Hu et al., 2021</a></li>
+                <li><a href="https://arxiv.org/abs/2305.14314" target="_blank" rel="noreferrer">QLoRA: Efficient Finetuning of Quantized LLMs — Dettmers et al., 2023</a></li>
+                <li><a href="https://huggingface.co/docs/peft" target="_blank" rel="noreferrer">Hugging Face PEFT Documentation</a></li>
+                <li><a href="https://github.com/artidoro/qlora" target="_blank" rel="noreferrer">Official QLoRA Repository</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Post Footer: Tags + Author ─────────────────────── -->
+        <footer class="post-footer">
+          <div class="post-footer-tags">
+            <!-- TEMPLATE: Update tags to match the post -->
+            <span class="post-tag">LoRA</span>
+            <span class="post-tag">QLoRA</span>
+            <span class="post-tag">LLMs</span>
+            <span class="post-tag">PEFT</span>
+            <span class="post-tag">Fine-Tuning</span>
+            <span class="post-tag">Hugging Face</span>
+          </div>
+
+          <div class="post-author-card">
+            <img src="assets/aditya-corporate.png" alt="Aditya Suyal" class="post-author-card-avatar" />
+            <div class="post-author-card-body">
+              <span class="post-author-card-name">Aditya Suyal</span>
+              <p class="post-author-card-bio">
+                AI/ML Engineer building LLM agents, RAG pipelines, and applied deep learning systems.
+                Currently researching multi-agent AI architectures at Birla Institute of Applied Sciences.
+              </p>
+              <div class="post-author-card-links">
+                <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://www.linkedin.com/in/aditya-suyal" target="_blank" rel="noreferrer">LinkedIn</a>
+                <a href="mailto:adityasuyal@birlainstitute.co.in">Email</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <!-- ── Next / Prev Post navigation ──────────────────────── -->
+      <!--
+        TEMPLATE: Update these links when you have more posts.
+      -->
+      <nav class="post-adjacent-nav" aria-label="Adjacent posts">
+        <a class="post-adjacent post-adjacent--prev" href="blog-transformers-from-scratch.html">
+          <span class="post-adjacent-label">← Previous Post</span>
+          <span class="post-adjacent-title">Transformers from Scratch</span>
+        </a>
+        <a class="post-adjacent post-adjacent--next" href="blogs.html">
+          <span class="post-adjacent-label">All Posts →</span>
+          <span class="post-adjacent-title">Back to Blog</span>
+        </a>
+      </nav>
+
+    </main>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+    <footer class="site-footer">
+      <p>© <span id="year"></span> Aditya Suyal, All Rights Reserved.</p>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      const bar = document.querySelector(".scroll-progress");
+      window.addEventListener("scroll", () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.transform = `scaleX(${total > 0 ? window.scrollY / total : 0})`;
+      }, { passive: true });
+      const ham = document.querySelector(".hamburger");
+      const nav = document.getElementById("primary-nav");
+      ham?.addEventListener("click", () => {
+        const open = ham.getAttribute("aria-expanded") === "true";
+        ham.setAttribute("aria-expanded", String(!open));
+        nav.classList.toggle("nav-open", !open);
+      });
+    </script>
+
+  </body>
+</html>

@@ -9,7 +9,23 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 // ── Scroll-driven background (mirrors index.html inline script) ────
 (function () {
   const darkR = 10, darkG = 14, darkB = 26;
-  const lightR = 186, lightG = 224, lightB = 255;
+
+  // Light-end color cycles blue↔green smoothly using a sine wave (no snap-back)
+  const CYCLE_MS = 3000;
+  function getLightColor() {
+    const phase = (Date.now() % CYCLE_MS) / CYCLE_MS; // 0 → 1 over 3s
+    // sin wave: 0→1→0 smoothly, no sudden jump
+    const t = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
+    // blue light: 186,224,255  →  green light: 187,247,208
+    return {
+      r:  Math.round(186 + (187 - 186) * t),
+      g:  Math.round(224 + (247 - 224) * t),
+      b:  Math.round(255 + (208 - 255) * t),
+      mR: Math.round(147 + (134 - 147) * t),
+      mG: Math.round(210 + (239 - 210) * t),
+      mB: Math.round(255 + (172 - 255) * t),
+    };
+  }
 
   function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
   function lerpF(a, b, t) { return +(a + (b - a) * t).toFixed(3); }
@@ -17,9 +33,10 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   function ease(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
   function bgLuminance(t) {
-    const r = lerp(darkR, lightR, t) / 255;
-    const g = lerp(darkG, lightG, t) / 255;
-    const b = lerp(darkB, lightB, t) / 255;
+    const lc2 = getLightColor();
+    const r = lerp(darkR, lc2.r, t) / 255;
+    const g = lerp(darkG, lc2.g, t) / 255;
+    const b = lerp(darkB, lc2.b, t) / 255;
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }
 
@@ -30,15 +47,16 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     const t = ease(raw);
 
     const root = document.documentElement;
-    const bR = lerp(darkR, lightR, t);
-    const bG = lerp(darkG, lightG, t);
-    const bB = lerp(darkB, lightB, t);
+    const lc = getLightColor();
+    const bR = lerp(darkR, lc.r, t);
+    const bG = lerp(darkG, lc.g, t);
+    const bB = lerp(darkB, lc.b, t);
 
     const mist = lerpF(0, 0.35, t);
     document.body.style.background = `
-      radial-gradient(ellipse 60% 45% at 15% 25%, rgba(147,210,255,${mist}) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 82% 60%, rgba(220,242,255,${mist * 0.7}) 0%, transparent 65%),
-      radial-gradient(ellipse 45% 35% at 45% 90%, rgba(168,218,255,${mist * 0.5}) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 45% at 15% 25%, rgba(${lc.mR},${lc.mG},${lc.mB},${mist}) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 82% 60%, rgba(${lc.mR},${lc.mG},${lc.mB},${mist * 0.7}) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 35% at 45% 90%, rgba(${lc.mR},${lc.mG},${lc.mB},${mist * 0.5}) 0%, transparent 70%),
       rgb(${bR},${bG},${bB})
     `.trim();
     root.style.setProperty("--bg", `rgb(${bR},${bG},${bB})`);
@@ -65,13 +83,13 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     root.style.setProperty("--shadow", `0 10px 30px rgba(10,14,26,${shadowAlpha})`);
 
     // navbar background is handled by CSS glassmorphism — do not override
-
-    root.style.setProperty("--accent",        `rgb(${lerp(59,30,t)},${lerp(130,64,t)},${lerp(246,175,t)})`);
-    root.style.setProperty("--accent-strong", `rgb(${lerp(96,20,t)},${lerp(165,80,t)},${lerp(250,200,t)})`);
+    // --accent and --accent-strong driven by CSS @keyframes accentCycle — do not override
   }
 
+  // rAF loop so bg color cycles even when user isn't scrolling
+  function rafLoop() { updateBg(); requestAnimationFrame(rafLoop); }
   window.addEventListener("scroll", updateBg, { passive: true });
-  updateBg();
+  requestAnimationFrame(rafLoop);
 })();
 
 // ── Scroll progress bar ────────────────────────────────────────────
@@ -127,12 +145,41 @@ if (hamburger && primaryNav) {
   });
 }
 
-// ── Inject revolving glow into blog cards ─────────────────────────
+// ── Inject revolving glow into blog cards + make whole card clickable ─
 document.querySelectorAll(".blog-card").forEach((card) => {
+  // Glow layer
   const glow = document.createElement("span");
   glow.className = "blog-card-glow";
   glow.setAttribute("aria-hidden", "true");
   card.prepend(glow);
+
+  // Make entire card navigate to data-href
+  const href = card.dataset.href;
+  if (href) {
+    // Update the "Read article" link inside this card
+    const readLink = card.querySelector(".blog-read-link");
+    if (readLink) readLink.setAttribute("href", href);
+
+    // Click anywhere on the card navigates
+    card.addEventListener("click", (e) => {
+      // Don't double-navigate if they clicked the link itself
+      if (e.target.closest("a")) return;
+      document.body.classList.add("page-leaving");
+      setTimeout(() => { window.location.href = href; }, 270);
+    });
+
+    // Keyboard: Enter or Space also navigates
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        document.body.classList.add("page-leaving");
+        setTimeout(() => { window.location.href = href; }, 270);
+      }
+    });
+
+    // Visual cursor
+    card.style.cursor = "pointer";
+  }
 });
 
 // ── Blog filtering & search ────────────────────────────────────────

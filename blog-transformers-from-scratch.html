@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- ═══════════════════════════════════════════════════════
+         TEMPLATE: Update these meta tags for each new post
+         ═══════════════════════════════════════════════════════ -->
+    <title>Transformers from Scratch: A Deep Dive into Self-Attention | Aditya Suyal</title>
+    <meta name="description" content="A from-scratch walkthrough of the Transformer architecture — self-attention, multi-head attention, positional encoding, and the encoder-decoder stack explained with code and intuition." />
+    <meta name="author" content="Aditya Suyal" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://adirohansuyal.github.io/blog-transformers-from-scratch.html" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://adirohansuyal.github.io/blog-transformers-from-scratch.html" />
+    <meta property="og:title" content="Transformers from Scratch: A Deep Dive into Self-Attention" />
+    <meta property="og:description" content="A from-scratch walkthrough of the Transformer architecture — self-attention, multi-head attention, positional encoding, and the encoder-decoder stack explained with code and intuition." />
+    <!-- TEMPLATE: Replace with your actual hero image path -->
+    <meta property="og:image" content="https://adirohansuyal.github.io/blogs_assets/blog-transformers-hero.png" />
+    <!-- ════════════════════════════════════════════════════════ -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="blog-post.css" />
+  </head>
+  <body>
+
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <!-- ── Nav Island ─────────────────────────────────────────── -->
+    <div class="nav-island-wrap">
+      <header class="site-header">
+        <a class="brand" href="index.html" aria-label="Aditya Suyal portfolio home">
+          <img class="brand-avatar" src="assets/aditya-corporate.png" alt="Aditya Suyal" />
+          <span class="brand-text">
+            <span class="brand-name">Aditya Suyal</span>
+            <span class="brand-role">AI/ML Engineer · GenAI Developer</span>
+          </span>
+        </a>
+        <div class="header-right">
+          <a class="header-cta" href="blogs.html">← All Posts</a>
+          <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" type="button">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </button>
+        </div>
+        <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+          <a href="index.html#top">About</a>
+          <a href="index.html#experience">Experience</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="research.html">Research</a>
+          <a href="youtube.html">YouTube</a>
+          <a href="blogs.html" class="active">Blog</a>
+          <a href="index.html#skills">Skills</a>
+          <a href="certifications.html">Certifications</a>
+          <a href="awards.html">Awards</a>
+          <a href="leadership.html">Leadership</a>
+          <a href="index.html#contact">Contact</a>
+        </nav>
+      </header>
+    </div>
+
+    <main class="post-main">
+
+      <!-- ── Post Header ─────────────────────────────────────── -->
+      <header class="post-header">
+        <div class="post-header-inner">
+
+          <!-- Breadcrumb -->
+          <nav class="post-breadcrumb" aria-label="Breadcrumb">
+            <a href="index.html">Home</a>
+            <span aria-hidden="true">›</span>
+            <a href="blogs.html">Blog</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">Transformers from Scratch</span>
+          </nav>
+
+          <!-- Category badge -->
+          <!-- TEMPLATE: Change data-cat and text to match your category -->
+          <span class="post-category-badge" data-cat="llm">Deep Learning</span>
+
+          <!-- Title -->
+          <!-- TEMPLATE: Replace with your post title -->
+          <h1 class="post-title">
+            Transformers from Scratch:<br />
+            <span style="color:var(--accent)">A Deep Dive into Self-Attention</span>
+          </h1>
+
+          <!-- Subtitle / hook -->
+          <!-- TEMPLATE: One punchy sentence explaining the post's value -->
+          <p class="post-subtitle">
+            Forget the black-box explanation. We build a Transformer step by step —
+            from raw token embeddings to multi-head attention — with PyTorch code
+            and the intuition behind every design decision.
+          </p>
+
+          <!-- Meta row: date, read time, tags -->
+          <!-- TEMPLATE: Update date, read time, and tags -->
+          <div class="post-meta-row">
+            <div class="post-author">
+              <img src="assets/aditya-corporate.png" alt="Aditya Suyal" class="post-author-avatar" />
+              <div>
+                <span class="post-author-name">Aditya Suyal</span>
+                <span class="post-author-role">AI/ML Engineer</span>
+              </div>
+            </div>
+            <div class="post-meta-details">
+              <span class="post-meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                September 2025
+              </span>
+              <span class="post-meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                14 min read
+              </span>
+              <div class="post-tag-row">
+                <span class="post-tag">PyTorch</span>
+                <span class="post-tag">Deep Learning</span>
+                <span class="post-tag">Transformers</span>
+                <span class="post-tag">NLP</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </header>
+
+      <!-- ── Hero Image ──────────────────────────────────────── -->
+      <div class="post-hero-image-wrap">
+        <img
+          class="post-hero-image"
+          src="blogs_assets/Transformer1.png"
+          alt="Transformer architecture overview showing encoder-decoder stack, self-attention, positional encoding and multi-head attention with PyTorch code"
+        />
+      </div>
+
+      <!-- ── Article Body ────────────────────────────────────── -->
+      <article class="post-body" id="post-content">
+
+        <!-- Table of Contents -->
+        <aside class="post-toc" aria-label="Table of contents">
+          <p class="post-toc-title">In this article</p>
+          <ol class="post-toc-list">
+            <li><a href="#section-why">Why Transformers Changed Everything</a></li>
+            <li><a href="#section-input">Input: Tokens and Embeddings</a></li>
+            <li><a href="#section-positional">Positional Encoding</a></li>
+            <li><a href="#section-attention">Self-Attention: The Core Idea</a></li>
+            <li><a href="#section-multihead">Multi-Head Attention</a></li>
+            <li><a href="#section-encoder">The Encoder Stack</a></li>
+            <li><a href="#section-training">Training Considerations</a></li>
+            <li><a href="#section-takeaways">Key Takeaways</a></li>
+          </ol>
+        </aside>
+
+        <!-- ── Section 1 ──────────────────────────────────────── -->
+        <section id="section-why" class="post-section">
+          <h2>Why Transformers Changed Everything</h2>
+          <p>
+            Before 2017, sequence modelling in deep learning was dominated by RNNs and LSTMs.
+            They worked — but they processed tokens one-by-one, making parallelisation impossible
+            and making it extremely hard to learn long-range dependencies. The vanishing gradient
+            problem meant that even with LSTMs, information from 200 tokens ago was largely forgotten.
+          </p>
+          <p>
+            Then Vaswani et al. published <em>Attention Is All You Need</em> and everything changed.
+            The Transformer removed recurrence entirely and replaced it with a mechanism that attends
+            to every token in parallel. It was faster, it scaled better, and it could model
+            long-range dependencies without fighting gradients.
+          </p>
+          <p>
+            Today, every major AI system you interact with — GPT-4, Gemini, Claude, LLaMA — is
+            a Transformer or a Transformer variant. Understanding the architecture from scratch
+            is table stakes for any serious AI engineer.
+          </p>
+
+          <!-- CALLOUT BOX — use for key definitions, warnings, or highlights -->
+          <div class="post-callout post-callout--info">
+            <span class="post-callout-icon" aria-hidden="true">💡</span>
+            <div>
+              <strong>The core insight:</strong> Instead of processing tokens sequentially,
+              the Transformer computes a weighted relationship between every pair of tokens
+              simultaneously. This is self-attention.
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Section 2 ──────────────────────────────────────── -->
+        <section id="section-input" class="post-section">
+          <h2>Input: Tokens and Embeddings</h2>
+          <p>
+            A Transformer takes a sequence of tokens as input. Tokenisation converts raw text
+            into integer IDs — each word (or subword) maps to an index in a vocabulary.
+            For example, with BPE tokenisation, "unbelievable" might split into
+            <code>["un", "believ", "able"]</code> → <code>[4721, 8823, 391]</code>.
+          </p>
+          <p>
+            Each token ID is then passed through an <strong>embedding layer</strong>
+            — a lookup table of learned vectors of size <code>d_model</code> (512 in the
+            original paper). This converts the discrete token IDs into continuous dense vectors
+            that the model can actually do maths with.
+          </p>
+
+          <!-- Code block -->
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">embedding.py</span>
+            </div>
+            <pre><code>import torch
+import torch.nn as nn
+
+class TokenEmbedding(nn.Module):
+    def __init__(self, vocab_size: int, d_model: int):
+        super().__init__()
+        # Lookup table: vocab_size × d_model
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        self.d_model   = d_model
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # x: (batch, seq_len) — token IDs
+        # Scale by sqrt(d_model) as in the original paper
+        return self.embedding(x) * (self.d_model ** 0.5)</code></pre>
+          </div>
+
+          <p>
+            The <code>sqrt(d_model)</code> scaling keeps the embedding magnitude from being
+            swamped by the positional encoding we add next.
+          </p>
+        </section>
+
+        <!-- ── Section 3 ──────────────────────────────────────── -->
+        <section id="section-positional" class="post-section">
+          <h2>Positional Encoding</h2>
+          <p>
+            Self-attention is permutation-invariant by nature — it has no concept of which token
+            came first. If you shuffled the words "cat sat mat" vs "mat sat cat," the raw
+            attention scores would be identical. That's a problem.
+          </p>
+          <p>
+            The original paper adds a <strong>positional encoding</strong> to each embedding —
+            a fixed vector that encodes the token's position in the sequence using sine and cosine
+            functions at different frequencies:
+          </p>
+
+          <div class="post-math-block" aria-label="Positional encoding formula">
+            <p>PE(pos, 2i) = sin(pos / 10000<sup>2i/d_model</sup>)</p>
+            <p>PE(pos, 2i+1) = cos(pos / 10000<sup>2i/d_model</sup>)</p>
+          </div>
+
+          <!-- Section image slot -->
+          <figure class="post-figure">
+            <img
+              class="post-figure-img"
+              src="blogs_assets/Transformers_3.png"
+              alt="Positional encoding diagram showing sine and cosine functions, token embedding values table, and self-attention weights with positional information"
+            />
+            <figcaption>Positional encoding adds position information to each token embedding using sine and cosine waves at different frequencies — allowing the model to distinguish token order.</figcaption>
+          </figure>
+
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">positional_encoding.py</span>
+            </div>
+            <pre><code>import torch
+import torch.nn as nn
+import math
+
+class PositionalEncoding(nn.Module):
+    def __init__(self, d_model: int, max_len: int = 5000, dropout: float = 0.1):
+        super().__init__()
+        self.dropout = nn.Dropout(p=dropout)
+
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len).unsqueeze(1).float()
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
+        )
+        pe[:, 0::2] = torch.sin(position * div_term)   # even dims
+        pe[:, 1::2] = torch.cos(position * div_term)   # odd dims
+        pe = pe.unsqueeze(0)                            # (1, max_len, d_model)
+        self.register_buffer("pe", pe)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # x: (batch, seq_len, d_model)
+        x = x + self.pe[:, : x.size(1), :]
+        return self.dropout(x)</code></pre>
+          </div>
+        </section>
+
+        <!-- ── Section 4 ──────────────────────────────────────── -->
+        <section id="section-attention" class="post-section">
+          <h2>Self-Attention: The Core Idea</h2>
+          <p>
+            Self-attention asks: <em>for each token in the sequence, how much should I attend
+            to every other token?</em> To compute this, each token's embedding is projected
+            into three separate vectors using learned weight matrices:
+          </p>
+          <ul class="post-list">
+            <li><strong>Query (Q)</strong> — what this token is looking for</li>
+            <li><strong>Key (K)</strong> — what this token advertises about itself</li>
+            <li><strong>Value (V)</strong> — what this token will contribute if selected</li>
+          </ul>
+          <p>
+            The attention score between two tokens is the dot product of their Q and K vectors,
+            scaled by <code>√d_k</code> to prevent the softmax from saturating in high dimensions:
+          </p>
+
+          <div class="post-math-block">
+            <p>Attention(Q, K, V) = softmax( Q · Kᵀ / √d_k ) · V</p>
+          </div>
+
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">attention.py</span>
+            </div>
+            <pre><code>import torch
+import torch.nn.functional as F
+import math
+
+def scaled_dot_product_attention(
+    Q: torch.Tensor,
+    K: torch.Tensor,
+    V: torch.Tensor,
+    mask: torch.Tensor = None
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """
+    Args:
+        Q, K, V: (batch, heads, seq_len, d_k)
+        mask: optional boolean mask — True positions are masked out
+    Returns:
+        output:  (batch, heads, seq_len, d_k)
+        weights: (batch, heads, seq_len, seq_len)  — for visualisation
+    """
+    d_k = Q.size(-1)
+    scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(d_k)
+
+    if mask is not None:
+        scores = scores.masked_fill(mask == 0, float("-inf"))
+
+    weights = F.softmax(scores, dim=-1)
+    output  = torch.matmul(weights, V)
+    return output, weights</code></pre>
+          </div>
+
+          <div class="post-callout post-callout--tip">
+            <span class="post-callout-icon" aria-hidden="true">🔑</span>
+            <div>
+              <strong>Why scale by √d_k?</strong> With large <code>d_k</code>, dot products
+              grow in magnitude, pushing softmax into regions with tiny gradients. Dividing by
+              √d_k keeps the variance stable regardless of embedding dimension.
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Section 5 ──────────────────────────────────────── -->
+        <section id="section-multihead" class="post-section">
+          <h2>Multi-Head Attention</h2>
+          <p>
+            A single attention head captures one type of relationship between tokens. In practice,
+            you want the model to attend to different aspects simultaneously — syntactic structure,
+            co-reference, semantic similarity. <strong>Multi-head attention</strong> runs
+            <code>h</code> attention heads in parallel, each with its own Q/K/V projections,
+            then concatenates and linearly projects the results:
+          </p>
+
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">multihead_attention.py</span>
+            </div>
+            <pre><code>import torch
+import torch.nn as nn
+from attention import scaled_dot_product_attention
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model: int, num_heads: int, dropout: float = 0.1):
+        super().__init__()
+        assert d_model % num_heads == 0
+        self.d_k      = d_model // num_heads
+        self.h        = num_heads
+
+        self.W_q = nn.Linear(d_model, d_model, bias=False)
+        self.W_k = nn.Linear(d_model, d_model, bias=False)
+        self.W_v = nn.Linear(d_model, d_model, bias=False)
+        self.W_o = nn.Linear(d_model, d_model, bias=False)
+        self.dropout = nn.Dropout(dropout)
+
+    def _split_heads(self, x: torch.Tensor) -> torch.Tensor:
+        # x: (B, L, d_model) → (B, h, L, d_k)
+        B, L, _ = x.size()
+        return x.view(B, L, self.h, self.d_k).transpose(1, 2)
+
+    def forward(self, Q, K, V, mask=None):
+        B = Q.size(0)
+        Q = self._split_heads(self.W_q(Q))
+        K = self._split_heads(self.W_k(K))
+        V = self._split_heads(self.W_v(V))
+
+        x, _ = scaled_dot_product_attention(Q, K, V, mask)
+
+        # Concat heads: (B, h, L, d_k) → (B, L, d_model)
+        x = x.transpose(1, 2).contiguous().view(B, -1, self.h * self.d_k)
+        return self.W_o(x)</code></pre>
+          </div>
+
+          <!-- Section image slot -->
+          <figure class="post-figure">
+            <img
+              class="post-figure-img"
+              src="blogs_assets/Transformers_4.png"
+              alt="Multi-head attention diagram showing Q K V projections, parallel attention heads, concatenation, and full encoder block with residual connections"
+            />
+            <figcaption>Multi-head attention splits Q/K/V into h heads, computes attention independently in each, then concatenates and linearly projects back to d_model. Each head learns different relationship types.</figcaption>
+          </figure>
+        </section>
+
+        <!-- ── Section 6 ──────────────────────────────────────── -->
+        <section id="section-encoder" class="post-section">
+          <h2>The Encoder Stack</h2>
+          <p>
+            Each encoder layer wraps multi-head attention in a residual connection followed by
+            layer normalisation, then applies a position-wise feed-forward network (two linear
+            layers with a ReLU in between) — again with residual + LayerNorm:
+          </p>
+
+          <div class="post-code-block">
+            <div class="post-code-header">
+              <span class="post-code-lang">python</span>
+              <span class="post-code-filename">encoder_layer.py</span>
+            </div>
+            <pre><code>import torch
+import torch.nn as nn
+from multihead_attention import MultiHeadAttention
+
+class EncoderLayer(nn.Module):
+    def __init__(self, d_model: int, num_heads: int, d_ff: int, dropout: float = 0.1):
+        super().__init__()
+        self.self_attn  = MultiHeadAttention(d_model, num_heads, dropout)
+        self.ff         = nn.Sequential(
+            nn.Linear(d_model, d_ff),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(d_ff, d_model),
+        )
+        self.norm1   = nn.LayerNorm(d_model)
+        self.norm2   = nn.LayerNorm(d_model)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x: torch.Tensor, mask=None) -> torch.Tensor:
+        # Sub-layer 1: self-attention + residual + norm
+        attn_out = self.self_attn(x, x, x, mask)
+        x = self.norm1(x + self.dropout(attn_out))
+
+        # Sub-layer 2: feed-forward + residual + norm
+        ff_out = self.ff(x)
+        x = self.norm2(x + self.dropout(ff_out))
+        return x</code></pre>
+          </div>
+
+          <p>
+            Stack <code>N=6</code> of these layers and you have the full Transformer encoder.
+            The original paper also has a decoder with cross-attention (attending to encoder outputs)
+            and a causal mask to prevent future-token leakage — but for tasks like classification,
+            encoding, or embedding generation, the encoder alone is sufficient.
+          </p>
+
+          <figure class="post-figure">
+            <img
+              class="post-figure-img"
+              src="blogs_assets/Transformer2.png"
+              alt="Detailed encoder-decoder architecture diagram showing token embedding layer, positional encoding, multi-head self-attention, cross-attention, feed-forward network, and Q K V matrices"
+            />
+            <figcaption>Full Transformer encoder-decoder architecture. The encoder (left) produces contextual representations; the decoder (right) attends to them via cross-attention to generate output tokens.</figcaption>
+          </figure>
+        </section>
+
+        <!-- ── Section 7 ──────────────────────────────────────── -->
+        <section id="section-training" class="post-section">
+          <h2>Training Considerations</h2>
+
+          <div class="post-key-points" aria-label="Key training tips">
+            <div class="post-key-point">
+              <span class="post-key-point-num">01</span>
+              <div>
+                <strong>Learning Rate Warmup</strong>
+                <p>The original paper uses a custom schedule that linearly warms up to a peak LR
+                   for the first 4,000 steps, then decays proportionally to the inverse square root
+                   of the step count. Skipping warmup causes instability early in training.</p>
+              </div>
+            </div>
+            <div class="post-key-point">
+              <span class="post-key-point-num">02</span>
+              <div>
+                <strong>Label Smoothing</strong>
+                <p>Rather than targeting a hard 1.0 for the correct token, label smoothing
+                   (ε = 0.1) distributes a small probability mass across all vocab items.
+                   This regularises the model and prevents overconfident predictions.</p>
+              </div>
+            </div>
+            <div class="post-key-point">
+              <span class="post-key-point-num">03</span>
+              <div>
+                <strong>Dropout</strong>
+                <p>Applied after every sub-layer output (before the residual add) and on
+                   attention weights. The original paper uses p=0.1. Reducing this helps on
+                   smaller datasets; increasing it helps with very deep stacks.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Section 8 ──────────────────────────────────────── -->
+        <section id="section-takeaways" class="post-section">
+          <h2>Key Takeaways</h2>
+          <ul class="post-list post-list--check">
+            <li>Transformers replace sequential RNN computation with parallelised self-attention — this is why they scale.</li>
+            <li>Positional encoding injects order information that attention alone cannot capture.</li>
+            <li>Multi-head attention lets the model attend to different relationship types simultaneously.</li>
+            <li>Residual connections + LayerNorm are essential for training deep stacks stably.</li>
+            <li>The same building blocks power BERT, GPT, T5, and every major LLM today — understanding them from scratch means you can read and implement research papers directly.</li>
+          </ul>
+
+          <div class="post-callout post-callout--resource">
+            <span class="post-callout-icon" aria-hidden="true">📚</span>
+            <div>
+              <strong>Further reading:</strong>
+              <ul style="margin: 0.4rem 0 0; padding-left: 1.2rem;">
+                <li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noreferrer">Attention Is All You Need — Vaswani et al., 2017</a></li>
+                <li><a href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noreferrer">The Illustrated Transformer — Jay Alammar</a></li>
+                <li><a href="https://github.com/karpathy/nanoGPT" target="_blank" rel="noreferrer">nanoGPT — Andrej Karpathy</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Post Footer: Tags + Share + Author ─────────────── -->
+        <footer class="post-footer">
+          <div class="post-footer-tags">
+            <!-- TEMPLATE: Update tags to match the post -->
+            <span class="post-tag">PyTorch</span>
+            <span class="post-tag">Deep Learning</span>
+            <span class="post-tag">Transformers</span>
+            <span class="post-tag">NLP</span>
+            <span class="post-tag">Self-Attention</span>
+          </div>
+
+          <div class="post-author-card">
+            <img src="assets/aditya-corporate.png" alt="Aditya Suyal" class="post-author-card-avatar" />
+            <div class="post-author-card-body">
+              <span class="post-author-card-name">Aditya Suyal</span>
+              <p class="post-author-card-bio">
+                AI/ML Engineer building LLM agents, RAG pipelines, and applied deep learning systems.
+                Currently researching multi-agent AI architectures at Birla Institute of Applied Sciences.
+              </p>
+              <div class="post-author-card-links">
+                <a href="https://github.com/Adirohansuyal" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://www.linkedin.com/in/aditya-suyal" target="_blank" rel="noreferrer">LinkedIn</a>
+                <a href="mailto:adityasuyal@birlainstitute.co.in">Email</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <!-- ── Next / Prev Post navigation ──────────────────────── -->
+      <!--
+        TEMPLATE: Update these links when you have more posts.
+        Remove the section if it's the only post.
+      -->
+      <nav class="post-adjacent-nav" aria-label="Adjacent posts">
+        <a class="post-adjacent post-adjacent--prev" href="blogs.html">
+          <span class="post-adjacent-label">← Back to Blog</span>
+          <span class="post-adjacent-title">All Articles</span>
+        </a>
+        <a class="post-adjacent post-adjacent--next" href="blog-lora-fine-tuning.html">
+          <span class="post-adjacent-label">Next Post →</span>
+          <span class="post-adjacent-title">Fine-Tuning LLMs with LoRA</span>
+        </a>
+      </nav>
+
+    </main>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+    <footer class="site-footer">
+      <p>© <span id="year"></span> Aditya Suyal, All Rights Reserved.</p>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      // Scroll progress bar
+      const bar = document.querySelector(".scroll-progress");
+      window.addEventListener("scroll", () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.transform = `scaleX(${total > 0 ? window.scrollY / total : 0})`;
+      }, { passive: true });
+      // Hamburger
+      const ham = document.querySelector(".hamburger");
+      const nav = document.getElementById("primary-nav");
+      ham?.addEventListener("click", () => {
+        const open = ham.getAttribute("aria-expanded") === "true";
+        ham.setAttribute("aria-expanded", String(!open));
+        nav.classList.toggle("nav-open", !open);
+      });
+    </script>
+
+  </body>
+</html>

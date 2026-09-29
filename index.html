@@ -284,7 +284,7 @@
         <div class="section-heading project-heading">
           <div>
             <p class="eyebrow">Projects</p>
-            <h2 id="projects-title" style="white-space:nowrap; color: var(--text);"><span style="color:#2563eb">AI, ML,</span> and LLM Engineering Projects</h2>
+            <h2 id="projects-title" style="white-space:nowrap; color: var(--text);"><span style="color:var(--accent)">AI, ML,</span> and LLM Engineering Projects</h2>
           </div>
           <div class="filter-group" aria-label="Filter projects">
             <button class="filter-button active" type="button" data-filter="all">All</button>
@@ -758,7 +758,21 @@
 // ── Scroll-driven background (corporate: deep navy → light sky blue) ──
 (function () {
   const darkR = 10, darkG = 14, darkB = 26;
-  const lightR = 186, lightG = 224, lightB = 255;
+  // Light-end color cycles blue↔green smoothly (sine wave — no snap-back)
+  const CYCLE_MS = 3000;
+  function getLightColor() {
+    const phase = (Date.now() % CYCLE_MS) / CYCLE_MS; // 0 → 1 over 3s
+    const t = (1 - Math.cos(phase * 2 * Math.PI)) / 2; // 0→1→0 smooth loop
+    // blue light: 186,224,255  →  green light: 187,247,208
+    return {
+      r:  Math.round(186 + (187 - 186) * t),
+      g:  Math.round(224 + (247 - 224) * t),
+      b:  Math.round(255 + (208 - 255) * t),
+      mR: Math.round(147 + (134 - 147) * t),
+      mG: Math.round(210 + (239 - 210) * t),
+      mB: Math.round(255 + (172 - 255) * t),
+    };
+  }
 
   function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
   function lerpF(a, b, t) { return +(a + (b - a) * t).toFixed(3); }
@@ -766,9 +780,10 @@
   function ease(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
 
   function bgLuminance(t) {
-    const r = lerp(darkR, lightR, t) / 255;
-    const g = lerp(darkG, lightG, t) / 255;
-    const b = lerp(darkB, lightB, t) / 255;
+    const lc2 = getLightColor();
+    const r = lerp(darkR, lc2.r, t) / 255;
+    const g = lerp(darkG, lc2.g, t) / 255;
+    const b = lerp(darkB, lc2.b, t) / 255;
     return 0.2126*r + 0.7152*g + 0.0722*b;
   }
 
@@ -781,15 +796,16 @@
     const root = document.documentElement;
     const lum = bgLuminance(t);
 
-    const bR = lerp(darkR, lightR, t);
-    const bG = lerp(darkG, lightG, t);
-    const bB = lerp(darkB, lightB, t);
+    const lc = getLightColor();
+    const bR = lerp(darkR, lc.r, t);
+    const bG = lerp(darkG, lc.g, t);
+    const bB = lerp(darkB, lc.b, t);
 
     const mist = lerpF(0, 0.35, t);
     document.body.style.background = `
-      radial-gradient(ellipse 60% 45% at 15% 25%, rgba(147,210,255,${mist}) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 82% 60%, rgba(220,242,255,${mist * 0.7}) 0%, transparent 65%),
-      radial-gradient(ellipse 45% 35% at 45% 90%, rgba(168,218,255,${mist * 0.5}) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 45% at 15% 25%, rgba(${lc.mR},${lc.mG},${lc.mB},${mist}) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 82% 60%, rgba(${lc.mR},${lc.mG},${lc.mB},${mist * 0.7}) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 35% at 45% 90%, rgba(${lc.mR},${lc.mG},${lc.mB},${mist * 0.5}) 0%, transparent 70%),
       rgb(${bR},${bG},${bB})
     `.trim();
     root.style.setProperty("--bg", `rgb(${bR},${bG},${bB})`);
@@ -826,10 +842,7 @@
     root.style.setProperty('--nav-text',   `rgb(${lerp(240,12,nT)},${lerp(244,20,nT)},${lerp(248,45,nT)})`);
     root.style.setProperty('--nav-muted',  `rgb(${lerp(148,40,nT)},${lerp(163,60,nT)},${lerp(184,95,nT)})`);
     root.style.setProperty('--nav-border', `rgba(${lerp(255,30,nT)},${lerp(255,30,nT)},${lerp(255,30,nT)},${lerpF(0.14,0.18,nT)})`);
-    root.style.setProperty('--nav-accent', `rgb(${lerp(96,20,nT)},${lerp(165,80,nT)},${lerp(250,190,nT)})`);
-
-    root.style.setProperty('--accent',        `rgb(${lerp(59,30,t)},${lerp(130,64,t)},${lerp(246,175,t)})`);
-    root.style.setProperty('--accent-strong', `rgb(${lerp(96,20,t)},${lerp(165,80,t)},${lerp(250,200,t)})`);
+    // --nav-accent and --accent* are driven by CSS @keyframes accentCycle — do not override here
   }
 
   window.addEventListener('scroll', updateBg, { passive: true });
