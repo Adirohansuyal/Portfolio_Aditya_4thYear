@@ -251,6 +251,7 @@ img {
   top: 0;
   z-index: 100;
   pointer-events: none;   /* let clicks fall through the padding area */
+  overflow: visible;      /* never clip the mobile nav dropdown */
 }
 
 .site-header {
@@ -322,6 +323,12 @@ img {
   padding: 0.5rem 0.6rem;
   width: 2.6rem;
   transition: background 200ms ease, border-color 200ms ease, transform 150ms ease;
+  /* Mobile: ensure the button always receives touch/pointer events */
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 10;
 }
 
 .hamburger:hover {
@@ -1416,6 +1423,8 @@ h3 {
       background  180ms ease,
       color       180ms ease,
       padding-left 180ms ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .site-header .nav-links a:last-child { box-shadow: none; }

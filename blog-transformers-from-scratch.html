@@ -605,11 +605,37 @@ class EncoderLayer(nn.Module):
       // Hamburger
       const ham = document.querySelector(".hamburger");
       const nav = document.getElementById("primary-nav");
-      ham?.addEventListener("click", () => {
-        const open = ham.getAttribute("aria-expanded") === "true";
-        ham.setAttribute("aria-expanded", String(!open));
-        nav.classList.toggle("nav-open", !open);
-      });
+      if (ham && nav) {
+        let lastToggle = 0;
+        function toggleHam() {
+          lastToggle = Date.now();
+          const open = ham.getAttribute("aria-expanded") === "true";
+          ham.setAttribute("aria-expanded", String(!open));
+          nav.classList.toggle("nav-open", !open);
+        }
+        ham.addEventListener("touchstart", (e) => {
+          e.stopPropagation();
+          toggleHam();
+        }, { passive: false });
+        ham.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (Date.now() - lastToggle < 600) return;
+          toggleHam();
+        });
+        document.addEventListener("touchstart", (e) => {
+          if (Date.now() - lastToggle < 300) return;
+          if (!e.target.closest(".site-header")) {
+            ham.setAttribute("aria-expanded", "false");
+            nav.classList.remove("nav-open");
+          }
+        }, { passive: true });
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest(".site-header")) {
+            ham.setAttribute("aria-expanded", "false");
+            nav.classList.remove("nav-open");
+          }
+        });
+      }
     </script>
 
   </body>

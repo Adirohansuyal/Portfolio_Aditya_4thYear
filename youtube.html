@@ -1106,6 +1106,7 @@
         const primaryNav = document.querySelector("#primary-nav");
         if (!hamburger || !primaryNav) return;
 
+        let lastToggle = 0;
         function openNav() {
           primaryNav.classList.add("nav-open");
           hamburger.setAttribute("aria-expanded", "true");
@@ -1114,21 +1115,36 @@
           primaryNav.classList.remove("nav-open");
           hamburger.setAttribute("aria-expanded", "false");
         }
+        function toggleNav() {
+          lastToggle = Date.now();
+          primaryNav.classList.contains("nav-open") ? closeNav() : openNav();
+        }
+
+        hamburger.addEventListener("touchstart", (e) => {
+          e.stopPropagation();
+          toggleNav();
+        }, { passive: false });
 
         hamburger.addEventListener("click", (e) => {
           e.stopPropagation();
-          primaryNav.classList.contains("nav-open") ? closeNav() : openNav();
+          if (Date.now() - lastToggle < 600) return;
+          toggleNav();
         });
 
         // Close when a nav link is clicked
         primaryNav.querySelectorAll("a").forEach((link) => {
           link.addEventListener("click", closeNav);
+          link.addEventListener("touchstart", (e) => { e.stopPropagation(); closeNav(); }, { passive: false });
         });
 
-        // Close when clicking outside the header
+        // Close when clicking/touching outside the header
         document.addEventListener("click", (e) => {
           if (!e.target.closest(".site-header")) closeNav();
         });
+        document.addEventListener("touchstart", (e) => {
+          if (Date.now() - lastToggle < 300) return;
+          if (!e.target.closest(".site-header")) closeNav();
+        }, { passive: true });
 
         // Close on Escape
         document.addEventListener("keydown", (e) => {

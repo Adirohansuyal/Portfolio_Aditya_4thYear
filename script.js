@@ -243,23 +243,47 @@ function closeNav() {
 }
 
 if (hamburger && primaryNav) {
-  hamburger.addEventListener("click", (e) => {
-    e.stopPropagation();
+  let lastNavToggleTime = 0;
+
+  function toggleNav() {
+    lastNavToggleTime = Date.now();
     const isOpen = primaryNav.classList.contains("nav-open");
     isOpen ? closeNav() : openNav();
+  }
+
+  // touchstart: instant response on mobile, no 300ms delay
+  hamburger.addEventListener("touchstart", (e) => {
+    e.stopPropagation();
+    toggleNav();
+  }, { passive: false });
+
+  // click: handles desktop; on mobile this ghost-fires after touchstart — ignore it
+  hamburger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    // If touch already handled this within 600ms, skip
+    if (Date.now() - lastNavToggleTime < 600) return;
+    toggleNav();
   });
 
   // Close nav when any nav link is clicked
   primaryNav.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", closeNav);
+    link.addEventListener("touchstart", (e) => {
+      e.stopPropagation();
+      closeNav();
+    }, { passive: false });
   });
 
-  // Close nav when clicking outside the header
-  document.addEventListener("click", (e) => {
+  // Close nav when clicking/touching outside the nav area
+  // Use a guard: don't close if we just toggled (prevents same-tap open+close)
+  const closeOnOutside = (e) => {
+    if (Date.now() - lastNavToggleTime < 300) return; // same tap cycle — skip
     if (!e.target.closest(".site-header")) {
       closeNav();
     }
-  });
+  };
+  document.addEventListener("click", closeOnOutside);
+  document.addEventListener("touchstart", closeOnOutside, { passive: true });
 
   // Close nav on Escape key
   document.addEventListener("keydown", (e) => {

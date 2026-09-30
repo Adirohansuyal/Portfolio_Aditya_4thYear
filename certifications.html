@@ -577,9 +577,33 @@
       const hamburger = document.querySelector(".hamburger");
       const primaryNav = document.querySelector("#primary-nav");
       if (hamburger && primaryNav) {
-        hamburger.addEventListener("click", () => {
+        let lastToggle = 0;
+        function toggleNav() {
+          lastToggle = Date.now();
           const isOpen = primaryNav.classList.toggle("nav-open");
           hamburger.setAttribute("aria-expanded", isOpen);
+        }
+        hamburger.addEventListener("touchstart", (e) => {
+          e.stopPropagation();
+          toggleNav();
+        }, { passive: false });
+        hamburger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (Date.now() - lastToggle < 600) return;
+          toggleNav();
+        });
+        document.addEventListener("touchstart", (e) => {
+          if (Date.now() - lastToggle < 300) return;
+          if (!e.target.closest(".site-header")) {
+            primaryNav.classList.remove("nav-open");
+            hamburger.setAttribute("aria-expanded", "false");
+          }
+        }, { passive: true });
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest(".site-header")) {
+            primaryNav.classList.remove("nav-open");
+            hamburger.setAttribute("aria-expanded", "false");
+          }
         });
       }
 
