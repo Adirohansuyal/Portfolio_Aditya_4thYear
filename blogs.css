@@ -2,8 +2,6 @@
    BLOGS PAGE — blogs.css
    Extends styles.css — inherits all CSS custom properties and base
    ═══════════════════════════════════════════════════════════════════ */
-}
-/* ── /Aurora Overlay ─────────────────────────────────────────────── */
 
 /* ── Blog Hero ───────────────────────────────────────────────────── */
 .blog-hero {
@@ -12,7 +10,7 @@
   align-items: flex-start;
   justify-content: center;
   min-height: 38vh;
-  padding: clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 3rem) clamp(2rem, 4vw, 3.5rem);
+  padding: clamp(5rem, 9vw, 7.5rem) clamp(2rem, 5vw, 4.5rem) clamp(2.5rem, 4vw, 4rem);
   max-width: 1280px;
   margin: 0 auto;
   position: relative;
@@ -63,7 +61,7 @@
 .blog-controls {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 clamp(1rem, 4vw, 3rem) 2.5rem;
+  padding: 0 clamp(2rem, 5vw, 4.5rem) 2.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -154,7 +152,7 @@
 .blog-section {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 clamp(1rem, 4vw, 3rem) clamp(4rem, 6vw, 6rem);
+  padding: 0 clamp(2rem, 5vw, 4.5rem) clamp(4rem, 6vw, 6rem);
 }
 
 .blog-featured-label {
@@ -849,7 +847,17 @@
 
 @media (max-width: 420px) {
   .blog-hero {
-    padding-top: 3rem;
+    padding: 3.5rem 1.25rem 2rem;
+  }
+
+  .blog-controls {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .blog-section {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 
   .blog-card-body {

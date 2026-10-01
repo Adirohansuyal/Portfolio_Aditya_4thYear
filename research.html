@@ -497,7 +497,11 @@
 
           const navAlpha = lerpF(0.85, 0.92, t);
           root.style.setProperty('--navbar-bg', `rgba(${bR},${bG},${bB},${navAlpha})`);
-          // --accent and --accent-strong driven by CSS @keyframes accentCycle — do not override
+
+          const navGlassR = lerp(10, bR, t);
+          const navGlassG = lerp(14, bG, t);
+          const navGlassB = lerp(26, bB, t);
+          root.style.setProperty('--navbar-glass', `rgba(${navGlassR},${navGlassG},${navGlassB},0.78)`);          // --accent and --accent-strong driven by CSS @keyframes accentCycle — do not override
         }
 
         window.addEventListener('scroll', updateBg, { passive: true });

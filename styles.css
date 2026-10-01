@@ -256,9 +256,9 @@ img {
 
 .site-header {
   align-items: center;
-  backdrop-filter: blur(10px) saturate(160%);
-  -webkit-backdrop-filter: blur(10px) saturate(160%);
-  background: rgba(10, 14, 26, 0.50) !important;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  background: var(--navbar-glass, rgba(10, 14, 26, 0.72));
   border: 1px solid var(--nav-border, rgba(255,255,255,0.14));
   border-radius: 999px;
   box-shadow:
@@ -272,7 +272,7 @@ img {
   max-width: 1100px;
   padding: 0.6rem 1.1rem 0.6rem 0.75rem;
   pointer-events: all;
-  transition: padding 280ms ease, box-shadow 280ms ease, max-width 280ms ease, border-color 350ms ease;
+  transition: padding 280ms ease, box-shadow 280ms ease, max-width 280ms ease, border-color 350ms ease, background 350ms ease;
   width: 100%;
 }
 

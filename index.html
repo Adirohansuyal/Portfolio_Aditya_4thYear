@@ -841,14 +841,21 @@
     const navAlpha = lerpF(0.85, 0.92, t);
     root.style.setProperty('--navbar-bg', `rgba(${bR},${bG},${bB},${navAlpha})`);
 
+    // Navbar glass background — always high-contrast against the current page bg.
+    // At t=0 (dark): semi-transparent dark navy.
+    // At t=1 (light): semi-transparent light bg with enough opacity to stay visible.
+    const navGlassR = lerp(10, bR, t);
+    const navGlassG = lerp(14, bG, t);
+    const navGlassB = lerp(26, bB, t);
+    root.style.setProperty('--navbar-glass', `rgba(${navGlassR},${navGlassG},${navGlassB},0.78)`);
+
     // Navbar-specific text colors — driven by the navbar's own background luminance
-    // (navbar is ~85-92% opaque over bg, so perceived color ≈ bg color itself)
     const navLum = (bR/255)*0.2126 + (bG/255)*0.7152 + (bB/255)*0.0722;
     // nT = 0 means dark bg → use light text; nT = 1 means light bg → use dark text
     const nT = ease(clamp((navLum - 0.06) / 0.30, 0, 1));
     root.style.setProperty('--nav-text',   `rgb(${lerp(240,12,nT)},${lerp(244,20,nT)},${lerp(248,45,nT)})`);
     root.style.setProperty('--nav-muted',  `rgb(${lerp(148,40,nT)},${lerp(163,60,nT)},${lerp(184,95,nT)})`);
-    root.style.setProperty('--nav-border', `rgba(${lerp(255,30,nT)},${lerp(255,30,nT)},${lerp(255,30,nT)},${lerpF(0.14,0.18,nT)})`);
+    root.style.setProperty('--nav-border', `rgba(${lerp(255,30,nT)},${lerp(255,30,nT)},${lerp(255,30,nT)},${lerpF(0.22,0.22,nT)})`);
     // --nav-accent and --accent* are driven by CSS @keyframes accentCycle — do not override here
   }
 
