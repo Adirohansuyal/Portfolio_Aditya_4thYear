@@ -887,9 +887,7 @@
     }, { passive: true });
 
     // ── Trail dots config ──────────────────────────────────────────
-    const TRAIL_LEN  = 22;    // number of trail dots
-    const DOT_R      = 4.5;   // max radius of lead dot
-    const LERP_BASE  = 0.18;  // how tightly each dot follows the one ahead
+    const TRAIL_LEN = 22, DOT_R = 4.5, LERP_BASE = 0.28;
     const COLORS     = [
       [124, 58, 237],   // purple  (accent)
       [16, 185, 129],   // emerald (accent-strong)
@@ -929,9 +927,8 @@
         return;
       }
 
-      // Move lead dot toward mouse
-      dots[0].x = lerp(dots[0].x, mouseX, 0.35);
-      dots[0].y = lerp(dots[0].y, mouseY, 0.35);
+      dots[0].x = lerp(dots[0].x, mouseX, 0.55);
+      dots[0].y = lerp(dots[0].y, mouseY, 0.55);
 
       // Each subsequent dot follows the one before it with increasing lag
       for (let i = 1; i < TRAIL_LEN; i++) {

@@ -837,7 +837,7 @@
     let W = canvas.width  = window.innerWidth;
     let H = canvas.height = window.innerHeight;
     window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }, { passive: true });
-    const TRAIL_LEN = 22, DOT_R = 4.5, LERP_BASE = 0.18;
+    const TRAIL_LEN = 22, DOT_R = 4.5, LERP_BASE = 0.28;
     const COLORS = [[124,58,237],[16,185,129]];
     const dots = Array.from({ length: TRAIL_LEN }, () => ({ x: W/2, y: H/2 }));
     let mouseX = W/2, mouseY = H/2, active = false;

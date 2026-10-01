@@ -649,7 +649,7 @@ class EncoderLayer(nn.Module):
     const ctx    = canvas.getContext('2d');
     let W = canvas.width = window.innerWidth, H = canvas.height = window.innerHeight;
     window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }, { passive: true });
-    const TRAIL_LEN = 22, DOT_R = 4.5, LERP_BASE = 0.18;
+    const TRAIL_LEN = 22, DOT_R = 4.5, LERP_BASE = 0.28;
     const COLORS = [[124,58,237],[16,185,129]];
     const dots = Array.from({ length: TRAIL_LEN }, () => ({ x: W/2, y: H/2 }));
     let mouseX = W/2, mouseY = H/2, active = false;
@@ -660,7 +660,7 @@ class EncoderLayer(nn.Module):
     function draw() {
       ctx.clearRect(0,0,W,H);
       if (!active) { requestAnimationFrame(draw); return; }
-      dots[0].x = lerp(dots[0].x,mouseX,0.35); dots[0].y = lerp(dots[0].y,mouseY,0.35);
+      dots[0].x = lerp(dots[0].x,mouseX,0.55); dots[0].y = lerp(dots[0].y,mouseY,0.55);
       for (let i=1;i<TRAIL_LEN;i++) { const t=Math.max(LERP_BASE*(1-i/(TRAIL_LEN*1.4)),0.04); dots[i].x=lerp(dots[i].x,dots[i-1].x,t); dots[i].y=lerp(dots[i].y,dots[i-1].y,t); }
       for (let i=TRAIL_LEN-1;i>=0;i--) {
         const progress=1-i/TRAIL_LEN,radius=DOT_R*progress,alpha=progress*progress*0.85;
