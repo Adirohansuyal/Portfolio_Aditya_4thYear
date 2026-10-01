@@ -78,6 +78,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module" id="pdfjs-script"></script>
   </head>
   <body>
+
+  <!-- ── Ambient gradient blobs (scroll-driven) ── -->
+  <div class="page-blob" id="pb-0" style="width:600px;height:600px;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%);"></div>
+  <div class="page-blob" id="pb-1" style="width:520px;height:520px;background:radial-gradient(circle,rgba(139,92,246,0.22),transparent 70%);"></div>
+  <div class="page-blob" id="pb-2" style="width:550px;height:550px;background:radial-gradient(circle,rgba(234,179,8,0.15),transparent 70%);"></div>
+  <div class="page-blob" id="pb-3" style="width:480px;height:480px;background:radial-gradient(circle,rgba(34,211,238,0.16),transparent 70%);"></div>
+  <div class="page-blob" id="pb-4" style="width:500px;height:500px;background:radial-gradient(circle,rgba(20,184,166,0.16),transparent 70%);"></div>
+
     <!-- ── Page Loader ──────────────────────────────────────────────── -->
     <div class="page-loader" id="page-loader" aria-hidden="true">
       <div class="loader-inner">
@@ -1025,5 +1033,86 @@
 })();
 /* ================================================================ */
   </script>
+
+  <script>
+  /* ── Scroll-driven page-wide ambient blobs ── */
+  (function () {
+    // Each section gets a blob config: which blob, where it drifts
+    const sections = [
+      { id: 'top',             blobIdx: 0, side: 'left',  offsetX: -180, opacity: 0.85 },
+      { id: 'about',           blobIdx: 1, side: 'right', offsetX: -160, opacity: 0.80 },
+      { id: 'experience',      blobIdx: 2, side: 'left',  offsetX: -200, opacity: 0.75 },
+      { id: 'projects',        blobIdx: 0, side: 'right', offsetX: -140, opacity: 0.80 },
+      { id: 'github-activity', blobIdx: 3, side: 'left',  offsetX: -180, opacity: 0.70 },
+      { id: 'skills',          blobIdx: 4, side: 'right', offsetX: -160, opacity: 0.75 },
+      { id: 'contact',         blobIdx: 1, side: 'left',  offsetX: -200, opacity: 0.80 },
+    ];
+
+    const blobs = [0,1,2,3,4].map(i => document.getElementById('pb-' + i));
+    if (!blobs[0]) return;
+
+    const vh = () => window.innerHeight;
+    const vw = () => window.innerWidth;
+
+    function updateBlobs() {
+      const scrollY = window.scrollY;
+      const h = vh();
+
+      // Reset all
+      blobs.forEach(b => { b.style.opacity = '0'; });
+
+      // Find which section is most in view
+      let best = null, bestScore = -1;
+      sections.forEach(cfg => {
+        const el = document.getElementById(cfg.id) ||
+                   document.querySelector('[id="' + cfg.id + '"]');
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const elMid = rect.top + rect.height / 2;
+        const distFromCenter = Math.abs(elMid - h / 2);
+        const maxDist = h * 0.75;
+        if (distFromCenter < maxDist) {
+          const score = 1 - distFromCenter / maxDist;
+          if (score > bestScore) { bestScore = score; best = { cfg, score, rect }; }
+        }
+      });
+
+      if (!best) return;
+
+      const { cfg, score, rect } = best;
+      const blob = blobs[cfg.blobIdx];
+      const blobW = parseFloat(blob.style.width) || 500;
+      const blobH = parseFloat(blob.style.height) || 500;
+
+      // Vertical: centre on the section midpoint
+      const sectionMidY = rect.top + rect.height / 2;
+      const topPx = scrollY + sectionMidY - blobH / 2;
+
+      // Horizontal: alternate sides
+      if (cfg.side === 'left') {
+        blob.style.left = cfg.offsetX + 'px';
+        blob.style.right = 'auto';
+      } else {
+        blob.style.right = cfg.offsetX + 'px';
+        blob.style.left = 'auto';
+      }
+
+      blob.style.top = topPx + 'px';
+      blob.style.opacity = (score * cfg.opacity).toFixed(3);
+    }
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => { updateBlobs(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', updateBlobs, { passive: true });
+    updateBlobs();
+  })();
+  </script>
+
   </body>
 </html>

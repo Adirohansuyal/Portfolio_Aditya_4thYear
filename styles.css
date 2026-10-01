@@ -3376,3 +3376,20 @@ body.page-leaving .tl-wrap {
   body.page-leaving .page-hero,
   body.page-leaving .tl-wrap { animation: none; }
 }
+
+/* ── Page-wide ambient gradient blobs ─────────────────────────── */
+.page-blob {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(90px);
+  opacity: 0;
+  transition: opacity 0.9s ease, top 1.2s ease, left 1.2s ease, right 1.2s ease;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-blob { display: none !important; }
+}
+/* ── /Page-wide ambient gradient blobs ────────────────────────── */
