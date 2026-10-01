@@ -16,14 +16,14 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     const phase = (Date.now() % CYCLE_MS) / CYCLE_MS; // 0 → 1 over 3s
     // sin wave: 0→1→0 smoothly, no sudden jump
     const t = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
-    // blue light: 186,224,255  →  green light: 187,247,208
+    // soft blue light: 210,228,245  →  soft mint light: 210,240,220
     return {
-      r:  Math.round(186 + (187 - 186) * t),
-      g:  Math.round(224 + (247 - 224) * t),
-      b:  Math.round(255 + (208 - 255) * t),
-      mR: Math.round(147 + (134 - 147) * t),
-      mG: Math.round(210 + (239 - 210) * t),
-      mB: Math.round(255 + (172 - 255) * t),
+      r:  Math.round(210 + (210 - 210) * t),
+      g:  Math.round(228 + (240 - 228) * t),
+      b:  Math.round(245 + (220 - 245) * t),
+      mR: Math.round(170 + (160 - 170) * t),
+      mG: Math.round(210 + (215 - 210) * t),
+      mB: Math.round(240 + (200 - 240) * t),
     };
   }
 
