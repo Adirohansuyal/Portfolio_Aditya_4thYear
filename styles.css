@@ -1121,13 +1121,19 @@ h3 {
   text-align: left;
   max-width: 100%;
   width: 100%;
-  background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(139,92,246,0.04) 100%);
+  background: transparent;
   border: 1px solid transparent;
   border-radius: 1.25rem;
   padding: 3rem 2.5rem;
   position: relative;
   overflow: hidden;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+@keyframes contactCardBg {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .contact-card-glow {
@@ -1166,7 +1172,16 @@ h3 {
   content: "";
   position: absolute;
   inset: 2px;
-  background: var(--panel, #111827);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(124,58,237,0.18) 0%,
+      rgba(5,150,105,0.18) 50%,
+      rgba(124,58,237,0.18) 100%
+    ),
+    var(--panel, #111827);
+  background-size: 200% 200%, auto;
+  animation: contactCardBg 3s linear infinite;
   border-radius: 18px;
 }
 
@@ -1183,6 +1198,7 @@ h3 {
 
 @media (prefers-reduced-motion: reduce) {
   .contact-card-glow::before { animation: none; }
+  .contact-card-glow::after  { animation: none; }
 }
 
 .contact-available-badge {
