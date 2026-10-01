@@ -549,12 +549,8 @@
           const bB = lerp(darkB, lc.b, t);
 
           const mist = lerpF(0, 0.35, t);
-          document.body.style.background = `
-            radial-gradient(ellipse 60% 45% at 15% 25%, rgba(${lc.mR},${lc.mG},${lc.mB},${mist}) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 40% at 82% 60%, rgba(${lc.mR},${lc.mG},${lc.mB},${mist * 0.7}) 0%, transparent 65%),
-            radial-gradient(ellipse 45% 35% at 45% 90%, rgba(${lc.mR},${lc.mG},${lc.mB},${mist * 0.5}) 0%, transparent 70%),
-            rgb(${bR},${bG},${bB})
-          `.trim();
+          document.body.style.background = '';
+    document.body.style.backgroundColor = `rgb(${bR},${bG},${bB})`;
           root.style.setProperty("--bg", `rgb(${bR},${bG},${bB})`);
 
           const whiteLift = Math.sin(t * Math.PI);

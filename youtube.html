@@ -1234,7 +1234,8 @@
 
           // ── Body background ──
           const bgValue = `rgb(${lerp(darkR,lightR,t)},${lerp(darkG,lightG,t)},${lerp(darkB,lightB,t)})`;
-          document.body.style.background = bgValue;
+          document.body.style.background = '';
+          document.body.style.backgroundColor = bgValue;
           root.style.setProperty("--bg", bgValue);
 
           // ── Text contrast ramp ──
