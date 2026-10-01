@@ -667,5 +667,79 @@
         });
       }
     </script>
+
+  <!-- ── Magnetic Cursor Trail ──────────────────────────────────── -->
+  <canvas id="cursor-trail-canvas" aria-hidden="true"></canvas>
+  <!-- ── Click Burst ────────────────────────────────────────────── -->
+  <canvas id="burst-canvas" aria-hidden="true"></canvas>
+
+  <script>
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    const canvas = document.getElementById('cursor-trail-canvas');
+    const ctx    = canvas.getContext('2d');
+    let W = canvas.width  = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }, { passive: true });
+    const TRAIL_LEN = 22, DOT_R = 4.5, LERP_BASE = 0.18;
+    const COLORS = [[124,58,237],[16,185,129]];
+    const dots = Array.from({ length: TRAIL_LEN }, () => ({ x: W/2, y: H/2 }));
+    let mouseX = W/2, mouseY = H/2, active = false;
+    window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; active = true; }, { passive: true });
+    window.addEventListener('mouseleave', () => { active = false; }, { passive: true });
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function getColor(i) {
+      const t = i / (TRAIL_LEN - 1), c0 = COLORS[0], c1 = COLORS[1];
+      return [Math.round(lerp(c0[0],c1[0],t)), Math.round(lerp(c0[1],c1[1],t)), Math.round(lerp(c0[2],c1[2],t))];
+    }
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      if (!active) { requestAnimationFrame(draw); return; }
+      dots[0].x = lerp(dots[0].x, mouseX, 0.35); dots[0].y = lerp(dots[0].y, mouseY, 0.35);
+      for (let i = 1; i < TRAIL_LEN; i++) {
+        const t = Math.max(LERP_BASE * (1 - i / (TRAIL_LEN * 1.4)), 0.04);
+        dots[i].x = lerp(dots[i].x, dots[i-1].x, t); dots[i].y = lerp(dots[i].y, dots[i-1].y, t);
+      }
+      for (let i = TRAIL_LEN - 1; i >= 0; i--) {
+        const progress = 1 - i / TRAIL_LEN, radius = DOT_R * progress, alpha = progress * progress * 0.85;
+        const [r,g,b] = getColor(i);
+        const glow = ctx.createRadialGradient(dots[i].x, dots[i].y, 0, dots[i].x, dots[i].y, radius * 3.5);
+        glow.addColorStop(0, `rgba(${r},${g},${b},${(alpha*0.4).toFixed(3)})`);
+        glow.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        ctx.beginPath(); ctx.arc(dots[i].x, dots[i].y, radius * 3.5, 0, Math.PI*2); ctx.fillStyle = glow; ctx.fill();
+        ctx.beginPath(); ctx.arc(dots[i].x, dots[i].y, Math.max(radius,0.5), 0, Math.PI*2); ctx.fillStyle = `rgba(${r},${g},${b},${alpha.toFixed(3)})`; ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+    const bc = document.getElementById('burst-canvas'), bctx = bc.getContext('2d');
+    let BW = bc.width = window.innerWidth, BH = bc.height = window.innerHeight;
+    window.addEventListener('resize', () => { BW = bc.width = window.innerWidth; BH = bc.height = window.innerHeight; }, { passive: true });
+    const BURST_COLORS = [[124,58,237],[16,185,129],[59,130,246],[196,181,253],[110,231,183]];
+    let bursts = [];
+    window.addEventListener('click', e => {
+      const count = 18 + Math.floor(Math.random() * 10);
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI*2*i/count) + (Math.random()-0.5)*0.4, speed = 2.5 + Math.random()*4.5;
+        bursts.push({ x: e.clientX, y: e.clientY, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, r: 1.5+Math.random()*2.5, a: 1, c: BURST_COLORS[Math.floor(Math.random()*BURST_COLORS.length)], decay: 0.022+Math.random()*0.018 });
+      }
+    }, { passive: true });
+    function renderBurst() {
+      bctx.clearRect(0, 0, BW, BH);
+      bursts = bursts.filter(p => p.a > 0.02);
+      for (const p of bursts) {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.vx *= 0.97; p.a -= p.decay;
+        const [r,g,b] = p.c;
+        const grd = bctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+        grd.addColorStop(0,`rgba(${r},${g},${b},${(p.a*0.5).toFixed(3)})`); grd.addColorStop(1,`rgba(${r},${g},${b},0)`);
+        bctx.beginPath(); bctx.arc(p.x,p.y,p.r*3,0,Math.PI*2); bctx.fillStyle=grd; bctx.fill();
+        bctx.beginPath(); bctx.arc(p.x,p.y,p.r,0,Math.PI*2); bctx.fillStyle=`rgba(${r},${g},${b},${p.a.toFixed(3)})`; bctx.fill();
+      }
+      requestAnimationFrame(renderBurst);
+    }
+    requestAnimationFrame(renderBurst);
+  })();
+  </script>
   </body>
 </html>
