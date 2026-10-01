@@ -13,6 +13,38 @@
     <style>
 
       /* ── Page hero ── */
+      /* ── Hero gradient wrapper ── */
+      .awards-hero-wrap {
+        position: relative;
+        overflow: hidden;
+      }
+      /* Layered ambient radial gradient — matches YouTube page style */
+      .awards-hero-wrap::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(ellipse 70% 55% at 50% -10%, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 70%),
+          radial-gradient(ellipse 40% 35% at 10% 100%, color-mix(in srgb, var(--accent-strong) 10%, transparent) 0%, transparent 60%),
+          radial-gradient(ellipse 35% 30% at 90% 95%, color-mix(in srgb, #eab308 9%, transparent) 0%, transparent 60%);
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* Subtle grid overlay */
+      .awards-hero-wrap::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(color-mix(in srgb, var(--accent) 4%, transparent) 1px, transparent 1px),
+          linear-gradient(90deg, color-mix(in srgb, var(--accent) 4%, transparent) 1px, transparent 1px);
+        background-size: 48px 48px;
+        pointer-events: none;
+        z-index: 0;
+        mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+      }
+      .awards-hero-wrap > * { position: relative; z-index: 1; }
+
       .page-hero {
         text-align: center;
         padding: 4rem clamp(1rem, 6vw, 4rem) 3rem;
@@ -49,6 +81,7 @@
         display: flex;
         flex-direction: column;
         gap: 3.5rem;
+        position: relative;
       }
 
       /* ── Section label ── */
@@ -312,6 +345,27 @@
         white-space: nowrap;
       }
 
+
+      /* ── Scroll-driven ambient gradient blobs ── */
+      .ambient-blob {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        filter: blur(80px);
+        opacity: 0;
+        transition: opacity 0.7s ease;
+        will-change: transform, opacity;
+      }
+      .blob-gold   { background: radial-gradient(circle, rgba(251,191,36,0.28), transparent 70%); }
+      .blob-silver { background: radial-gradient(circle, rgba(148,163,184,0.26), transparent 70%); }
+      .blob-blue   { background: radial-gradient(circle, rgba(99,102,241,0.28), transparent 70%); }
+      .blob-purple { background: radial-gradient(circle, rgba(139,92,246,0.26), transparent 70%); }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ambient-blob { display: none !important; }
+      }
+
       /* ── Responsive ── */
       @media (max-width: 768px) {
         .awards-grid {
@@ -371,21 +425,24 @@
     <main>
 
       <!-- ── Hero ── -->
+      <div class="awards-hero-wrap">
       <div class="page-hero">
         <p class="eyebrow">Recognition &amp; Endorsements</p>
         <h1><span style="color:var(--accent-strong)">Awards</span> &amp; Recommendations</h1>
         <p>Competition wins, hackathon placements, and professional endorsements recognising applied AI research, engineering, and innovation.</p>
       </div>
+      </div><!-- /awards-hero-wrap -->
 
       <div class="awards-wrapper">
 
+        <!-- Ambient blobs — positioned by scroll JS -->
+        <div class="ambient-blob blob-gold"   id="awards-blob-0" style="width:440px;height:440px;top:0;left:-120px;"></div>
+        <div class="ambient-blob blob-silver" id="awards-blob-1" style="width:400px;height:400px;top:0;right:-100px;"></div>
+        <div class="ambient-blob blob-blue"   id="awards-blob-2" style="width:420px;height:420px;top:0;left:-80px;"></div>
+        <div class="ambient-blob blob-purple" id="awards-blob-3" style="width:380px;height:380px;top:0;right:-90px;"></div>
+
         <!-- ── Awards ── -->
         <div>
-          <div class="section-label">
-            <span class="section-label-text">Awards &amp; Hackathon Results</span>
-            <span class="section-label-line"></span>
-          </div>
-
           <div class="awards-grid">
 
             <div class="award-card gold" data-reveal>
@@ -447,7 +504,6 @@
         <div>
           <div class="section-label">
             <span class="section-label-text">Letters of Recommendation</span>
-            <span class="section-label-line"></span>
           </div>
 
           <div class="rec-card" data-reveal>
@@ -496,6 +552,69 @@
       </div>
     </div>
     <!-- ── /Resume Preview Modal ──────────────────────────────────────── -->
+
+
+    <script>
+      /* ── Scroll-driven ambient blobs for awards & recs ── */
+      (function () {
+        const blobs = [
+          document.getElementById('awards-blob-0'),
+          document.getElementById('awards-blob-1'),
+          document.getElementById('awards-blob-2'),
+          document.getElementById('awards-blob-3'),
+        ];
+        if (!blobs[0]) return;
+
+        // Target elements: award cards + rec card
+        const cards = document.querySelectorAll('.award-card, .rec-card');
+        const wrapper = document.querySelector('.awards-wrapper');
+        if (!wrapper || !cards.length) return;
+
+        function updateBlobs() {
+          const vh = window.innerHeight;
+          blobs.forEach(b => { b.style.opacity = '0'; });
+
+          cards.forEach((card, i) => {
+            const rect = card.getBoundingClientRect();
+            const cardMid = rect.top + rect.height / 2;
+            const distFromCenter = Math.abs(cardMid - vh / 2);
+            const maxDist = vh * 0.55;
+
+            if (distFromCenter < maxDist) {
+              const progress = 1 - distFromCenter / maxDist;
+              const blobIdx = i % blobs.length;
+              const blob = blobs[blobIdx];
+
+              // Position blob relative to awards-wrapper
+              const cardTopInWrapper = card.offsetTop + card.offsetHeight / 2;
+              const blobH = parseFloat(blob.style.height) || 420;
+
+              // Alternate left/right
+              if (i % 2 === 0) {
+                blob.style.left = '-100px';
+                blob.style.right = 'auto';
+              } else {
+                blob.style.right = '-80px';
+                blob.style.left = 'auto';
+              }
+
+              blob.style.top = (cardTopInWrapper - blobH / 2) + 'px';
+              blob.style.opacity = (progress * 0.9).toFixed(3);
+            }
+          });
+        }
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            requestAnimationFrame(() => { updateBlobs(); ticking = false; });
+            ticking = true;
+          }
+        }, { passive: true });
+
+        updateBlobs();
+      })();
+    </script>
 
     <script src="chatbot.js"></script>
     <script>

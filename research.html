@@ -12,6 +12,43 @@
     <link rel="stylesheet" href="styles.css" />
     <style>
       /* ── Page-specific styles ── */
+
+      /* Gradient wrapper — full-width container for the hero background */
+      .research-hero-wrap {
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid var(--line);
+      }
+
+      /* Layered ambient radial gradient — matches YouTube page style */
+      .research-hero-wrap::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(ellipse 70% 55% at 50% -10%, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 70%),
+          radial-gradient(ellipse 40% 35% at 10% 100%, color-mix(in srgb, var(--accent-strong) 10%, transparent) 0%, transparent 60%),
+          radial-gradient(ellipse 35% 30% at 90% 95%, color-mix(in srgb, #7c3aed 9%, transparent) 0%, transparent 60%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Subtle grid overlay */
+      .research-hero-wrap::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(color-mix(in srgb, var(--accent) 4%, transparent) 1px, transparent 1px),
+          linear-gradient(90deg, color-mix(in srgb, var(--accent) 4%, transparent) 1px, transparent 1px);
+        background-size: 48px 48px;
+        pointer-events: none;
+        z-index: 0;
+        mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+      }
+
+      .research-hero-wrap > * { position: relative; z-index: 1; }
+
       .research-hero {
         text-align: center;
         padding: 4rem clamp(1rem, 6vw, 4rem) 3rem;
@@ -250,10 +287,12 @@
 
     <main>
       <!-- ── Hero ── -->
+      <div class="research-hero-wrap">
       <div class="research-hero">
         <p class="eyebrow">Research</p>
         <h1><span style="color:var(--accent-strong)">AI Research,</span> Technical Writing &amp; Evaluation</h1>
         <p>First-author papers, research synopses, and technical write-ups spanning LLM systems, multi-agent architectures, computer vision, and applied AI evaluation.</p>
+      </div>
       </div>
 
       <!-- ── Cards ── -->

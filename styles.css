@@ -488,7 +488,12 @@ img {
 }
 
 .hero::before {
-  background: linear-gradient(180deg, rgba(27, 36, 48, 0.58), rgba(17, 24, 39, 0.34));
+  background:
+    radial-gradient(ellipse 70% 55% at 50% -5%,  color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 4%  50%,  color-mix(in srgb, var(--accent-strong) 10%, transparent) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 40% at 96% 88%,  rgba(234,179,8,0.13) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 35% at 90% 8%,   rgba(139,92,246,0.08) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(27, 36, 48, 0.58), rgba(17, 24, 39, 0.34));
   border: 1px solid var(--line);
   border-radius: 20px;
   content: "";

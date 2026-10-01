@@ -43,6 +43,26 @@
       z-index: 0;
     }
 
+    /* ── Scroll-driven ambient gradient blobs ── */
+    .ambient-blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(80px);
+      opacity: 0;
+      transition: opacity 0.7s ease;
+      will-change: transform, opacity;
+    }
+    .blob-blue   { background: radial-gradient(circle, color-mix(in srgb, var(--accent) 32%, transparent), transparent 70%); }
+    .blob-purple { background: radial-gradient(circle, rgba(139,92,246,0.30), transparent 70%); }
+    .blob-cyan   { background: radial-gradient(circle, rgba(34,211,238,0.24), transparent 70%); }
+    .blob-teal   { background: radial-gradient(circle, rgba(20,184,166,0.26), transparent 70%); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ambient-blob { display: none !important; }
+    }
+
     /* ── Hero ── */
     .page-hero {
       position: relative; z-index: 1;
@@ -319,6 +339,12 @@
       }
     </style>
 
+    <!-- Ambient gradient blobs — positioned/faded by scroll JS -->
+    <div class="ambient-blob blob-blue"   id="blob-0" style="width:420px;height:420px;top:0;left:-100px;"></div>
+    <div class="ambient-blob blob-purple" id="blob-1" style="width:380px;height:380px;top:0;right:-80px;"></div>
+    <div class="ambient-blob blob-cyan"   id="blob-2" style="width:400px;height:400px;top:0;left:50%;transform:translateX(-50%);"></div>
+    <div class="ambient-blob blob-teal"   id="blob-3" style="width:360px;height:360px;top:0;right:-60px;"></div>
+
     <div class="timeline">
 
       <!-- 01 LEFT -->
@@ -440,6 +466,78 @@
 </div>
 <!-- ── /Resume Preview Modal ──────────────────────────────────────── -->
 
+
+<script>
+  /* ── Scroll-driven ambient gradient blobs ── */
+  (function () {
+    const blobs = [
+      document.getElementById('blob-0'),
+      document.getElementById('blob-1'),
+      document.getElementById('blob-2'),
+      document.getElementById('blob-3'),
+    ];
+
+    if (!blobs[0]) return;
+
+    // Each timeline item acts as a trigger zone for a blob
+    const items = document.querySelectorAll('.tl-item');
+    const tlWrap = document.querySelector('.tl-wrap');
+
+    // Map: item index → blob index (cycle through 4 blobs)
+    // Blob vertical position tracks the active card's position within tl-wrap
+    function updateBlobs() {
+      const wrapTop = tlWrap.getBoundingClientRect().top + window.scrollY;
+      const vh = window.innerHeight;
+
+      // Reset all blobs
+      blobs.forEach(b => { b.style.opacity = '0'; });
+
+      items.forEach((item, i) => {
+        const rect = item.getBoundingClientRect();
+        const itemMid = rect.top + rect.height / 2;
+
+        // How far the item centre is from the viewport centre (0 = perfectly centred)
+        const distFromCenter = Math.abs(itemMid - vh / 2);
+        const maxDist = vh * 0.55;
+
+        if (distFromCenter < maxDist) {
+          const progress = 1 - distFromCenter / maxDist; // 0→1 as item centres
+          const blobIdx = i % blobs.length;
+          const blob = blobs[blobIdx];
+
+          // Position blob vertically to follow the card within tl-wrap
+          const itemTopInWrap = item.offsetTop + item.offsetHeight / 2;
+          const blobH = parseFloat(blob.style.height || 400);
+
+          // Alternate left/right to match tl-left / tl-right pattern
+          if (i % 2 === 0) {
+            blob.style.left = '-80px';
+            blob.style.right = 'auto';
+            blob.style.transform = 'none';
+          } else {
+            blob.style.right = '-80px';
+            blob.style.left = 'auto';
+            blob.style.transform = 'none';
+          }
+
+          blob.style.top = (itemTopInWrap - blobH / 2) + 'px';
+          blob.style.opacity = (progress * 0.92).toFixed(3);
+        }
+      });
+    }
+
+    // Throttle with rAF
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => { updateBlobs(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    updateBlobs(); // run once on load
+  })();
+</script>
 
 <script src="script.js"></script>
 </body>
